@@ -1,0 +1,2409 @@
+From fhaxbox66 at googlemail.com  Wed Nov 26 00:52:29 2008
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Wed, 26 Nov 2008 00:52:29 +0100
+Subject: [Yabt-devel] Development process for yabt
+In-Reply-To: <492C1575.6090101@aim.com>
+Message-ID: <DKECKJNNEDEJAJDEPCMBCEPGCHAA.fhaxbox66@googlemail.com>
+
+Looks good, in particular the license quesion. That said, a design
+specification will have to serve our goals, not those of others.
+
+But the hardest part has yet to be written. Do you intend to give it a first
+go?
+
+One comment on the state attribute in yabt-1.0: It could be generalized by
+passing to the translation classe's constructor a 'settings' dictionary for
+storing arbitrary key - value pairs. d
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081126/18f78c9f/attachment.html>
+
+From mwhapples at aim.com  Wed Nov 26 01:33:16 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Wed, 26 Nov 2008 00:33:16 +0000
+Subject: [Yabt-devel] Development process for yabt
+In-Reply-To: <DKECKJNNEDEJAJDEPCMBCEPGCHAA.fhaxbox66@googlemail.com>
+References: <DKECKJNNEDEJAJDEPCMBCEPGCHAA.fhaxbox66@googlemail.com>
+Message-ID: <492C994C.3080103@aim.com>
+
+On 25/11/08 23:52, Leo wrote:
+> Looks good, in particular the license quesion. That said, a design 
+> specification will have to serve our goals, not those of others.
+
+Yes except I don't want the license to make YABT so restricted that 
+nobody can use it.
+> But the hardest part has yet to be written. Do you intend to give it a 
+> first go?
+> One comment on the state attribute in yabt-1.0: It could be 
+> generalized by passing to the translation classe's constructor a 
+> 'settings' dictionary for storing arbitrary key - value pairs.
+
+I feel minimal should be passed in to the constructor. May be this is to 
+do with some of my java knowledge, and the spring framework and how its 
+configuration works.
+
+As for state itself, this is something which I feel is fairly core. For 
+Braille translation YABT uses it for Braille grade, and this may vary 
+between calls. Why not use separate translators for different grades? I 
+believe smoother joins can be done if a single translator can move from 
+one to the other as it knows about both grades and so can deal with the 
+context around a grade change. Another use for the state could be in 
+preparation of text for a speech synthesiser, it could denote 
+punctuation level, abreviation level, etc. In fact for speech 
+preparation more than just state might be wanted, or state may be a 
+tuple in that case (mixed feelings here, may be the statically typed 
+language side of me is going, NO! how could you have state being two 
+different types?). State if not needed by a particular translation 
+system need not actually be used, the variable can just be left floating 
+about.
+
+Looking at this state issue further it seems possibly very problematic. 
+State I believe does belong to the translator (IE. I want to translate 
+in this state) but rules need to access state. If state can be different 
+types (or other properties are set dynamically) how does any particular 
+rule type know what it should find (IE. how to stop things just falling 
+apart?).
+
+I also have noticed something I really should get the list to reply to 
+the list by default.
+
+MIchael Whapples
+
+> d
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081126/21379445/attachment.html>
+
+From mwhapples at aim.com  Wed Nov 26 01:45:23 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Wed, 26 Nov 2008 00:45:23 +0000
+Subject: [Yabt-devel] Corrected list reply
+Message-ID: <492C9C23.9050906@aim.com>
+
+Hello,
+Quick note to say I have just altered the setting for the reply to in 
+the list admin panel. Hopefully now just doing reply will get it to the 
+list.
+
+Michael Whapples
+
+
+From fhaxbox66 at googlemail.com  Wed Nov 26 11:48:17 2008
+From: fhaxbox66 at googlemail.com (Stefan Pankoke)
+Date: Wed, 26 Nov 2008 11:48:17 +0100
+Subject: [Yabt-devel] Corrected list reply
+In-Reply-To: <492C9C23.9050906@aim.com>
+References: <492C9C23.9050906@aim.com>
+Message-ID: <90326f110811260248x67f1d765j46f5d6401aaf2bc4@mail.gmail.com>
+
+OK. On the core and underlying translator subclasses (implementations)
+don't know a good word for it:
+
+I don't know where you stand, i.e. if you have any concrete picture of
+what the core should do. So I share my ideas at the risk of
+duplication of work.
+
+I would anticipate that the core is to be seen as a layer between the
+overarching app such as rst2brl, and the concrete implementation of
+the translator (I guess we will have an implementation for xml-based
+translation, another for json, yet another for CSV files, maybe
+another one for an awk-based translator or whatever).
+
+So what should the core export to the overarching app?
+
+I think just a translator class which expects the caller to specify
+which implementation to use, and optionally some settings overriding
+the implementation's defaults, should be enough. The settings dict
+could have general settings applicable to all implementations, and
+some implementation-specific ones, i.e. the core will be unaware of
+these. The core should, however, manage default settings, overriding,
+handling of config files etc. Maybe the core could also provide
+information to the app on the available implementations, xml files
+etc. The settings could contain info on the xml file to use, the
+translation grade etc.
+
+The core.translator should then export a method to actually call the translator.
+
+What should such an apply method require in terms of arguments? I
+guess at least an optional settings dictionary and a unicode string,
+possibly a sequence of settings and strings in arbitrary order.
+
+Further to my previous e-mail: rule types (i.e. nodes) could check for
+specific settings and even modify them through handler methods
+accessing the settings dict.
+
+By the way: another example of translation (maybe you meant this)
+would be: translation of a text into phonems for speech output (rather
+than just preparing the text itself for speech output as done by orca
+etc. when processing html pages...)
+
+Happy to discuss.
+
+On 26/11/2008, Michael Whapples <mwhapples at aim.com> wrote:
+> Hello,
+> Quick note to say I have just altered the setting for the reply to in
+> the list admin panel. Hopefully now just doing reply will get it to the
+> list.
+>
+> Michael Whapples
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>
+
+
+From mwhapples at aim.com  Wed Nov 26 15:21:30 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Wed, 26 Nov 2008 14:21:30 +0000
+Subject: [Yabt-devel] Corrected list reply
+In-Reply-To: <90326f110811260248x67f1d765j46f5d6401aaf2bc4@mail.gmail.com>
+References: <492C9C23.9050906@aim.com>
+	<90326f110811260248x67f1d765j46f5d6401aaf2bc4@mail.gmail.com>
+Message-ID: <492D5B6A.9090508@aim.com>
+
+OK, I will discuss the speech use first, as it is the easier one to discuss.
+
+Yes what you said is valid, it could do translation to phonems, but what 
+I had imagined was that it could handle things like punctuation level, 
+abreviations (eg. Dr. being doctor, Mr being Mister, etc being etcetera, 
+etc)). That was just my thought but if it would be better as text to 
+phonem then that could be the goal or even another goal, that's how 
+flexible I want YABT to be.
+
+That was too easy, I have another question first, how version numbers 
+are to be done? Previously I was using the SVN revision number to define 
+development versions, but setuptools can't get mercurial revision 
+numbers. I have for the time set it to use date rather than revision 
+number. This is good except it wouldn't show any difference between two 
+development versions on the same day if multiple commits were made. A 
+possible answer is hgversion which can work out the version number 
+according to repository information (base version eg. 2.0b2 would be 
+worked out from the previous tag in the repository (or PKG_INFO if in 
+source distribution rather than repository). The only problem with this 
+is if YABT splits into YABT.cor and YABT.braille and both are in one 
+repository then both would need same base number (IE. one is updated and 
+released both recieve version number move). May be we could use 
+hgversion but customise it so that base version needs to be specified. I 
+am possibly tempted by the date option as this is repository independent 
+(IE. version numbering will not change should YABT move to another 
+version control system).
+
+Now for the difficult stuff. Before saying what YABT.core should offer, 
+is this separation definitely going to be a good idea?
+
+I can very much imagine what YABT.core would be in java, mainly 
+interfaces, a few translator classes, some common rule types and 
+probably a configuration module for retrieving the translator class and 
+loading the rules via the correct loader. May be configuration could be 
+provided through a configuration file like the spring framework. Its not 
+quite so clear in python as interfaces don't actually exist, may be 
+using python 2.6's abstract base classes instead. The only concern I 
+have with python 2.6 is that psyco is not yet compiled for python 2.6 on 
+windows (where pre-compiled packages are most important). This is why I 
+have persisted with using python 2.5.
+
+I get the feeling that a loader depends heavily on the rule 
+implementations, but I feel that the translator classes should only need 
+to know it is a rule. The concept is that the translator knows how to 
+ask the rule/rule set to check whether it has a match, but the 
+translator should not know how the rule has done that match. An existing 
+expample is the current YABT Braille rules check group and state all in 
+one go by looking it up in a dictionary (group and state are tuples in 
+the keys of the dictionary). An alternative way to implement this is to 
+have a rule set which checks group, and that rule set contains rule sets 
+which check state (IE. 2 layers of checking). For this case it seems 
+that the dictionary look up in one step is quicker. This dictionary look 
+up system may not work for all cases, eg. if you had a tree structure 
+which could contain varying length routes along branches (IE. to reach 
+some rules you may only do 1 check, but for others you may do 5 checks). 
+This is why I don't want to use ElementTree as the interface, and would 
+rather have something like the current rule interface with its isMatch 
+method. If there is to be an ElementTree implementation isMatch may just 
+use the handlers on the nodes (unfortunately in python this may have a 
+performance impact as calling methods can cost time, unlike java which 
+knows the method actually exists so doesn't have to check for the 
+method). May be ElementTree could lower the loader dependence on 
+particular rule implementations, but I feel it would restrict how YABT 
+could be used for developing alternative algorithms, hence ElementTree 
+should be only one implementation.
+
+Michael Whapples
+
+On 26/11/08 10:48, Stefan Pankoke wrote:
+> OK. On the core and underlying translator subclasses (implementations)
+> don't know a good word for it:
+>
+> I don't know where you stand, i.e. if you have any concrete picture of
+> what the core should do. So I share my ideas at the risk of
+> duplication of work.
+>
+> I would anticipate that the core is to be seen as a layer between the
+> overarching app such as rst2brl, and the concrete implementation of
+> the translator (I guess we will have an implementation for xml-based
+> translation, another for json, yet another for CSV files, maybe
+> another one for an awk-based translator or whatever).
+>
+> So what should the core export to the overarching app?
+>
+> I think just a translator class which expects the caller to specify
+> which implementation to use, and optionally some settings overriding
+> the implementation's defaults, should be enough. The settings dict
+> could have general settings applicable to all implementations, and
+> some implementation-specific ones, i.e. the core will be unaware of
+> these. The core should, however, manage default settings, overriding,
+> handling of config files etc. Maybe the core could also provide
+> information to the app on the available implementations, xml files
+> etc. The settings could contain info on the xml file to use, the
+> translation grade etc.
+>
+> The core.translator should then export a method to actually call the translator.
+>
+> What should such an apply method require in terms of arguments? I
+> guess at least an optional settings dictionary and a unicode string,
+> possibly a sequence of settings and strings in arbitrary order.
+>
+> Further to my previous e-mail: rule types (i.e. nodes) could check for
+> specific settings and even modify them through handler methods
+> accessing the settings dict.
+>
+> By the way: another example of translation (maybe you meant this)
+> would be: translation of a text into phonems for speech output (rather
+> than just preparing the text itself for speech output as done by orca
+> etc. when processing html pages...)
+>
+> Happy to discuss.
+>
+> On 26/11/2008, Michael Whapples<mwhapples at aim.com>  wrote:
+>    
+>> Hello,
+>> Quick note to say I have just altered the setting for the reply to in
+>> the list admin panel. Hopefully now just doing reply will get it to the
+>> list.
+>>
+>> Michael Whapples
+>> _______________________________________________
+>> Yabt-devel mailing list
+>> Yabt-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>>
+>>      
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081126/370c25af/attachment.html>
+
+From mwhapples at aim.com  Wed Nov 26 19:35:42 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Wed, 26 Nov 2008 18:35:42 +0000
+Subject: [Yabt-devel] Corrected list reply
+In-Reply-To: <90326f110811260248x67f1d765j46f5d6401aaf2bc4@mail.gmail.com>
+References: <492C9C23.9050906@aim.com>
+	<90326f110811260248x67f1d765j46f5d6401aaf2bc4@mail.gmail.com>
+Message-ID: <492D96FE.1020403@aim.com>
+
+I was just sitting here contemplating how a configuration module could 
+actually know about all possible loaders. Its suddenly occured to me, 
+setuptools has a way to define egg entry points to allow plugins (this 
+is how hg.setuptools which I use for automatically creating YABT's 
+manifest file).
+
+I was just saying it here so I have a record of this thought so that I 
+have the info should I forget it. May be I should really have a blog for 
+this sort of stuff?
+
+I also feel details like how loaders register with YABT.core's 
+configuration module is an implementation matter and so should not go in 
+the YABT design doc, but rather a YABT.core specification doc.
+
+My intention is that the YABT design doc should discuss YABT at a level 
+where it really wouldn't matter what language you used to write it, as 
+it should only say what YABT can do, not how it does it. May be I need 
+to start writing some YABT.core and YABT.braille specifications.
+
+Michael Whapples
+
+On 26/11/08 10:48, Stefan Pankoke wrote:
+> OK. On the core and underlying translator subclasses (implementations)
+> don't know a good word for it:
+>
+> I don't know where you stand, i.e. if you have any concrete picture of
+> what the core should do. So I share my ideas at the risk of
+> duplication of work.
+>
+> I would anticipate that the core is to be seen as a layer between the
+> overarching app such as rst2brl, and the concrete implementation of
+> the translator (I guess we will have an implementation for xml-based
+> translation, another for json, yet another for CSV files, maybe
+> another one for an awk-based translator or whatever).
+>
+> So what should the core export to the overarching app?
+>
+> I think just a translator class which expects the caller to specify
+> which implementation to use, and optionally some settings overriding
+> the implementation's defaults, should be enough. The settings dict
+> could have general settings applicable to all implementations, and
+> some implementation-specific ones, i.e. the core will be unaware of
+> these. The core should, however, manage default settings, overriding,
+> handling of config files etc. Maybe the core could also provide
+> information to the app on the available implementations, xml files
+> etc. The settings could contain info on the xml file to use, the
+> translation grade etc.
+>
+> The core.translator should then export a method to actually call the translator.
+>
+> What should such an apply method require in terms of arguments? I
+> guess at least an optional settings dictionary and a unicode string,
+> possibly a sequence of settings and strings in arbitrary order.
+>
+> Further to my previous e-mail: rule types (i.e. nodes) could check for
+> specific settings and even modify them through handler methods
+> accessing the settings dict.
+>
+> By the way: another example of translation (maybe you meant this)
+> would be: translation of a text into phonems for speech output (rather
+> than just preparing the text itself for speech output as done by orca
+> etc. when processing html pages...)
+>
+> Happy to discuss.
+>
+> On 26/11/2008, Michael Whapples<mwhapples at aim.com>  wrote:
+>    
+>> Hello,
+>> Quick note to say I have just altered the setting for the reply to in
+>> the list admin panel. Hopefully now just doing reply will get it to the
+>> list.
+>>
+>> Michael Whapples
+>> _______________________________________________
+>> Yabt-devel mailing list
+>> Yabt-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>>
+>>      
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081126/f40463f6/attachment.html>
+
+From mwhapples at aim.com  Wed Nov 26 20:38:00 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Wed, 26 Nov 2008 19:38:00 +0000
+Subject: [Yabt-devel] YABT versioning and distribution
+Message-ID: <492DA598.8050303@aim.com>
+
+Hello,
+Firstly notes about version numbers. I said earlier I fall on the side 
+of the date for development builds, that I am now reconsidering. Problem 
+being the date given is for when the build is done, not when the commit 
+into the repository is done (IE. if I build immediately after committing 
+revision 66 on 2008-11-26 but you were to build revision 65 on the 
+following day (2008-11-27) then according to version numbers you have 
+the newer version where as I in fact have the later committed version). 
+May be I will just have to go with customising hgversion.
+
+Another problem I am hitting is that hg.setuptools and probably 
+hgversion only work when at the top level directory in mercurial. It 
+seems like one distribution per repository (I can see the sense). 
+Question goes, is there a way to split up one distribution in setup.py, 
+so it produces two eggs (one for YABT.core and one for YABT.braille). 
+May be I will just have to resort to using the manifest files. The 
+alternative is if there is a way to cluster more than one repository 
+inside a repository. I can't remember exactly what the forest extension 
+does for mercurial but it does something to do with clustering 
+repositories (either making multiple repos appear as one or hopefully 
+one contain multiple repos). I will try and hunt it out. SVN didn't have 
+this problem, but I feel it did have other problems that DVCs solve.
+
+Michael Whapples
+
+
+From fhaxbox66 at googlemail.com  Thu Nov 27 17:16:17 2008
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Thu, 27 Nov 2008 17:16:17 +0100
+Subject: [Yabt-devel] YABT versioning and distribution
+In-Reply-To: <492DA598.8050303@aim.com>
+References: <492DA598.8050303@aim.com>
+Message-ID: <90326f110811270816o2b04faacga01d32b4b985461f@mail.gmail.com>
+
+I don't have any views nor knowledge on this. Except that I find
+braille too specific a name for the implementation package. I don't
+see anything braille-specific in it let alone the xml-table. So I
+suggest as a subpackage name something like 'parsers' with further
+subpackages such as 'xmltable', 'jsontable' etc. Or you rename Braille
+to 'xmltable'. Otherwise, no one will believe that yabt can be used
+for other purposes.
+
+Those who don't rely on psyco will have very few dependencies that
+setuptools could facilitate to handle. Sorry, but I have very little
+experience with setuptools. You may wish to post your question in the
+setuptools users list. From my vantage point yabt could live without
+setuptools for quite some time. But with setuptools it will be much
+mor elegant, I know.
+
+
+
+On 26/11/2008, Michael Whapples <mwhapples at aim.com> wrote:
+> Hello,
+> Firstly notes about version numbers. I said earlier I fall on the side
+> of the date for development builds, that I am now reconsidering. Problem
+> being the date given is for when the build is done, not when the commit
+> into the repository is done (IE. if I build immediately after committing
+> revision 66 on 2008-11-26 but you were to build revision 65 on the
+> following day (2008-11-27) then according to version numbers you have
+> the newer version where as I in fact have the later committed version).
+> May be I will just have to go with customising hgversion.
+>
+> Another problem I am hitting is that hg.setuptools and probably
+> hgversion only work when at the top level directory in mercurial. It
+> seems like one distribution per repository (I can see the sense).
+> Question goes, is there a way to split up one distribution in setup.py,
+> so it produces two eggs (one for YABT.core and one for YABT.braille).
+> May be I will just have to resort to using the manifest files. The
+> alternative is if there is a way to cluster more than one repository
+> inside a repository. I can't remember exactly what the forest extension
+> does for mercurial but it does something to do with clustering
+> repositories (either making multiple repos appear as one or hopefully
+> one contain multiple repos). I will try and hunt it out. SVN didn't have
+> this problem, but I feel it did have other problems that DVCs solve.
+>
+> Michael Whapples
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>
+
+
+From fhaxbox66 at googlemail.com  Thu Nov 27 17:42:16 2008
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Thu, 27 Nov 2008 17:42:16 +0100
+Subject: [Yabt-devel] Development process for yabt
+In-Reply-To: <492C994C.3080103@aim.com>
+References: <DKECKJNNEDEJAJDEPCMBCEPGCHAA.fhaxbox66@googlemail.com>
+	<492C994C.3080103@aim.com>
+Message-ID: <90326f110811270842r102f9c33kcbb84c49713f996e@mail.gmail.com>
+
+On state:
+
+I am still in favor of having a settings member attribute in the
+core.translator base_class. settings should be a dictiohnary, not an
+int like state in version 1.0. Some settings may modify the behavior
+of the translator such as which ruletable to load, how to encode the
+output or whatever (these are just dummy examples). More importantly,
+settings could contain a number of variables specific to the subclass
+and rule table. So application developers should write extensions to
+core.translator. These extensions add handler methods corresponding to
+the rule types in the xml table. In other words: the authors of
+xmltables need to be aware of the available rule handlers and the
+settings related thereto. Your state concept is really worth
+generalizing in the described way. So translators could count word
+frequencies etc. The xml table could function much like a programming
+language. This is what drove me to think about awt and how far we
+should go with these xml tables.
+
+On spring
+
+The homepage looks interesting. Too complicated for me though. And I
+think spring is unnecessary for such a tiny though smart project. Too
+much overhead to be paid for the elegance gained.
+
+On calling handler methods:
+
+Although I am not too deeply into the anatomy of python objects on the
+heap, I understand that while calling a particular method in a huge
+class hierarchy can be expensive as the interpeter has to run through
+a long chain of references plus dictionary look-ups etc.
+
+However, I understand that all these costs can be avoided by using a
+dictionary that maps node tags (= rule types) to handler methods. No
+reference chain is there, as the reference to the method is itself
+contained in the dictionary. So mydict[mykey] is the method object!
+You see my point?
+
+How to populate this dispatcher dict?
+
+Well, I think core.translator could provide a populate_handler_dict
+method by inspecting the list of attributes. We could agree on a
+naming convention: each attribute named _RH_XYZ could be a handler
+method for the node of type XYZ. You see my point? Then you have a
+dict self.handlers. If the iterator finds a node with tag XYZ, it can
+call the handler through self.handlers[XYZ.tag] or something. Each
+handler takes the complete node and works on its attributes and on the
+contents of self.settings.
+
+What should core.translator export?
+- settings
+- handlers (just the dict as described)
+- an apply method taking a string and a settings dict overriding any
+existing settings
+- a split_into_chunks method to be called by apply and overridden bn
+by subclasses
+- a poplulate_handlers method (see above)
+- maybe some more, but no rules, as not each implementation will need
+rules. Think of the simplest  case of a CSV file being a list of
+(input, output) pairs where translation amounts to a blunt binary
+search...
+
+
+What should implementations do?
+- add handler_methods, if needed
+- load rule tables in whatsoever format
+- override a method called by apply to process a chunk
+- walk over the nodes and call the handler methods using the handlers
+dict initially populated
+- and much much more
+
+ That's my initial view on architecture. Happy to discuss.
+
+
+
+On 26/11/2008, Michael Whapples <mwhapples at aim.com> wrote:
+> On 25/11/08 23:52, Leo wrote:
+>> Looks good, in particular the license quesion. That said, a design
+>> specification will have to serve our goals, not those of others.
+>
+> Yes except I don't want the license to make YABT so restricted that
+> nobody can use it.
+>> But the hardest part has yet to be written. Do you intend to give it a
+>> first go?
+>> One comment on the state attribute in yabt-1.0: It could be
+>> generalized by passing to the translation classe's constructor a
+>> 'settings' dictionary for storing arbitrary key - value pairs.
+>
+> I feel minimal should be passed in to the constructor. May be this is to
+> do with some of my java knowledge, and the spring framework and how its
+> configuration works.
+>
+> As for state itself, this is something which I feel is fairly core. For
+> Braille translation YABT uses it for Braille grade, and this may vary
+> between calls. Why not use separate translators for different grades? I
+> believe smoother joins can be done if a single translator can move from
+> one to the other as it knows about both grades and so can deal with the
+> context around a grade change. Another use for the state could be in
+> preparation of text for a speech synthesiser, it could denote
+> punctuation level, abreviation level, etc. In fact for speech
+> preparation more than just state might be wanted, or state may be a
+> tuple in that case (mixed feelings here, may be the statically typed
+> language side of me is going, NO! how could you have state being two
+> different types?). State if not needed by a particular translation
+> system need not actually be used, the variable can just be left floating
+> about.
+>
+> Looking at this state issue further it seems possibly very problematic.
+> State I believe does belong to the translator (IE. I want to translate
+> in this state) but rules need to access state. If state can be different
+> types (or other properties are set dynamically) how does any particular
+> rule type know what it should find (IE. how to stop things just falling
+> apart?).
+>
+> I also have noticed something I really should get the list to reply to
+> the list by default.
+>
+> MIchael Whapples
+>
+>> d
+>> ------------------------------------------------------------------------
+>>
+>> _______________________________________________
+>> Yabt-devel mailing list
+>> Yabt-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>>
+>
+
+
+From fhaxbox66 at googlemail.com  Fri Nov 28 09:44:58 2008
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Fri, 28 Nov 2008 09:44:58 +0100
+Subject: [Yabt-devel] Corrected list reply
+In-Reply-To: <492D96FE.1020403@aim.com>
+References: <492C9C23.9050906@aim.com>
+	<90326f110811260248x67f1d765j46f5d6401aaf2bc4@mail.gmail.com>
+	<492D96FE.1020403@aim.com>
+Message-ID: <90326f110811280044h964becao878436948737378f@mail.gmail.com>
+
+Are you aware of the module optionparser in the standard library?
+Maybe this is off topic... But I thought I mention it just in case.
+
+
+On 26/11/2008, Michael Whapples <mwhapples at aim.com> wrote:
+> I was just sitting here contemplating how a configuration module could
+> actually know about all possible loaders. Its suddenly occured to me,
+> setuptools has a way to define egg entry points to allow plugins (this
+> is how hg.setuptools which I use for automatically creating YABT's
+> manifest file).
+>
+> I was just saying it here so I have a record of this thought so that I
+> have the info should I forget it. May be I should really have a blog for
+> this sort of stuff?
+>
+> I also feel details like how loaders register with YABT.core's
+> configuration module is an implementation matter and so should not go in
+> the YABT design doc, but rather a YABT.core specification doc.
+>
+> My intention is that the YABT design doc should discuss YABT at a level
+> where it really wouldn't matter what language you used to write it, as
+> it should only say what YABT can do, not how it does it. May be I need
+> to start writing some YABT.core and YABT.braille specifications.
+>
+> Michael Whapples
+>
+> On 26/11/08 10:48, Stefan Pankoke wrote:
+>> OK. On the core and underlying translator subclasses (implementations)
+>> don't know a good word for it:
+>>
+>> I don't know where you stand, i.e. if you have any concrete picture of
+>> what the core should do. So I share my ideas at the risk of
+>> duplication of work.
+>>
+>> I would anticipate that the core is to be seen as a layer between the
+>> overarching app such as rst2brl, and the concrete implementation of
+>> the translator (I guess we will have an implementation for xml-based
+>> translation, another for json, yet another for CSV files, maybe
+>> another one for an awk-based translator or whatever).
+>>
+>> So what should the core export to the overarching app?
+>>
+>> I think just a translator class which expects the caller to specify
+>> which implementation to use, and optionally some settings overriding
+>> the implementation's defaults, should be enough. The settings dict
+>> could have general settings applicable to all implementations, and
+>> some implementation-specific ones, i.e. the core will be unaware of
+>> these. The core should, however, manage default settings, overriding,
+>> handling of config files etc. Maybe the core could also provide
+>> information to the app on the available implementations, xml files
+>> etc. The settings could contain info on the xml file to use, the
+>> translation grade etc.
+>>
+>> The core.translator should then export a method to actually call the
+>> translator.
+>>
+>> What should such an apply method require in terms of arguments? I
+>> guess at least an optional settings dictionary and a unicode string,
+>> possibly a sequence of settings and strings in arbitrary order.
+>>
+>> Further to my previous e-mail: rule types (i.e. nodes) could check for
+>> specific settings and even modify them through handler methods
+>> accessing the settings dict.
+>>
+>> By the way: another example of translation (maybe you meant this)
+>> would be: translation of a text into phonems for speech output (rather
+>> than just preparing the text itself for speech output as done by orca
+>> etc. when processing html pages...)
+>>
+>> Happy to discuss.
+>>
+>> On 26/11/2008, Michael Whapples<mwhapples at aim.com>  wrote:
+>>
+>>> Hello,
+>>> Quick note to say I have just altered the setting for the reply to in
+>>> the list admin panel. Hopefully now just doing reply will get it to the
+>>> list.
+>>>
+>>> Michael Whapples
+>>> _______________________________________________
+>>> Yabt-devel mailing list
+>>> Yabt-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>>>
+>>>
+>> _______________________________________________
+>> Yabt-devel mailing list
+>> Yabt-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>>
+>
+
+
+From fhaxbox66 at googlemail.com  Fri Nov 28 11:39:33 2008
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Fri, 28 Nov 2008 11:39:33 +0100
+Subject: [Yabt-devel] Corrected list reply
+In-Reply-To: <90326f110811280044h964becao878436948737378f@mail.gmail.com>
+References: <492C9C23.9050906@aim.com>
+	<90326f110811260248x67f1d765j46f5d6401aaf2bc4@mail.gmail.com>
+	<492D96FE.1020403@aim.com>
+	<90326f110811280044h964becao878436948737378f@mail.gmail.com>
+Message-ID: <90326f110811280239l7ba009c0xa5d7995e94fbe798@mail.gmail.com>
+
+Please ignore my previous message. I was referring to the module configparser.
+
+I also think a project specification for yabt can well be language
+independent. But it can also include a model implementation of
+core.translator such as concerning a parser for xml-based rule tables.
+
+On 28/11/2008, Leo <fhaxbox66 at googlemail.com> wrote:
+> Are you aware of the module optionparser in the standard library?
+> Maybe this is off topic... But I thought I mention it just in case.
+>
+>
+> On 26/11/2008, Michael Whapples <mwhapples at aim.com> wrote:
+>> I was just sitting here contemplating how a configuration module could
+>> actually know about all possible loaders. Its suddenly occured to me,
+>> setuptools has a way to define egg entry points to allow plugins (this
+>> is how hg.setuptools which I use for automatically creating YABT's
+>> manifest file).
+>>
+>> I was just saying it here so I have a record of this thought so that I
+>> have the info should I forget it. May be I should really have a blog for
+>> this sort of stuff?
+>>
+>> I also feel details like how loaders register with YABT.core's
+>> configuration module is an implementation matter and so should not go in
+>> the YABT design doc, but rather a YABT.core specification doc.
+>>
+>> My intention is that the YABT design doc should discuss YABT at a level
+>> where it really wouldn't matter what language you used to write it, as
+>> it should only say what YABT can do, not how it does it. May be I need
+>> to start writing some YABT.core and YABT.braille specifications.
+>>
+>> Michael Whapples
+>>
+>> On 26/11/08 10:48, Stefan Pankoke wrote:
+>>> OK. On the core and underlying translator subclasses (implementations)
+>>> don't know a good word for it:
+>>>
+>>> I don't know where you stand, i.e. if you have any concrete picture of
+>>> what the core should do. So I share my ideas at the risk of
+>>> duplication of work.
+>>>
+>>> I would anticipate that the core is to be seen as a layer between the
+>>> overarching app such as rst2brl, and the concrete implementation of
+>>> the translator (I guess we will have an implementation for xml-based
+>>> translation, another for json, yet another for CSV files, maybe
+>>> another one for an awk-based translator or whatever).
+>>>
+>>> So what should the core export to the overarching app?
+>>>
+>>> I think just a translator class which expects the caller to specify
+>>> which implementation to use, and optionally some settings overriding
+>>> the implementation's defaults, should be enough. The settings dict
+>>> could have general settings applicable to all implementations, and
+>>> some implementation-specific ones, i.e. the core will be unaware of
+>>> these. The core should, however, manage default settings, overriding,
+>>> handling of config files etc. Maybe the core could also provide
+>>> information to the app on the available implementations, xml files
+>>> etc. The settings could contain info on the xml file to use, the
+>>> translation grade etc.
+>>>
+>>> The core.translator should then export a method to actually call the
+>>> translator.
+>>>
+>>> What should such an apply method require in terms of arguments? I
+>>> guess at least an optional settings dictionary and a unicode string,
+>>> possibly a sequence of settings and strings in arbitrary order.
+>>>
+>>> Further to my previous e-mail: rule types (i.e. nodes) could check for
+>>> specific settings and even modify them through handler methods
+>>> accessing the settings dict.
+>>>
+>>> By the way: another example of translation (maybe you meant this)
+>>> would be: translation of a text into phonems for speech output (rather
+>>> than just preparing the text itself for speech output as done by orca
+>>> etc. when processing html pages...)
+>>>
+>>> Happy to discuss.
+>>>
+>>> On 26/11/2008, Michael Whapples<mwhapples at aim.com>  wrote:
+>>>
+>>>> Hello,
+>>>> Quick note to say I have just altered the setting for the reply to in
+>>>> the list admin panel. Hopefully now just doing reply will get it to the
+>>>> list.
+>>>>
+>>>> Michael Whapples
+>>>> _______________________________________________
+>>>> Yabt-devel mailing list
+>>>> Yabt-devel at lists.berlios.de
+>>>> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>>>>
+>>>>
+>>> _______________________________________________
+>>> Yabt-devel mailing list
+>>> Yabt-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>>>
+>>
+>
+
+
+From mwhapples at aim.com  Fri Nov 28 13:59:43 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Fri, 28 Nov 2008 12:59:43 +0000
+Subject: [Yabt-devel] YABT versioning and distribution
+In-Reply-To: <90326f110811270816o2b04faacga01d32b4b985461f@mail.gmail.com>
+References: <492DA598.8050303@aim.com>
+	<90326f110811270816o2b04faacga01d32b4b985461f@mail.gmail.com>
+Message-ID: <492FEB3F.8060009@aim.com>
+
+Hello,
+I am trying to get up to date with my emails.
+
+Setuptools:
+My reasoning of setuptools over distutils:
+* Setuptools can manage dependencies for YABT (if any). If YABT was to 
+be split into YABT.core and an implementation(s), then the 
+implementation(s) will require YABT.core if they are distributed in 
+separate egg files. Also this assists developers using YABT for a task 
+in their applications (eg. if I structured BrlTex correct to use 
+setuptools then it could add YABT as a dependency).
+* Setuptools and plugins for setuptools can provide file tracking. I 
+mean that you don't need to create the manifest file to specify 
+additional files to be included in source distributions, so long as they 
+exist in the repository then setuptools (or for mercurial the 
+hg.setuptools plug in) will automatically create the manifest file for you.
+* version management. Setuptools will allow multiple version of YABT to 
+be installed and the correct version to be used in applications.
+* Entry points to support plugins. This feature allows developers to 
+specify entry points in their egg files and setuptools automatically 
+manages this. See how hg.setuptools is done as a plugin for setuptools, 
+it only requires the user to install hg.setuptools for setuptools to 
+support mercurial repositories (no configuration required).
+
+I am sure that there may be other advantages I have just missed. I also 
+will admit setuptools does have its problems (no obvious way to 
+uninstall packages, etc) so I am willing to look at alternatives if 
+anyone can suggest better.
+
+Now for those versioning questions:
+Forest looks like it would solve YABT's requirements, but I still have 
+some questions in my mind as to how or what things are for (eg. does the 
+server need the forest extension, does every person using the repository 
+need the forest extension, what happens if they don't have it if it is 
+needed, what are the snapshot files for, etc). The other thing is that 
+on the forest extension's page there is a link to a proposal for adding 
+module support to mercurial. Unfortunately there is no clue as to when 
+this might happen. An interesting thing I do notice is that git does 
+seem to have a submodules system, might we be better served by git 
+(there is a git setuptools plugin)? It also comes back to the question, 
+should YABT.core be a separate egg to a YABT implementation made by the 
+YABT project? Creating it as one egg does solve the issue of mercurial 
+and the separation can still be achieved with python packages inside one 
+egg, but separating into different packages would show how 
+implementations should be done by external developers.
+
+As for naming the implementation packages, I selected YABT.braille as I 
+want somewhere YABT to be obvious as to what it can be used for, rather 
+than a library which looks so arbitary you can't really work out what it 
+does. May be I was skipping a layer when thinking this, the people 
+deciding to use a YABT implementation is not a end user, but a developer 
+who hopefully can understand what YABT's potential is and doesn't need 
+uses spelling out. Those developers using YABT in their application are 
+the ones making YABT fit a users actual needs.
+
+I feel some of these distribution questions should be answered before 
+progressing with YABT (except for making that YABT-2.0b2 release) as if 
+a restructure of the repository is needed I don't want to have to do it 
+in the midst of developing YABT and potentially having work flow 
+severely disrupted.
+
+Michael Whapples
+
+On 27/11/08 16:16, Leo wrote:
+> I don't have any views nor knowledge on this. Except that I find
+> braille too specific a name for the implementation package. I don't
+> see anything braille-specific in it let alone the xml-table. So I
+> suggest as a subpackage name something like 'parsers' with further
+> subpackages such as 'xmltable', 'jsontable' etc. Or you rename Braille
+> to 'xmltable'. Otherwise, no one will believe that yabt can be used
+> for other purposes.
+>
+> Those who don't rely on psyco will have very few dependencies that
+> setuptools could facilitate to handle. Sorry, but I have very little
+> experience with setuptools. You may wish to post your question in the
+> setuptools users list. From my vantage point yabt could live without
+> setuptools for quite some time. But with setuptools it will be much
+> mor elegant, I know.
+>
+>
+>
+> On 26/11/2008, Michael Whapples<mwhapples at aim.com>  wrote:
+>    
+>> Hello,
+>> Firstly notes about version numbers. I said earlier I fall on the side
+>> of the date for development builds, that I am now reconsidering. Problem
+>> being the date given is for when the build is done, not when the commit
+>> into the repository is done (IE. if I build immediately after committing
+>> revision 66 on 2008-11-26 but you were to build revision 65 on the
+>> following day (2008-11-27) then according to version numbers you have
+>> the newer version where as I in fact have the later committed version).
+>> May be I will just have to go with customising hgversion.
+>>
+>> Another problem I am hitting is that hg.setuptools and probably
+>> hgversion only work when at the top level directory in mercurial. It
+>> seems like one distribution per repository (I can see the sense).
+>> Question goes, is there a way to split up one distribution in setup.py,
+>> so it produces two eggs (one for YABT.core and one for YABT.braille).
+>> May be I will just have to resort to using the manifest files. The
+>> alternative is if there is a way to cluster more than one repository
+>> inside a repository. I can't remember exactly what the forest extension
+>> does for mercurial but it does something to do with clustering
+>> repositories (either making multiple repos appear as one or hopefully
+>> one contain multiple repos). I will try and hunt it out. SVN didn't have
+>> this problem, but I feel it did have other problems that DVCs solve.
+>>
+>> Michael Whapples
+>> _______________________________________________
+>> Yabt-devel mailing list
+>> Yabt-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>>
+>>      
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081128/ff5edd24/attachment.html>
+
+From mwhapples at aim.com  Fri Nov 28 14:24:37 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Fri, 28 Nov 2008 13:24:37 +0000
+Subject: [Yabt-devel] YABT-2.0b2
+Message-ID: <492FF115.9090504@aim.com>
+
+Hello,
+I really want to get YABT-2.0b2 pushed out. It shouldn't change much 
+from what it is. It really is a marker point in development.
+
+Particular points up for discussion/action:
+* That XML format... I feel it could be improved so much. particular 
+points for alteration are:
+input class - Should this be an element? I feel this could become an 
+attribute of rule. Also should I remove the limit of input class being 
+just an int? Initial reason was done in YABT-1.0 for performance, but we 
+now are doing less state checks so performance impact should be less now.
+final state - The same questions as input class.
+Context types - should the context type name become an attribute of the 
+context elements (bfcontext and afcontext)? This then removes the 2 
+character limit for type names, and names could be more meaningful, eg. 
+always instead of ^a.
+
+As for the question of supporting control characters like form feed, my 
+mind is not settled on that. Whilst things like form feed should really 
+be the responsibility of applications, what about lazy text translation 
+systems such as YABT_translate command? Also more importantly, I feel 
+that context strings should support these control characters, as whilst 
+the controlling app may handle the actual form feed, it possibly would 
+want to tell YABT this translation happens at the end of a page. Whether 
+the braille code (or other translation) actually has any differentce 
+should not be of any concern to the application.
+
+My feeling is that the XML change should happen, whether before or after 
+YABT-2.0b2 I don't mind.
+
+Michael Whapples
+
+
+From fhaxbox66 at googlemail.com  Fri Nov 28 14:49:59 2008
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Fri, 28 Nov 2008 14:49:59 +0100
+Subject: [Yabt-devel] YABT versioning and distribution
+In-Reply-To: <492FEB3F.8060009@aim.com>
+References: <492DA598.8050303@aim.com>
+	<90326f110811270816o2b04faacga01d32b4b985461f@mail.gmail.com>
+	<492FEB3F.8060009@aim.com>
+Message-ID: <90326f110811280549o1948ddf4pbcdeb3794f30b4d4@mail.gmail.com>
+
+I must admit I do not currently anticipate a huge demand on the part
+of developers to have separate packages for the core and an xml-based
+implementation. Of course I would be convinced by some evidence with
+similar projects. But off hand I would say most people would be happy
+with an integral package of both core and some useful implementations.
+So nested repositories appear to me a luxury if not superfluous at
+this stage. Look at projects like numpy, scipy and indeed docutils
+which ship with all kinds of packages and subpackages in a single
+distribution and I haven't heard of any plans to move towards nested
+repositories. To the contrary: Sphinx is a good example of a
+substantial extension / implementation of docutils and it is used as
+from Python 2.6 and 3.0 as the standard Python documentation tool. Or
+have a look at rst2pdf which also builds on docutils rather than just
+docutils.core or whatever might be considered a useful subset to be
+released separately.
+
+That said, I certainly think that nested repositories could have
+important advantages. But I perceive a risk of being cide-tracked by
+all these issues even way before the first reasonably stable
+implementation of yabt is in sight. By the way, my fealing is that a
+considerable portion of yabt would be replaced by new code. So maybe a
+version 3.0 could make sense rather than coercing this substantial
+rewrite between v2beta2 and v2.0final.
+
+One of my favorite English sayings is: "Let's cross that bridge when
+we come to it.". And many bridges can be avoided just by staying away
+from the forest.
+
+
+On 28/11/2008, Michael Whapples <mwhapples at aim.com> wrote:
+> Hello,
+> I am trying to get up to date with my emails.
+>
+> Setuptools:
+> My reasoning of setuptools over distutils:
+> * Setuptools can manage dependencies for YABT (if any). If YABT was to
+> be split into YABT.core and an implementation(s), then the
+> implementation(s) will require YABT.core if they are distributed in
+> separate egg files. Also this assists developers using YABT for a task
+> in their applications (eg. if I structured BrlTex correct to use
+> setuptools then it could add YABT as a dependency).
+> * Setuptools and plugins for setuptools can provide file tracking. I
+> mean that you don't need to create the manifest file to specify
+> additional files to be included in source distributions, so long as they
+> exist in the repository then setuptools (or for mercurial the
+> hg.setuptools plug in) will automatically create the manifest file for you.
+> * version management. Setuptools will allow multiple version of YABT to
+> be installed and the correct version to be used in applications.
+> * Entry points to support plugins. This feature allows developers to
+> specify entry points in their egg files and setuptools automatically
+> manages this. See how hg.setuptools is done as a plugin for setuptools,
+> it only requires the user to install hg.setuptools for setuptools to
+> support mercurial repositories (no configuration required).
+>
+> I am sure that there may be other advantages I have just missed. I also
+> will admit setuptools does have its problems (no obvious way to
+> uninstall packages, etc) so I am willing to look at alternatives if
+> anyone can suggest better.
+>
+> Now for those versioning questions:
+> Forest looks like it would solve YABT's requirements, but I still have
+> some questions in my mind as to how or what things are for (eg. does the
+> server need the forest extension, does every person using the repository
+> need the forest extension, what happens if they don't have it if it is
+> needed, what are the snapshot files for, etc). The other thing is that
+> on the forest extension's page there is a link to a proposal for adding
+> module support to mercurial. Unfortunately there is no clue as to when
+> this might happen. An interesting thing I do notice is that git does
+> seem to have a submodules system, might we be better served by git
+> (there is a git setuptools plugin)? It also comes back to the question,
+> should YABT.core be a separate egg to a YABT implementation made by the
+> YABT project? Creating it as one egg does solve the issue of mercurial
+> and the separation can still be achieved with python packages inside one
+> egg, but separating into different packages would show how
+> implementations should be done by external developers.
+>
+> As for naming the implementation packages, I selected YABT.braille as I
+> want somewhere YABT to be obvious as to what it can be used for, rather
+> than a library which looks so arbitary you can't really work out what it
+> does. May be I was skipping a layer when thinking this, the people
+> deciding to use a YABT implementation is not a end user, but a developer
+> who hopefully can understand what YABT's potential is and doesn't need
+> uses spelling out. Those developers using YABT in their application are
+> the ones making YABT fit a users actual needs.
+>
+> I feel some of these distribution questions should be answered before
+> progressing with YABT (except for making that YABT-2.0b2 release) as if
+> a restructure of the repository is needed I don't want to have to do it
+> in the midst of developing YABT and potentially having work flow
+> severely disrupted.
+>
+> Michael Whapples
+>
+> On 27/11/08 16:16, Leo wrote:
+>> I don't have any views nor knowledge on this. Except that I find
+>> braille too specific a name for the implementation package. I don't
+>> see anything braille-specific in it let alone the xml-table. So I
+>> suggest as a subpackage name something like 'parsers' with further
+>> subpackages such as 'xmltable', 'jsontable' etc. Or you rename Braille
+>> to 'xmltable'. Otherwise, no one will believe that yabt can be used
+>> for other purposes.
+>>
+>> Those who don't rely on psyco will have very few dependencies that
+>> setuptools could facilitate to handle. Sorry, but I have very little
+>> experience with setuptools. You may wish to post your question in the
+>> setuptools users list. From my vantage point yabt could live without
+>> setuptools for quite some time. But with setuptools it will be much
+>> mor elegant, I know.
+>>
+>>
+>>
+>> On 26/11/2008, Michael Whapples<mwhapples at aim.com>  wrote:
+>>
+>>> Hello,
+>>> Firstly notes about version numbers. I said earlier I fall on the side
+>>> of the date for development builds, that I am now reconsidering. Problem
+>>> being the date given is for when the build is done, not when the commit
+>>> into the repository is done (IE. if I build immediately after committing
+>>> revision 66 on 2008-11-26 but you were to build revision 65 on the
+>>> following day (2008-11-27) then according to version numbers you have
+>>> the newer version where as I in fact have the later committed version).
+>>> May be I will just have to go with customising hgversion.
+>>>
+>>> Another problem I am hitting is that hg.setuptools and probably
+>>> hgversion only work when at the top level directory in mercurial. It
+>>> seems like one distribution per repository (I can see the sense).
+>>> Question goes, is there a way to split up one distribution in setup.py,
+>>> so it produces two eggs (one for YABT.core and one for YABT.braille).
+>>> May be I will just have to resort to using the manifest files. The
+>>> alternative is if there is a way to cluster more than one repository
+>>> inside a repository. I can't remember exactly what the forest extension
+>>> does for mercurial but it does something to do with clustering
+>>> repositories (either making multiple repos appear as one or hopefully
+>>> one contain multiple repos). I will try and hunt it out. SVN didn't have
+>>> this problem, but I feel it did have other problems that DVCs solve.
+>>>
+>>> Michael Whapples
+>>> _______________________________________________
+>>> Yabt-devel mailing list
+>>> Yabt-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>>>
+>>>
+>> _______________________________________________
+>> Yabt-devel mailing list
+>> Yabt-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>>
+>
+
+
+From mwhapples at aim.com  Fri Nov 28 15:50:54 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Fri, 28 Nov 2008 14:50:54 +0000
+Subject: [Yabt-devel] YABT versioning and distribution
+In-Reply-To: <90326f110811280549o1948ddf4pbcdeb3794f30b4d4@mail.gmail.com>
+References: <492DA598.8050303@aim.com>	<90326f110811270816o2b04faacga01d32b4b985461f@mail.gmail.com>	<492FEB3F.8060009@aim.com>
+	<90326f110811280549o1948ddf4pbcdeb3794f30b4d4@mail.gmail.com>
+Message-ID: <4930054E.1040601@aim.com>
+
+Yes I agree with that, it makes things simple and at the moment YABT is 
+not so big that it would be considered unreasonable for people to have 
+to download the entire distribution when they may only be interested in 
+one part.
+
+As for whether I should be looking at moving version numbers up to 3.0, 
+I am to be convinced. The following should probably be added to the YABT 
+design docs:
+Version numbers run as follows:
+* Major numbers indicate very significant changes. The expectation is 
+that YABT across major number changes will make most (if not all) 
+applications using it require a modified version to use the other 
+version of YABT. EG. YABT-1 applications will need to be modified to use 
+YABT-2.
+* Minor version changes may provide new features and may change the API 
+slightly. Internals may change and so may affect developers of 
+implementations, but external applications should be impacted minimally 
+(changes may be required but should be avoided as much as possible, or 
+the old API should be maintained). EG. An external application such as 
+BrlTex if supporting YABT-2.0 should work on YABT-2.1, but if it was 
+written for YABT-2.1 (and made use of all features) it might not work on 
+YABT-2.0. No such guarantee is given to implementation developers on 
+these version changes.
+* Revision numbers should maintain the API for all systems, external 
+applications and implementations. New methods can be added to add 
+features but existing ones must remain. EG. Anything requiring 
+YABT-2.0.0 (normally shortened to YABT-2.0) should work on YABT-2.0.1, 
+but anything aimed at YABT-2.0.1 may not work on YABT-2.0.0.
+* The update version is restricted to purely bug fixes and optimisations 
+which alter no expected output or documentation updates. By the term 
+expected output I mean what somebody expects to be produced not what is 
+actually produced (this is to cover bug fixes where existing output may 
+not be as expected). Compatibility runs both ways on updates, external 
+applications and implementations may use any update version in the 
+YABT-2.0.0 without concern for which the developer used.
+
+The only exception to the above is development versions. Almost anything 
+is permitted, so long as it falls inside the restrictions of the version 
+change, these until it reaches a stage where the actual release is being 
+finally targeted at which point it should become an RC (release 
+candidate) where only bug fixes should be made. May be I should specify 
+this more by having alpha and beta policies, but I probably jumped 
+forward too far with YABT-2.0 being beta now.
+
+So under that scheme YABT-2.0 is still very much for being defined. Also 
+I question how much code rewrite is really required (or at least how 
+much API change is needed). This probably is the next thing to work out.
+
+Michael Whapples
+
+On 28/11/08 13:49, Leo wrote:
+> I must admit I do not currently anticipate a huge demand on the part
+> of developers to have separate packages for the core and an xml-based
+> implementation. Of course I would be convinced by some evidence with
+> similar projects. But off hand I would say most people would be happy
+> with an integral package of both core and some useful implementations.
+> So nested repositories appear to me a luxury if not superfluous at
+> this stage. Look at projects like numpy, scipy and indeed docutils
+> which ship with all kinds of packages and subpackages in a single
+> distribution and I haven't heard of any plans to move towards nested
+> repositories. To the contrary: Sphinx is a good example of a
+> substantial extension / implementation of docutils and it is used as
+> from Python 2.6 and 3.0 as the standard Python documentation tool. Or
+> have a look at rst2pdf which also builds on docutils rather than just
+> docutils.core or whatever might be considered a useful subset to be
+> released separately.
+>
+> That said, I certainly think that nested repositories could have
+> important advantages. But I perceive a risk of being cide-tracked by
+> all these issues even way before the first reasonably stable
+> implementation of yabt is in sight. By the way, my fealing is that a
+> considerable portion of yabt would be replaced by new code. So maybe a
+> version 3.0 could make sense rather than coercing this substantial
+> rewrite between v2beta2 and v2.0final.
+>
+> One of my favorite English sayings is: "Let's cross that bridge when
+> we come to it.". And many bridges can be avoided just by staying away
+> from the forest.
+>
+>
+> On 28/11/2008, Michael Whapples<mwhapples at aim.com>  wrote:
+>    
+>> Hello,
+>> I am trying to get up to date with my emails.
+>>
+>> Setuptools:
+>> My reasoning of setuptools over distutils:
+>> * Setuptools can manage dependencies for YABT (if any). If YABT was to
+>> be split into YABT.core and an implementation(s), then the
+>> implementation(s) will require YABT.core if they are distributed in
+>> separate egg files. Also this assists developers using YABT for a task
+>> in their applications (eg. if I structured BrlTex correct to use
+>> setuptools then it could add YABT as a dependency).
+>> * Setuptools and plugins for setuptools can provide file tracking. I
+>> mean that you don't need to create the manifest file to specify
+>> additional files to be included in source distributions, so long as they
+>> exist in the repository then setuptools (or for mercurial the
+>> hg.setuptools plug in) will automatically create the manifest file for you.
+>> * version management. Setuptools will allow multiple version of YABT to
+>> be installed and the correct version to be used in applications.
+>> * Entry points to support plugins. This feature allows developers to
+>> specify entry points in their egg files and setuptools automatically
+>> manages this. See how hg.setuptools is done as a plugin for setuptools,
+>> it only requires the user to install hg.setuptools for setuptools to
+>> support mercurial repositories (no configuration required).
+>>
+>> I am sure that there may be other advantages I have just missed. I also
+>> will admit setuptools does have its problems (no obvious way to
+>> uninstall packages, etc) so I am willing to look at alternatives if
+>> anyone can suggest better.
+>>
+>> Now for those versioning questions:
+>> Forest looks like it would solve YABT's requirements, but I still have
+>> some questions in my mind as to how or what things are for (eg. does the
+>> server need the forest extension, does every person using the repository
+>> need the forest extension, what happens if they don't have it if it is
+>> needed, what are the snapshot files for, etc). The other thing is that
+>> on the forest extension's page there is a link to a proposal for adding
+>> module support to mercurial. Unfortunately there is no clue as to when
+>> this might happen. An interesting thing I do notice is that git does
+>> seem to have a submodules system, might we be better served by git
+>> (there is a git setuptools plugin)? It also comes back to the question,
+>> should YABT.core be a separate egg to a YABT implementation made by the
+>> YABT project? Creating it as one egg does solve the issue of mercurial
+>> and the separation can still be achieved with python packages inside one
+>> egg, but separating into different packages would show how
+>> implementations should be done by external developers.
+>>
+>> As for naming the implementation packages, I selected YABT.braille as I
+>> want somewhere YABT to be obvious as to what it can be used for, rather
+>> than a library which looks so arbitary you can't really work out what it
+>> does. May be I was skipping a layer when thinking this, the people
+>> deciding to use a YABT implementation is not a end user, but a developer
+>> who hopefully can understand what YABT's potential is and doesn't need
+>> uses spelling out. Those developers using YABT in their application are
+>> the ones making YABT fit a users actual needs.
+>>
+>> I feel some of these distribution questions should be answered before
+>> progressing with YABT (except for making that YABT-2.0b2 release) as if
+>> a restructure of the repository is needed I don't want to have to do it
+>> in the midst of developing YABT and potentially having work flow
+>> severely disrupted.
+>>
+>> Michael Whapples
+>>
+>> On 27/11/08 16:16, Leo wrote:
+>>      
+>>> I don't have any views nor knowledge on this. Except that I find
+>>> braille too specific a name for the implementation package. I don't
+>>> see anything braille-specific in it let alone the xml-table. So I
+>>> suggest as a subpackage name something like 'parsers' with further
+>>> subpackages such as 'xmltable', 'jsontable' etc. Or you rename Braille
+>>> to 'xmltable'. Otherwise, no one will believe that yabt can be used
+>>> for other purposes.
+>>>
+>>> Those who don't rely on psyco will have very few dependencies that
+>>> setuptools could facilitate to handle. Sorry, but I have very little
+>>> experience with setuptools. You may wish to post your question in the
+>>> setuptools users list. From my vantage point yabt could live without
+>>> setuptools for quite some time. But with setuptools it will be much
+>>> mor elegant, I know.
+>>>
+>>>
+>>>
+>>> On 26/11/2008, Michael Whapples<mwhapples at aim.com>   wrote:
+>>>
+>>>        
+>>>> Hello,
+>>>> Firstly notes about version numbers. I said earlier I fall on the side
+>>>> of the date for development builds, that I am now reconsidering. Problem
+>>>> being the date given is for when the build is done, not when the commit
+>>>> into the repository is done (IE. if I build immediately after committing
+>>>> revision 66 on 2008-11-26 but you were to build revision 65 on the
+>>>> following day (2008-11-27) then according to version numbers you have
+>>>> the newer version where as I in fact have the later committed version).
+>>>> May be I will just have to go with customising hgversion.
+>>>>
+>>>> Another problem I am hitting is that hg.setuptools and probably
+>>>> hgversion only work when at the top level directory in mercurial. It
+>>>> seems like one distribution per repository (I can see the sense).
+>>>> Question goes, is there a way to split up one distribution in setup.py,
+>>>> so it produces two eggs (one for YABT.core and one for YABT.braille).
+>>>> May be I will just have to resort to using the manifest files. The
+>>>> alternative is if there is a way to cluster more than one repository
+>>>> inside a repository. I can't remember exactly what the forest extension
+>>>> does for mercurial but it does something to do with clustering
+>>>> repositories (either making multiple repos appear as one or hopefully
+>>>> one contain multiple repos). I will try and hunt it out. SVN didn't have
+>>>> this problem, but I feel it did have other problems that DVCs solve.
+>>>>
+>>>> Michael Whapples
+>>>> _______________________________________________
+>>>> Yabt-devel mailing list
+>>>> Yabt-devel at lists.berlios.de
+>>>> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>>>>
+>>>>
+>>>>          
+>>> _______________________________________________
+>>> Yabt-devel mailing list
+>>> Yabt-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>>>
+>>>        
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081128/a0836d9c/attachment.html>
+
+From fhaxbox66 at googlemail.com  Fri Nov 28 17:26:17 2008
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Fri, 28 Nov 2008 17:26:17 +0100
+Subject: [Yabt-devel] YABT-2.0b2
+In-Reply-To: <492FF115.9090504@aim.com>
+References: <492FF115.9090504@aim.com>
+Message-ID: <90326f110811280826i5ce50877h300abccefa09b767@mail.gmail.com>
+
+I think it's a good idea to release 2.0b2 as soon as possible if only
+to open up our minds for the big bang that the new architecture will
+mean. So I tend to making only the urgent changes, leave the xml
+structure as it is stable.
+
+On 3.0 or 2.1: you are right: everything will depend on how much the
+API will change. And on that I have no clou either. So let's cross
+that bridge...
+
+On form feed: you are right: context strings should be able to contain
+anything including form feed. But even if xml does not allow to have
+these characters in attributes, there should be better workarounds
+then children. I could think of escape chars in strings, or certain
+flags. I think it is really really worthwhile doublechecking if xml
+really doesn't allow any utf8 char. json does!
+
+  Please release 2.0b2 asap so we get ready for the big bang and make
+yabt quickly the most compelling tool in its field...
+
+By the way: Have you received any feedback from yabt users, if any? I
+am optimistic you will have a lot once yabt works with end user apps.
+
+It may be useful to look at a tool to convert openoffice docs into
+braille. there is a package on the pypi making available the xml
+structure of oo docs to Python... You see my point?
+
+On 28/11/2008, Michael Whapples <mwhapples at aim.com> wrote:
+> Hello,
+> I really want to get YABT-2.0b2 pushed out. It shouldn't change much
+> from what it is. It really is a marker point in development.
+>
+> Particular points up for discussion/action:
+> * That XML format... I feel it could be improved so much. particular
+> points for alteration are:
+> input class - Should this be an element? I feel this could become an
+> attribute of rule. Also should I remove the limit of input class being
+> just an int? Initial reason was done in YABT-1.0 for performance, but we
+> now are doing less state checks so performance impact should be less now.
+> final state - The same questions as input class.
+> Context types - should the context type name become an attribute of the
+> context elements (bfcontext and afcontext)? This then removes the 2
+> character limit for type names, and names could be more meaningful, eg.
+> always instead of ^a.
+>
+> As for the question of supporting control characters like form feed, my
+> mind is not settled on that. Whilst things like form feed should really
+> be the responsibility of applications, what about lazy text translation
+> systems such as YABT_translate command? Also more importantly, I feel
+> that context strings should support these control characters, as whilst
+> the controlling app may handle the actual form feed, it possibly would
+> want to tell YABT this translation happens at the end of a page. Whether
+> the braille code (or other translation) actually has any differentce
+> should not be of any concern to the application.
+>
+> My feeling is that the XML change should happen, whether before or after
+> YABT-2.0b2 I don't mind.
+>
+> Michael Whapples
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>
+
+
+From mwhapples at aim.com  Fri Nov 28 19:59:50 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Fri, 28 Nov 2008 18:59:50 +0000
+Subject: [Yabt-devel] YABT-2.0b2
+In-Reply-To: <90326f110811280826i5ce50877h300abccefa09b767@mail.gmail.com>
+References: <492FF115.9090504@aim.com>
+	<90326f110811280826i5ce50877h300abccefa09b767@mail.gmail.com>
+Message-ID: <49303FA6.60607@aim.com>
+
+The only possible changes I would want to make to YABT-2.0b2 excluding 
+XML stuff is descriptions for YABT in the setup file. Currently it is 
+very Braille specific eg. YABT (Yet another braille translator) is the 
+short description and the long description is equally bBraille 
+orientated only hinting at other uses.
+
+If I was to permit XML changes (keeping backward compatability) would be 
+to add an include statement, but I don't know at this moment how much 
+work it might take to really implement it. As time is unknown, I would 
+give it the thumbs down for YABT-2.0b2.
+
+I am fairly certain on the XML limitation. I asked someone I know about 
+it, I did a google search and for the version of XML the python parsers 
+support it just won't take it. It isn't UTF8 characters which are the 
+problem, its these control characters in ASCII (eg. form feed, there are 
+others but this is one I really know about) and some other unicode 
+characters not used much. This is a limitation of the XML version used, 
+it is fixed by other XML versions (I mean by XML versions the actual XML 
+specification as defined at the top of documents eg.
+<?xml version="1.0" ?>
+not the languages implementation of parsers). The only fixes I could 
+find suggested online were to use a child element as I have, use the 
+newer version of XML (except python doesn't support this) or create some 
+internal mark up (eg. the python \uXXXX notation in unicode strings). I 
+opted for the child element as this then fitted with XML notation. If 
+you need convincing about this lack of support, try creating XML using 
+the DOM packages (eg. minidom) and then use the toxml method to create 
+the XML string and then parse that, it will fail if you inserted a form 
+feed when creating a #text node in forming the original DOM.
+
+Michael Whapples
+
+On 28/11/08 16:26, Leo wrote:
+> I think it's a good idea to release 2.0b2 as soon as possible if only
+> to open up our minds for the big bang that the new architecture will
+> mean. So I tend to making only the urgent changes, leave the xml
+> structure as it is stable.
+>
+> On 3.0 or 2.1: you are right: everything will depend on how much the
+> API will change. And on that I have no clou either. So let's cross
+> that bridge...
+>
+> On form feed: you are right: context strings should be able to contain
+> anything including form feed. But even if xml does not allow to have
+> these characters in attributes, there should be better workarounds
+> then children. I could think of escape chars in strings, or certain
+> flags. I think it is really really worthwhile doublechecking if xml
+> really doesn't allow any utf8 char. json does!
+>
+>    Please release 2.0b2 asap so we get ready for the big bang and make
+> yabt quickly the most compelling tool in its field...
+>
+> By the way: Have you received any feedback from yabt users, if any? I
+> am optimistic you will have a lot once yabt works with end user apps.
+>
+> It may be useful to look at a tool to convert openoffice docs into
+> braille. there is a package on the pypi making available the xml
+> structure of oo docs to Python... You see my point?
+>
+> On 28/11/2008, Michael Whapples<mwhapples at aim.com>  wrote:
+>    
+>> Hello,
+>> I really want to get YABT-2.0b2 pushed out. It shouldn't change much
+>> from what it is. It really is a marker point in development.
+>>
+>> Particular points up for discussion/action:
+>> * That XML format... I feel it could be improved so much. particular
+>> points for alteration are:
+>> input class - Should this be an element? I feel this could become an
+>> attribute of rule. Also should I remove the limit of input class being
+>> just an int? Initial reason was done in YABT-1.0 for performance, but we
+>> now are doing less state checks so performance impact should be less now.
+>> final state - The same questions as input class.
+>> Context types - should the context type name become an attribute of the
+>> context elements (bfcontext and afcontext)? This then removes the 2
+>> character limit for type names, and names could be more meaningful, eg.
+>> always instead of ^a.
+>>
+>> As for the question of supporting control characters like form feed, my
+>> mind is not settled on that. Whilst things like form feed should really
+>> be the responsibility of applications, what about lazy text translation
+>> systems such as YABT_translate command? Also more importantly, I feel
+>> that context strings should support these control characters, as whilst
+>> the controlling app may handle the actual form feed, it possibly would
+>> want to tell YABT this translation happens at the end of a page. Whether
+>> the braille code (or other translation) actually has any differentce
+>> should not be of any concern to the application.
+>>
+>> My feeling is that the XML change should happen, whether before or after
+>> YABT-2.0b2 I don't mind.
+>>
+>> Michael Whapples
+>> _______________________________________________
+>> Yabt-devel mailing list
+>> Yabt-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>>
+>>      
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081128/1bb4d127/attachment.html>
+
+From fhaxbox66 at googlemail.com  Fri Nov 28 21:02:34 2008
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Fri, 28 Nov 2008 21:02:34 +0100
+Subject: [Yabt-devel] YABT-2.0b2
+In-Reply-To: <49303FA6.60607@aim.com>
+References: <492FF115.9090504@aim.com>
+	<90326f110811280826i5ce50877h300abccefa09b767@mail.gmail.com>
+	<49303FA6.60607@aim.com>
+Message-ID: <90326f110811281202xcbb9f96u7135b8c48218fec7@mail.gmail.com>
+
+Unless newer Python versions do not support newer xml specifications,
+I'm already convinced that form feed (and probably other chars) are
+forbidden in xml files.
+
+However, apart from an esthetic aspect (= better reflecting the limits
+of the xml specification in the tree structure) I do not currently see
+any advantage of your choice over the unicode-like notation. The
+latter would probably yield faster execution as less nodes have to be
+processed. The tables become smaller, the code also is smaller as you
+don't need to handle the special nodes that are only there to store
+meta info on form feed etc. The usual python code that handles context
+strings by comparing them with the relevant xml attributes could be
+used because the unicode notation would be consistent across the board
+such that string comparisons etc. would work smoothly.
+
+I wonder if there is something I have overlooked. If not, I would
+probably vote for the \uxxx notation in future versions. Another
+advantage of the latter would be that authoring tables would probably
+be less painful.
+
+Happy to discuss.
+
+On 28/11/2008, Michael Whapples <mwhapples at aim.com> wrote:
+> The only possible changes I would want to make to YABT-2.0b2 excluding
+> XML stuff is descriptions for YABT in the setup file. Currently it is
+> very Braille specific eg. YABT (Yet another braille translator) is the
+> short description and the long description is equally bBraille
+> orientated only hinting at other uses.
+>
+> If I was to permit XML changes (keeping backward compatability) would be
+> to add an include statement, but I don't know at this moment how much
+> work it might take to really implement it. As time is unknown, I would
+> give it the thumbs down for YABT-2.0b2.
+>
+> I am fairly certain on the XML limitation. I asked someone I know about
+> it, I did a google search and for the version of XML the python parsers
+> support it just won't take it. It isn't UTF8 characters which are the
+> problem, its these control characters in ASCII (eg. form feed, there are
+> others but this is one I really know about) and some other unicode
+> characters not used much. This is a limitation of the XML version used,
+> it is fixed by other XML versions (I mean by XML versions the actual XML
+> specification as defined at the top of documents eg.
+> <?xml version="1.0" ?>
+> not the languages implementation of parsers). The only fixes I could
+> find suggested online were to use a child element as I have, use the
+> newer version of XML (except python doesn't support this) or create some
+> internal mark up (eg. the python \uXXXX notation in unicode strings). I
+> opted for the child element as this then fitted with XML notation. If
+> you need convincing about this lack of support, try creating XML using
+> the DOM packages (eg. minidom) and then use the toxml method to create
+> the XML string and then parse that, it will fail if you inserted a form
+> feed when creating a #text node in forming the original DOM.
+>
+> Michael Whapples
+>
+> On 28/11/08 16:26, Leo wrote:
+>> I think it's a good idea to release 2.0b2 as soon as possible if only
+>> to open up our minds for the big bang that the new architecture will
+>> mean. So I tend to making only the urgent changes, leave the xml
+>> structure as it is stable.
+>>
+>> On 3.0 or 2.1: you are right: everything will depend on how much the
+>> API will change. And on that I have no clou either. So let's cross
+>> that bridge...
+>>
+>> On form feed: you are right: context strings should be able to contain
+>> anything including form feed. But even if xml does not allow to have
+>> these characters in attributes, there should be better workarounds
+>> then children. I could think of escape chars in strings, or certain
+>> flags. I think it is really really worthwhile doublechecking if xml
+>> really doesn't allow any utf8 char. json does!
+>>
+>>    Please release 2.0b2 asap so we get ready for the big bang and make
+>> yabt quickly the most compelling tool in its field...
+>>
+>> By the way: Have you received any feedback from yabt users, if any? I
+>> am optimistic you will have a lot once yabt works with end user apps.
+>>
+>> It may be useful to look at a tool to convert openoffice docs into
+>> braille. there is a package on the pypi making available the xml
+>> structure of oo docs to Python... You see my point?
+>>
+>> On 28/11/2008, Michael Whapples<mwhapples at aim.com>  wrote:
+>>
+>>> Hello,
+>>> I really want to get YABT-2.0b2 pushed out. It shouldn't change much
+>>> from what it is. It really is a marker point in development.
+>>>
+>>> Particular points up for discussion/action:
+>>> * That XML format... I feel it could be improved so much. particular
+>>> points for alteration are:
+>>> input class - Should this be an element? I feel this could become an
+>>> attribute of rule. Also should I remove the limit of input class being
+>>> just an int? Initial reason was done in YABT-1.0 for performance, but we
+>>> now are doing less state checks so performance impact should be less now.
+>>> final state - The same questions as input class.
+>>> Context types - should the context type name become an attribute of the
+>>> context elements (bfcontext and afcontext)? This then removes the 2
+>>> character limit for type names, and names could be more meaningful, eg.
+>>> always instead of ^a.
+>>>
+>>> As for the question of supporting control characters like form feed, my
+>>> mind is not settled on that. Whilst things like form feed should really
+>>> be the responsibility of applications, what about lazy text translation
+>>> systems such as YABT_translate command? Also more importantly, I feel
+>>> that context strings should support these control characters, as whilst
+>>> the controlling app may handle the actual form feed, it possibly would
+>>> want to tell YABT this translation happens at the end of a page. Whether
+>>> the braille code (or other translation) actually has any differentce
+>>> should not be of any concern to the application.
+>>>
+>>> My feeling is that the XML change should happen, whether before or after
+>>> YABT-2.0b2 I don't mind.
+>>>
+>>> Michael Whapples
+>>> _______________________________________________
+>>> Yabt-devel mailing list
+>>> Yabt-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>>>
+>>>
+>> _______________________________________________
+>> Yabt-devel mailing list
+>> Yabt-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>>
+>
+
+
+From mwhapples at aim.com  Fri Nov 28 23:13:33 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Fri, 28 Nov 2008 22:13:33 +0000
+Subject: [Yabt-devel] YABT-2.0b2
+In-Reply-To: <90326f110811281202xcbb9f96u7135b8c48218fec7@mail.gmail.com>
+References: <492FF115.9090504@aim.com>	<90326f110811280826i5ce50877h300abccefa09b767@mail.gmail.com>	<49303FA6.60607@aim.com>
+	<90326f110811281202xcbb9f96u7135b8c48218fec7@mail.gmail.com>
+Message-ID: <49306D0D.9060509@aim.com>
+
+Hello,
+To confirm the problem of the form feed character I tried inserting the 
+character into an XML file (authoring by hand) using the notation &#x0c; 
+which is the XML way of representing characters by number but this still 
+fails when parsing (I was fairly sure of this, but I wanted to check).
+
+by using the \uXXXX notation we would need to handle this in YABT's 
+loader, as the python string representation when loaded would naturally 
+be u'\\u000c'. I couldn't actually say without trying, but I would 
+imagine doing this parsing would be slower as all strings would need 
+checking where as the <char> element code is only run when the parser 
+finds a <char> element. Other than the fact that it might feel more 
+natural to a table author as the \uXXXX notation is used elsewhere I 
+don't quite understand how you mean it would make things smoother (the 
+string comparisons, etc). It is the job of the loader to get around 
+these format specific issues, the current working is that the loader 
+upon encountering a <char> element replaces it with a python string of 
+that value (admittedly confusingly ord should be decimal rather than 
+hex, I probably should correct that).
+
+I think this really should be left until post YABT-2.0b2 before 
+adding/correcting.
+
+Michael Whapples
+
+On 28/11/08 20:02, Leo wrote:
+> Unless newer Python versions do not support newer xml specifications,
+> I'm already convinced that form feed (and probably other chars) are
+> forbidden in xml files.
+>
+> However, apart from an esthetic aspect (= better reflecting the limits
+> of the xml specification in the tree structure) I do not currently see
+> any advantage of your choice over the unicode-like notation. The
+> latter would probably yield faster execution as less nodes have to be
+> processed. The tables become smaller, the code also is smaller as you
+> don't need to handle the special nodes that are only there to store
+> meta info on form feed etc. The usual python code that handles context
+> strings by comparing them with the relevant xml attributes could be
+> used because the unicode notation would be consistent across the board
+> such that string comparisons etc. would work smoothly.
+>
+> I wonder if there is something I have overlooked. If not, I would
+> probably vote for the \uxxx notation in future versions. Another
+> advantage of the latter would be that authoring tables would probably
+> be less painful.
+>
+> Happy to discuss.
+>
+> On 28/11/2008, Michael Whapples<mwhapples at aim.com>  wrote:
+>    
+>> The only possible changes I would want to make to YABT-2.0b2 excluding
+>> XML stuff is descriptions for YABT in the setup file. Currently it is
+>> very Braille specific eg. YABT (Yet another braille translator) is the
+>> short description and the long description is equally bBraille
+>> orientated only hinting at other uses.
+>>
+>> If I was to permit XML changes (keeping backward compatability) would be
+>> to add an include statement, but I don't know at this moment how much
+>> work it might take to really implement it. As time is unknown, I would
+>> give it the thumbs down for YABT-2.0b2.
+>>
+>> I am fairly certain on the XML limitation. I asked someone I know about
+>> it, I did a google search and for the version of XML the python parsers
+>> support it just won't take it. It isn't UTF8 characters which are the
+>> problem, its these control characters in ASCII (eg. form feed, there are
+>> others but this is one I really know about) and some other unicode
+>> characters not used much. This is a limitation of the XML version used,
+>> it is fixed by other XML versions (I mean by XML versions the actual XML
+>> specification as defined at the top of documents eg.
+>> <?xml version="1.0" ?>
+>> not the languages implementation of parsers). The only fixes I could
+>> find suggested online were to use a child element as I have, use the
+>> newer version of XML (except python doesn't support this) or create some
+>> internal mark up (eg. the python \uXXXX notation in unicode strings). I
+>> opted for the child element as this then fitted with XML notation. If
+>> you need convincing about this lack of support, try creating XML using
+>> the DOM packages (eg. minidom) and then use the toxml method to create
+>> the XML string and then parse that, it will fail if you inserted a form
+>> feed when creating a #text node in forming the original DOM.
+>>
+>> Michael Whapples
+>>
+>> On 28/11/08 16:26, Leo wrote:
+>>      
+>>> I think it's a good idea to release 2.0b2 as soon as possible if only
+>>> to open up our minds for the big bang that the new architecture will
+>>> mean. So I tend to making only the urgent changes, leave the xml
+>>> structure as it is stable.
+>>>
+>>> On 3.0 or 2.1: you are right: everything will depend on how much the
+>>> API will change. And on that I have no clou either. So let's cross
+>>> that bridge...
+>>>
+>>> On form feed: you are right: context strings should be able to contain
+>>> anything including form feed. But even if xml does not allow to have
+>>> these characters in attributes, there should be better workarounds
+>>> then children. I could think of escape chars in strings, or certain
+>>> flags. I think it is really really worthwhile doublechecking if xml
+>>> really doesn't allow any utf8 char. json does!
+>>>
+>>>     Please release 2.0b2 asap so we get ready for the big bang and make
+>>> yabt quickly the most compelling tool in its field...
+>>>
+>>> By the way: Have you received any feedback from yabt users, if any? I
+>>> am optimistic you will have a lot once yabt works with end user apps.
+>>>
+>>> It may be useful to look at a tool to convert openoffice docs into
+>>> braille. there is a package on the pypi making available the xml
+>>> structure of oo docs to Python... You see my point?
+>>>
+>>> On 28/11/2008, Michael Whapples<mwhapples at aim.com>   wrote:
+>>>
+>>>        
+>>>> Hello,
+>>>> I really want to get YABT-2.0b2 pushed out. It shouldn't change much
+>>>> from what it is. It really is a marker point in development.
+>>>>
+>>>> Particular points up for discussion/action:
+>>>> * That XML format... I feel it could be improved so much. particular
+>>>> points for alteration are:
+>>>> input class - Should this be an element? I feel this could become an
+>>>> attribute of rule. Also should I remove the limit of input class being
+>>>> just an int? Initial reason was done in YABT-1.0 for performance, but we
+>>>> now are doing less state checks so performance impact should be less now.
+>>>> final state - The same questions as input class.
+>>>> Context types - should the context type name become an attribute of the
+>>>> context elements (bfcontext and afcontext)? This then removes the 2
+>>>> character limit for type names, and names could be more meaningful, eg.
+>>>> always instead of ^a.
+>>>>
+>>>> As for the question of supporting control characters like form feed, my
+>>>> mind is not settled on that. Whilst things like form feed should really
+>>>> be the responsibility of applications, what about lazy text translation
+>>>> systems such as YABT_translate command? Also more importantly, I feel
+>>>> that context strings should support these control characters, as whilst
+>>>> the controlling app may handle the actual form feed, it possibly would
+>>>> want to tell YABT this translation happens at the end of a page. Whether
+>>>> the braille code (or other translation) actually has any differentce
+>>>> should not be of any concern to the application.
+>>>>
+>>>> My feeling is that the XML change should happen, whether before or after
+>>>> YABT-2.0b2 I don't mind.
+>>>>
+>>>> Michael Whapples
+>>>> _______________________________________________
+>>>> Yabt-devel mailing list
+>>>> Yabt-devel at lists.berlios.de
+>>>> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>>>>
+>>>>
+>>>>          
+>>> _______________________________________________
+>>> Yabt-devel mailing list
+>>> Yabt-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>>>
+>>>        
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081128/c49782d8/attachment.html>
+
+From mwhapples at aim.com  Sat Nov 29 01:57:54 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Sat, 29 Nov 2008 00:57:54 +0000
+Subject: [Yabt-devel] Task for creating versioning number scheme created
+Message-ID: <49309392.5010709@aim.com>
+
+Hello,
+I feel this really needs to be sorted so I created a task in the task 
+manager to explain what needs to be done.
+
+The task is #4271 in YABT's task manager and is planned to be solved by 
+next Friday (although sooner would be better). Ideally the development 
+versions I feel should go like this:
+Repository commits are pre-release versions. The reason for this way 
+round is that should I find a bug with a previous version I can insert a 
+bug fix intermediate release (eg. if someone finds a problem with 
+YABT-2.0.0 but I have started development on YABT-2.0.1 then I can 
+create YABT-2.0.0update1 which would come before any development version 
+of YABT-2.0.1). If I were using post version development numbers then 
+how could I do this safely as in the previous example I would be working 
+on YABT-2.0.0rXX. Possibly it could be done if I studied in detail the 
+setuptools version rules (eg. if alphabetic order matters then may be I 
+could use patch instead of update in the version as p comes before r, 
+but this is working very close to the limit and a careless mistake could 
+find it failing). The only occasion I might want post release 
+development versions is for a maintainance branch.
+
+The reason all this comes up is I rather like the way hgversion works to 
+figure out all the version info from the repository (inspecting tags, 
+and if no repository is found then it assumes it must be a source 
+distribution in which case it uses PKG-info (or what ever the package 
+data file is which is included in source distributions)). Due to all 
+this figuring it out from the repository it obviously can't do 
+pre-release revision numbering as no tag exists for the up coming 
+release, so it just uses post-release revisions. If the patch rather 
+than update scheme would work then hgversion looks like a good system to 
+go with as it already exists. If I were to create a modified version of 
+hgversion to fit what I really would want then it probably would not 
+work everything out, but at least would be as good as the setuptools 
+support for SVN revision numbering. Also by not relying on tags it means 
+that should a tag wish to be created for a non-version reason then it 
+won't mess up the version numbering.
+
+Any thoughts?
+
+Also I have realised what was making me so certain there was a 
+connection between berlios and sourceforge, berlios uses some of the 
+sourceforge project management tools.
+
+Michael Whapples
+
+
+From fhaxbox66 at googlemail.com  Sat Nov 29 12:52:04 2008
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Sat, 29 Nov 2008 12:52:04 +0100
+Subject: [Yabt-devel] Task for creating versioning number scheme created
+In-Reply-To: <49309392.5010709@aim.com>
+Message-ID: <DKECKJNNEDEJAJDEPCMBAEPNCHAA.fhaxbox66@googlemail.com>
+
+I am not deeply into this versioning stuff so I trust you in opting for a
+pragmatic solution. For PyHyphen I don't care about version numbers. I don't
+even tag revisions as I don't expect anyone but developers accessing the
+repos. Those who want to install PyHyphen - whether through setuptools or
+otherwise - should use the version on the pypi. But I know this is not very
+sophisticated; you may even find it ridiculous.
+
+That said, I've stumbled over your remark that commits should be pre-release
+versions. I must admit I am accustomed to much more frequent commits. My
+only project so far is PyHyphen and I am the only developer. Some commits I
+made were only roughly tested. But for some reason I feel better if some
+changes I make are savely stored on googlecode. Maybe this is just because
+my PC is a pre-historc model from 2001 A.D.
+
+So should you want me to make commits only if the code is ready for
+pre-release, I would have to change my habits which I'd do for good reasons.
+Maybe the fact that we are two developers is such a reason. For now though,
+I would prefer making commits to a development branch whenever I want.
+
+I'd be grateful for some clarification.
+
+-----Ursprungliche Nachricht-----
+Von: yabt-devel-bounces at lists.berlios.de
+[mailto:yabt-devel-bounces at lists.berlios.de]Im Auftrag von Michael
+Whapples
+Gesendet: Samstag, 29. November 2008 01:58
+An: yabt-devel at lists.berlios.de
+Betreff: [Yabt-devel] Task for creating versioning number scheme created
+
+
+Hello,
+I feel this really needs to be sorted so I created a task in the task
+manager to explain what needs to be done.
+
+The task is #4271 in YABT's task manager and is planned to be solved by
+next Friday (although sooner would be better). Ideally the development
+versions I feel should go like this:
+Repository commits are pre-release versions. The reason for this way
+round is that should I find a bug with a previous version I can insert a
+bug fix intermediate release (eg. if someone finds a problem with
+YABT-2.0.0 but I have started development on YABT-2.0.1 then I can
+create YABT-2.0.0update1 which would come before any development version
+of YABT-2.0.1). If I were using post version development numbers then
+how could I do this safely as in the previous example I would be working
+on YABT-2.0.0rXX. Possibly it could be done if I studied in detail the
+setuptools version rules (eg. if alphabetic order matters then may be I
+could use patch instead of update in the version as p comes before r,
+but this is working very close to the limit and a careless mistake could
+find it failing). The only occasion I might want post release
+development versions is for a maintainance branch.
+
+The reason all this comes up is I rather like the way hgversion works to
+figure out all the version info from the repository (inspecting tags,
+and if no repository is found then it assumes it must be a source
+distribution in which case it uses PKG-info (or what ever the package
+data file is which is included in source distributions)). Due to all
+this figuring it out from the repository it obviously can't do
+pre-release revision numbering as no tag exists for the up coming
+release, so it just uses post-release revisions. If the patch rather
+than update scheme would work then hgversion looks like a good system to
+go with as it already exists. If I were to create a modified version of
+hgversion to fit what I really would want then it probably would not
+work everything out, but at least would be as good as the setuptools
+support for SVN revision numbering. Also by not relying on tags it means
+that should a tag wish to be created for a non-version reason then it
+won't mess up the version numbering.
+
+Any thoughts?
+
+Also I have realised what was making me so certain there was a
+connection between berlios and sourceforge, berlios uses some of the
+sourceforge project management tools.
+
+Michael Whapples
+_______________________________________________
+Yabt-devel mailing list
+Yabt-devel at lists.berlios.de
+https://lists.berlios.de/mailman/listinfo/yabt-devel
+
+
+
+From fhaxbox66 at googlemail.com  Sat Nov 29 13:00:58 2008
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Sat, 29 Nov 2008 13:00:58 +0100
+Subject: [Yabt-devel] YABT-2.0b2
+In-Reply-To: <49306D0D.9060509@aim.com>
+Message-ID: <DKECKJNNEDEJAJDEPCMBEEPNCHAA.fhaxbox66@googlemail.com>
+
+So the issue is trickier than I had thought.
+
+Currently I hope that ElementTree (should we use it at all) will deal with
+control characters at load time, at least as from Python 2.6. I further hope
+that the element attributes exported by ElementTree come with normal control
+characters that don't require special treatment. Should ElementTree deceive
+me in this respect, I would still prefer to work with special attributes
+within the same node rather than having special nodes for control
+characters. But in the latter case I wouldn't have strong views anymore
+except we agreed that each node should contain a rule.
+
+
+  -----Ursprungliche Nachricht-----
+  Von: yabt-devel-bounces at lists.berlios.de
+[mailto:yabt-devel-bounces at lists.berlios.de]Im Auftrag von Michael Whapples
+  Gesendet: Freitag, 28. November 2008 23:14
+  An: yabt-devel at lists.berlios.de
+  Betreff: Re: [Yabt-devel] YABT-2.0b2
+
+
+  Hello,
+  To confirm the problem of the form feed character I tried inserting the
+character into an XML file (authoring by hand) using the notation &#x0c;
+which is the XML way of representing characters by number but this still
+fails when parsing (I was fairly sure of this, but I wanted to check).
+
+  by using the \uXXXX notation we would need to handle this in YABT's
+loader, as the python string representation when loaded would naturally be
+u'\\u000c'. I couldn't actually say without trying, but I would imagine
+doing this parsing would be slower as all strings would need checking where
+as the <char> element code is only run when the parser finds a <char>
+element. Other than the fact that it might feel more natural to a table
+author as the \uXXXX notation is used elsewhere I don't quite understand how
+you mean it would make things smoother (the string comparisons, etc). It is
+the job of the loader to get around these format specific issues, the
+current working is that the loader upon encountering a <char> element
+replaces it with a python string of that value (admittedly confusingly ord
+should be decimal rather than hex, I probably should correct that).
+
+  I think this really should be left until post YABT-2.0b2 before
+adding/correcting.
+
+  Michael Whapples
+
+  On 28/11/08 20:02, Leo wrote:
+Unless newer Python versions do not support newer xml specifications,
+I'm already convinced that form feed (and probably other chars) are
+forbidden in xml files.
+
+However, apart from an esthetic aspect (= better reflecting the limits
+of the xml specification in the tree structure) I do not currently see
+any advantage of your choice over the unicode-like notation. The
+latter would probably yield faster execution as less nodes have to be
+processed. The tables become smaller, the code also is smaller as you
+don't need to handle the special nodes that are only there to store
+meta info on form feed etc. The usual python code that handles context
+strings by comparing them with the relevant xml attributes could be
+used because the unicode notation would be consistent across the board
+such that string comparisons etc. would work smoothly.
+
+I wonder if there is something I have overlooked. If not, I would
+probably vote for the \uxxx notation in future versions. Another
+advantage of the latter would be that authoring tables would probably
+be less painful.
+
+Happy to discuss.
+
+On 28/11/2008, Michael Whapples <mwhapples at aim.com> wrote:
+  The only possible changes I would want to make to YABT-2.0b2 excluding
+XML stuff is descriptions for YABT in the setup file. Currently it is
+very Braille specific eg. YABT (Yet another braille translator) is the
+short description and the long description is equally bBraille
+orientated only hinting at other uses.
+
+If I was to permit XML changes (keeping backward compatability) would be
+to add an include statement, but I don't know at this moment how much
+work it might take to really implement it. As time is unknown, I would
+give it the thumbs down for YABT-2.0b2.
+
+I am fairly certain on the XML limitation. I asked someone I know about
+it, I did a google search and for the version of XML the python parsers
+support it just won't take it. It isn't UTF8 characters which are the
+problem, its these control characters in ASCII (eg. form feed, there are
+others but this is one I really know about) and some other unicode
+characters not used much. This is a limitation of the XML version used,
+it is fixed by other XML versions (I mean by XML versions the actual XML
+specification as defined at the top of documents eg.
+<?xml version="1.0" ?>
+not the languages implementation of parsers). The only fixes I could
+find suggested online were to use a child element as I have, use the
+newer version of XML (except python doesn't support this) or create some
+internal mark up (eg. the python \uXXXX notation in unicode strings). I
+opted for the child element as this then fitted with XML notation. If
+you need convincing about this lack of support, try creating XML using
+the DOM packages (eg. minidom) and then use the toxml method to create
+the XML string and then parse that, it will fail if you inserted a form
+feed when creating a #text node in forming the original DOM.
+
+Michael Whapples
+
+On 28/11/08 16:26, Leo wrote:
+    I think it's a good idea to release 2.0b2 as soon as possible if only
+to open up our minds for the big bang that the new architecture will
+mean. So I tend to making only the urgent changes, leave the xml
+structure as it is stable.
+
+On 3.0 or 2.1: you are right: everything will depend on how much the
+API will change. And on that I have no clou either. So let's cross
+that bridge...
+
+On form feed: you are right: context strings should be able to contain
+anything including form feed. But even if xml does not allow to have
+these characters in attributes, there should be better workarounds
+then children. I could think of escape chars in strings, or certain
+flags. I think it is really really worthwhile doublechecking if xml
+really doesn't allow any utf8 char. json does!
+
+   Please release 2.0b2 asap so we get ready for the big bang and make
+yabt quickly the most compelling tool in its field...
+
+By the way: Have you received any feedback from yabt users, if any? I
+am optimistic you will have a lot once yabt works with end user apps.
+
+It may be useful to look at a tool to convert openoffice docs into
+braille. there is a package on the pypi making available the xml
+structure of oo docs to Python... You see my point?
+
+On 28/11/2008, Michael Whapples<mwhapples at aim.com>  wrote:
+
+      Hello,
+I really want to get YABT-2.0b2 pushed out. It shouldn't change much
+from what it is. It really is a marker point in development.
+
+Particular points up for discussion/action:
+* That XML format... I feel it could be improved so much. particular
+points for alteration are:
+input class - Should this be an element? I feel this could become an
+attribute of rule. Also should I remove the limit of input class being
+just an int? Initial reason was done in YABT-1.0 for performance, but we
+now are doing less state checks so performance impact should be less now.
+final state - The same questions as input class.
+Context types - should the context type name become an attribute of the
+context elements (bfcontext and afcontext)? This then removes the 2
+character limit for type names, and names could be more meaningful, eg.
+always instead of ^a.
+
+As for the question of supporting control characters like form feed, my
+mind is not settled on that. Whilst things like form feed should really
+be the responsibility of applications, what about lazy text translation
+systems such as YABT_translate command? Also more importantly, I feel
+that context strings should support these control characters, as whilst
+the controlling app may handle the actual form feed, it possibly would
+want to tell YABT this translation happens at the end of a page. Whether
+the braille code (or other translation) actually has any differentce
+should not be of any concern to the application.
+
+My feeling is that the XML change should happen, whether before or after
+YABT-2.0b2 I don't mind.
+
+Michael Whapples
+_______________________________________________
+Yabt-devel mailing list
+Yabt-devel at lists.berlios.de
+https://lists.berlios.de/mailman/listinfo/yabt-devel
+
+
+        _______________________________________________
+Yabt-devel mailing list
+Yabt-devel at lists.berlios.de
+https://lists.berlios.de/mailman/listinfo/yabt-devel
+
+      _______________________________________________
+Yabt-devel mailing list
+Yabt-devel at lists.berlios.de
+https://lists.berlios.de/mailman/listinfo/yabt-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081129/f5ddc118/attachment.html>
+
+From fhaxbox66 at googlemail.com  Sat Nov 29 13:30:12 2008
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Sat, 29 Nov 2008 13:30:12 +0100
+Subject: [Yabt-devel] Translation algorithm and tree structure
+Message-ID: <DKECKJNNEDEJAJDEPCMBAEPOCHAA.fhaxbox66@googlemail.com>
+
+My earlier proposal not published on this list was as follows:
+
+At the first level of the tree there are only rules checking for the length
+of the original (i.e. substring to be translated by a single contraction).
+So there are likely nor more than 5 to 10 nodes. On the second level I
+suggested rules checking for the beginning or the end of the word to single
+out contractions that may apply under such circumstances. But as most
+contractions can occur anywhere, this wouldn't reduce the problem very much.
+For the third level I suggested to check in alphabetical order if the
+substring matches any of the originals in the nodes. If so, the contraction
+may be used unless some excemption contained in the subtree of that
+contraction applies.
+
+Today, an alternative algorithm came to my mind and I want to quickly expose
+the idea so it is retained:
+
+We sort all contractions alphabetically using the original (eg: "that" or
+"sh"). We arrange them in the tree as follows: At the first level (i.e.
+root's children) each node corresponds to the first character of the
+originals. So there are around 26 nodes. The contraction for "always" will
+occur in the first node, "but and because in the second and so forth. At
+level 2 we distinguish according to the second char of the original. Here,
+we are likely to have much less nodes as, e.g. there are no contractions
+whose original starts with "aa" or "jk". The depth of the tree is equal to
+the length of the longest original. Walking through the input string char by
+char will guide us to the longest contraction which might apply. The subtree
+of that contraction may then contain exemptions such as with "gateshead". If
+an exemption applies, there may still be a shorter contraction encountered
+on our way up to here. So we'll have to backtrack and check if that one
+applies.
+
+At a given level, each node must be checked until the char matches. This may
+take long if the current letter is "z". To speed up things, one may consider
+binary search in cases where there are many nodes. Another option is to
+assemble the chars in each node to a string functioning as an index to the
+nodes of each level. The index string for level 1 is likely to contain the
+entire alphabet. At level 2, most strings will have much less characters.
+Choosing the right node comes down to searching the position where the
+character occurs in the index string.
+
+I don't know if this algorithm is smarter than the previous one. Its
+downside might be that it disregards the context until a specific
+contraction is singled out. In most cases, however, the described iterative
+matching may yield good approximations.
+
+We may reconsider both alternatives when discussing which node types to
+implement.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081129/b93399f9/attachment.html>
+
+From mwhapples at aim.com  Sat Nov 29 21:06:18 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Sat, 29 Nov 2008 20:06:18 +0000
+Subject: [Yabt-devel] Task for creating versioning number scheme created
+In-Reply-To: <DKECKJNNEDEJAJDEPCMBAEPNCHAA.fhaxbox66@googlemail.com>
+References: <DKECKJNNEDEJAJDEPCMBAEPNCHAA.fhaxbox66@googlemail.com>
+Message-ID: <4931A0BA.4010508@aim.com>
+
+I think you misunderstood the meaning of pre-release and post-release. I 
+will stick with how it works in SVN, to explain what I meant, as commit 
+numbers in SVN are simpler than mercurial which uses commit numbers and 
+(I think) SHA1 hashes to mark revisions.
+
+If it is a pre-release revision the version number might read as 
+2.0.1.dev-R477, which means development version before 2.0.1 at revision 
+477. It indicates that the version is working towards version 2.0.1. If 
+I was to use post release eg. 2.0.0-r477, this notation means revision 
+477 after the 2.0.0 release. The implication of this is your building on 
+top of 2.0.0. Version (commit) 2.0.1.dev-r477 certainly comes after any 
+version number starting 2.0.0, so certainly comes after 2.0.0-r477, 
+2.0.0.1, 2.0.0update1 and so on. These pre or post release 
+versions/revisions are to denote every commit between the actual 
+releases, so commit as much as you like is the theory.
+
+I am coming down on the side of pre-release revisions as this indicates 
+where things are going rather than where it has come from. I don't think 
+it will take me much work to create a module to retrieve this 
+information from the mercurial repository (as mercurial is python and 
+hgversion is very small and looks easy to understand). So unless you 
+have some strong feelings on this, I will go this way.
+
+I hope that clears it up. May be read the setuptools documentation about 
+continual releases/development versions if you want more details or a 
+different explaination.
+
+Michael Whapples
+
+On 29/11/08 11:52, Leo wrote:
+> I am not deeply into this versioning stuff so I trust you in opting for a
+> pragmatic solution. For PyHyphen I don't care about version numbers. I don't
+> even tag revisions as I don't expect anyone but developers accessing the
+> repos. Those who want to install PyHyphen - whether through setuptools or
+> otherwise - should use the version on the pypi. But I know this is not very
+> sophisticated; you may even find it ridiculous.
+>
+> That said, I've stumbled over your remark that commits should be pre-release
+> versions. I must admit I am accustomed to much more frequent commits. My
+> only project so far is PyHyphen and I am the only developer. Some commits I
+> made were only roughly tested. But for some reason I feel better if some
+> changes I make are savely stored on googlecode. Maybe this is just because
+> my PC is a pre-historc model from 2001 A.D.
+>
+> So should you want me to make commits only if the code is ready for
+> pre-release, I would have to change my habits which I'd do for good reasons.
+> Maybe the fact that we are two developers is such a reason. For now though,
+> I would prefer making commits to a development branch whenever I want.
+>
+> I'd be grateful for some clarification.
+>
+> -----Ursprungliche Nachricht-----
+> Von: yabt-devel-bounces at lists.berlios.de
+> [mailto:yabt-devel-bounces at lists.berlios.de]Im Auftrag von Michael
+> Whapples
+> Gesendet: Samstag, 29. November 2008 01:58
+> An: yabt-devel at lists.berlios.de
+> Betreff: [Yabt-devel] Task for creating versioning number scheme created
+>
+>
+> Hello,
+> I feel this really needs to be sorted so I created a task in the task
+> manager to explain what needs to be done.
+>
+> The task is #4271 in YABT's task manager and is planned to be solved by
+> next Friday (although sooner would be better). Ideally the development
+> versions I feel should go like this:
+> Repository commits are pre-release versions. The reason for this way
+> round is that should I find a bug with a previous version I can insert a
+> bug fix intermediate release (eg. if someone finds a problem with
+> YABT-2.0.0 but I have started development on YABT-2.0.1 then I can
+> create YABT-2.0.0update1 which would come before any development version
+> of YABT-2.0.1). If I were using post version development numbers then
+> how could I do this safely as in the previous example I would be working
+> on YABT-2.0.0rXX. Possibly it could be done if I studied in detail the
+> setuptools version rules (eg. if alphabetic order matters then may be I
+> could use patch instead of update in the version as p comes before r,
+> but this is working very close to the limit and a careless mistake could
+> find it failing). The only occasion I might want post release
+> development versions is for a maintainance branch.
+>
+> The reason all this comes up is I rather like the way hgversion works to
+> figure out all the version info from the repository (inspecting tags,
+> and if no repository is found then it assumes it must be a source
+> distribution in which case it uses PKG-info (or what ever the package
+> data file is which is included in source distributions)). Due to all
+> this figuring it out from the repository it obviously can't do
+> pre-release revision numbering as no tag exists for the up coming
+> release, so it just uses post-release revisions. If the patch rather
+> than update scheme would work then hgversion looks like a good system to
+> go with as it already exists. If I were to create a modified version of
+> hgversion to fit what I really would want then it probably would not
+> work everything out, but at least would be as good as the setuptools
+> support for SVN revision numbering. Also by not relying on tags it means
+> that should a tag wish to be created for a non-version reason then it
+> won't mess up the version numbering.
+>
+> Any thoughts?
+>
+> Also I have realised what was making me so certain there was a
+> connection between berlios and sourceforge, berlios uses some of the
+> sourceforge project management tools.
+>
+> Michael Whapples
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+
+

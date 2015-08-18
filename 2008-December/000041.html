@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] Some thoughts on the current design of yabt-2.0b2 -	__init__.py and base_translator.addCharMapping
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-December/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Some%20thoughts%20on%20the%20current%20design%20of%20yabt-2.0b2%0A%20-%09__init__.py%20and%20base_translator.addCharMapping&In-Reply-To=%3C49404FED.2010201%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000038.html">
+   <LINK REL="Next"  HREF="000039.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] Some thoughts on the current design of yabt-2.0b2 -	__init__.py and base_translator.addCharMapping</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Some%20thoughts%20on%20the%20current%20design%20of%20yabt-2.0b2%0A%20-%09__init__.py%20and%20base_translator.addCharMapping&In-Reply-To=%3C49404FED.2010201%40aim.com%3E"
+       TITLE="[Yabt-devel] Some thoughts on the current design of yabt-2.0b2 -	__init__.py and base_translator.addCharMapping">mwhapples at aim.com
+       </A><BR>
+    <I>Thu Dec 11 00:25:33 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000038.html">[Yabt-devel] Some thoughts on the current design of yabt-2.0b2 -	__init__.py and base_translator.addCharMapping
+</A></li>
+        <LI>Next message: <A HREF="000039.html">[Yabt-devel] yabt_translate.exe
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#41">[ date ]</a>
+              <a href="thread.html#41">[ thread ]</a>
+              <a href="subject.html#41">[ subject ]</a>
+              <a href="author.html#41">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Find below.
+
+On 10/12/08 21:44, Leo wrote:
+&gt;<i> On __init__.py
+</I>&gt;<i> I've seen these setuptools magic before and as an ignorant I don't 
+</I>&gt;<i> know what it does... Doesn't matter. Does setuptools work with pydoc 
+</I>&gt;<i> and such like? Haven't checkt this. But pydocs doc browser is just 
+</I>&gt;<i> cute.I'd regret if setuptools disturbed pydoc. If you are annoyed by 
+</I>&gt;<i> setuptools, just kick it out. I've no strong views. I wouldn't mind 
+</I>&gt;<i> users who love yabt for its functionality while constantly complaining 
+</I>&gt;<i> about its anti-setuptools philosophy.
+</I>
+I'm not quite sure what you're meaning. If you mean the code in 
+YABT/__init__.py, this purely defines the package namespace as one which 
+may be used by other distributions. Currently not used by YABT, but 
+should I feel that YABT is too much as one distribution then it could be 
+split (eg. if I decide to make additional implementations which I feel 
+should be optional I may make YABT.extras.egg and this still can use the 
+YABT package for its own stuff).
+&gt;<i>    On base_translator
+</I>&gt;<i>     def addCharacterMap(self, orig, repl):
+</I>&gt;<i> Char mapping is a delicate issue. Let alone the technical details: 
+</I>&gt;<i> What do we expect char mappings to do? I assume char mapings to 
+</I>&gt;<i> be dependent on the country, language, output device and maybe other 
+</I>&gt;<i> circumstances I cannot think of right now. Should this be done at the 
+</I>&gt;<i> very end? Probably not. Formatting needs to be aware of the final char 
+</I>&gt;<i> set at least if certain representations expand to more than one 
+</I>&gt;<i> physical char. I.e. if you map 2000 Japanese signs (Khanji or 
+</I>&gt;<i> whatever) to Braille, you will end up with many 2- or 3-form chars...
+</I>
+Probably one of those very under documented features of YABT. The 
+character mapping is to lower the required rules. The mappings are run 
+before translation begins, so characters which should be treated the 
+same by the translator are mapped to one common character (eg. it can 
+cover those cases for the variety of quote marks which visually look 
+different but have the same meaning, and so on).
+&gt;<i>
+</I>&gt;<i> I wonder if addCharacterMap on top of the class hierarchy is the best 
+</I>&gt;<i> choice. How about a new class at implementation level that 
+</I>&gt;<i> encapsulates the whole loading and mapping staff? - Further, I wonder 
+</I>&gt;<i> if base_class should really be focused on strings rather than 
+</I>&gt;<i> arbitrary objects.
+</I>
+This is slightly where python gets me, from the source code I can't tell 
+really what I mean in regards to arbitary objects or strings. The 
+translator classes are probagbly going to be the tightest regarding what 
+the API should except as external applications will use it and shouldn't 
+need to get tied up with wrapping input into objects we know will always 
+work. They should just know that translators deal with strings/unicode 
+and similar. I will discuss this another time.
+&gt;<i> I believe that some smart people have worked on char sets before. 
+</I>&gt;<i> <A HREF="http://www.libbraille.org">http://www.libbraille.org</A> should be interesting to look at. This 
+</I>&gt;<i> library does have Python bindings by the way. Should yabt use it, 
+</I>&gt;<i> maybe at implementation level?
+</I>
+I will take a look, but one thing currently offered by the character 
+mapping in YABT is that it can actually deal with more than characters 
+(entire strings, so if I knew the unicode for the hyphen represented by 
+-- in plain text then I could map -- to that unicode character or vice 
+versa). It will end up being a balance of which offers more and which 
+performs fastest (as performance is still a concern although YABT I feel 
+runs fast enough I don't want to be careless and let it become slow).
+&gt;<i> By the way: if you are interested in software development, you could 
+</I>&gt;<i> benefit from PyContext on the pypi, at least when in a brain-storming 
+</I>&gt;<i> mode as I am right now.  PyContext implements some new paradigms 
+</I>&gt;<i> described in articles referred to in the README file.
+</I>
+More reading, I am really going to have to find a quiet corner.
+
+I had a look on pypi to see if I could find some alternatives for 
+setuptools, and just to get a general idea of some of the packages and I 
+found &quot;behave&quot;. This has some interesting concepts which explain unit 
+testing well. Tests are something as well as docs I feel I should get up 
+to speed with for YABT.
+&gt;<i>
+</I>&gt;<i> Enough for today.
+</I>
+Think so.
+&gt;<i> ------------------------------------------------------------------------
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Yabt-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;<i>    
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/yabt-devel/attachments/20081210/84befaa8/attachment.html">https://lists.berlios.de/pipermail/yabt-devel/attachments/20081210/84befaa8/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000038.html">[Yabt-devel] Some thoughts on the current design of yabt-2.0b2 -	__init__.py and base_translator.addCharMapping
+</A></li>
+	<LI>Next message: <A HREF="000039.html">[Yabt-devel] yabt_translate.exe
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#41">[ date ]</a>
+              <a href="thread.html#41">[ thread ]</a>
+              <a href="subject.html#41">[ subject ]</a>
+              <a href="author.html#41">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

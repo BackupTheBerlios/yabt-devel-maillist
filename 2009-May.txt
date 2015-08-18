@@ -1,0 +1,825 @@
+From mwhapples at aim.com  Fri May  1 11:18:39 2009
+From: mwhapples at aim.com (Michael Whapples)
+Date: Fri, 01 May 2009 09:18:39 +0000
+Subject: [Yabt-devel] YABT 2.0 released
+Message-ID: <49FABE6F.5000706@aim.com>
+
+I have just released YABT 2.0. YABT 2.0 contains very few changes from 
+YABT2.0b3, the main change being a few extra documents about the 
+translation table formats. Currently YABT 2.0 can be found on the python 
+package index at http://pypi.python.org/pypi/YABT and hopefully soon 
+builds will be available on the berlios site.
+
+At some point I intend to create a debian package, but my initial 
+attempt today failed while it was trying to create the python2.4 
+package. Either I can try and work out why the python 2.4 package 
+creation fails (its to do with my setup.py script) or I could just set 
+it for python 2.5 or higher. I've got a feeling that I might actually 
+have other python 2.4 problems with YABT as I developed it for python 
+2.5, so unless people really need the python 2.4 support I am tempted to 
+just require python 2.5 or higher.
+
+Michael Whapples
+
+
+From mwhapples at aim.com  Mon May 25 18:22:00 2009
+From: mwhapples at aim.com (Michael Whapples)
+Date: Mon, 25 May 2009 17:22:00 +0100
+Subject: [Yabt-devel] Work for YABT 3.0
+Message-ID: <4A1AC5A8.9010909@aim.com>
+
+Hello,
+I am going to start on YABT 3.0 (I really need to just spend some time 
+on YABT so I get back into the flow of working on it, I think). Before I 
+do, I have a couple of questions (I feel now is best to ask as there 
+could be some major changes in YABT and so other changes may be more 
+possible):
+
+* I really want to set some interfaces/abstract classes for those who 
+may want to create alternatives. May be this comes from my java side, 
+but python's abstract base classes added in python 2.6 should give me 
+what I want. How much call is there for the various python versions? I 
+am particularly interested in whether there is any need for support 
+before python 2.6.
+* Linked with the first point, how important is low dependency on other 
+python packages? I ideally want to keep YABT as self contained as 
+possible to maintain the ability to have YABT supported on as many 
+platforms as possible and also to make it easier to switch to python 3.0 
+(may be even have python 3.0 support in YABT 3.0 from the beginning). 
+How ever I don't intend to do this at the expense of having to re-event 
+the wheel, so should an external package work well or be important I 
+will depend on it.
+* I plan to rework some of how YABT does its translation (IE. how the 
+rules actually work and so different translation tables will be needed). 
+I will look back over some of the ideas. I hope it will be better, but I 
+can't say exactly at the moment how it will look.
+* I intend a high level API, again no fixed plan yet, but ideally for an 
+application using YABT it should be something like:
+ >>> YABT.listTranslators()
+   [{"input": "text", "output": "Braille UK", "description": "Text to UK 
+Braille"}, {"input": "text", "output": "Speech UK", "description": "Text 
+to UK speech"}]
+ >>> translator = YABT.getTranslator(input="text", output="Braille UK")
+ >>> translator.listStates()
+   ["Grade1", "Grade2", "Computer Braille"]
+ >>> translator.translate("Hello world", "Grade2", " ", " ")
+   ",HELLO _W"
+ >>>
+
+(actual final running may differ as this raises questions in my mind, 
+eg. looks like the above would do auto scanning of tables to suggest 
+what translations can occur, how might one add an extra table, what if 
+two translators equally meet a getTranslator call criteria, etc). The 
+lower level API should still be available (fairly close to YABT 2.0 but 
+there will certainly be some alterations).
+
+Any extra comments/changes you would like to make/see?
+
+Michael Whapples
+
+
+From fhaxbox66 at googlemail.com  Mon May 25 20:02:25 2009
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Mon, 25 May 2009 20:02:25 +0200
+Subject: [Yabt-devel] Work for YABT 3.0
+In-Reply-To: <4A1AC5A8.9010909@aim.com>
+Message-ID: <JNEPIPKLMDDNHIAOHDNBMEHHCCAA.fhaxbox66@googlemail.com>
+
+On abc: don't know what this should be good for. Maybe I don't see merit in
+this because I don't know Java. My feeling is Java programming should be
+restricted by government for it tends to cause obsessions. Well, there may
+be an esthetic aspect I do not currently see. - Seriously: How about
+Pythonic duck typing or, if you are really really fond of type-checking:
+function annotations? Other than that: isinstance(), bases() etc. do a good
+job, I think. I personally do not understand abc anyway. But feel free to go
+for it.
+
+Nice, your api ideas.
+
+My main concern, as you know, is an extensible set of node types. I would
+really really suggest to have a look at ElementTree or, even better, lxml,
+the latter, of course, creating a dependency.
+
+I don't know why 2.5 or earlier should be supported. When it is ready, 2.5
+will be long ago. P3.0 support would seem imparative.
+
+Leo
+
+-----Ursprungliche Nachricht-----
+Von: yabt-devel-bounces at lists.berlios.de
+[mailto:yabt-devel-bounces at lists.berlios.de]Im Auftrag von Michael
+Whapples
+Gesendet: Montag, 25. Mai 2009 18:22
+An: yabt-devel at lists.berlios.de
+Betreff: [Yabt-devel] Work for YABT 3.0
+
+
+Hello,
+I am going to start on YABT 3.0 (I really need to just spend some time
+on YABT so I get back into the flow of working on it, I think). Before I
+do, I have a couple of questions (I feel now is best to ask as there
+could be some major changes in YABT and so other changes may be more
+possible):
+
+* I really want to set some interfaces/abstract classes for those who
+may want to create alternatives. May be this comes from my java side,
+but python's abstract base classes added in python 2.6 should give me
+what I want. How much call is there for the various python versions? I
+am particularly interested in whether there is any need for support
+before python 2.6.
+* Linked with the first point, how important is low dependency on other
+python packages? I ideally want to keep YABT as self contained as
+possible to maintain the ability to have YABT supported on as many
+platforms as possible and also to make it easier to switch to python 3.0
+(may be even have python 3.0 support in YABT 3.0 from the beginning).
+How ever I don't intend to do this at the expense of having to re-event
+the wheel, so should an external package work well or be important I
+will depend on it.
+* I plan to rework some of how YABT does its translation (IE. how the
+rules actually work and so different translation tables will be needed).
+I will look back over some of the ideas. I hope it will be better, but I
+can't say exactly at the moment how it will look.
+* I intend a high level API, again no fixed plan yet, but ideally for an
+application using YABT it should be something like:
+ >>> YABT.listTranslators()
+   [{"input": "text", "output": "Braille UK", "description": "Text to UK
+Braille"}, {"input": "text", "output": "Speech UK", "description": "Text
+to UK speech"}]
+ >>> translator = YABT.getTranslator(input="text", output="Braille UK")
+ >>> translator.listStates()
+   ["Grade1", "Grade2", "Computer Braille"]
+ >>> translator.translate("Hello world", "Grade2", " ", " ")
+   ",HELLO _W"
+ >>>
+
+(actual final running may differ as this raises questions in my mind,
+eg. looks like the above would do auto scanning of tables to suggest
+what translations can occur, how might one add an extra table, what if
+two translators equally meet a getTranslator call criteria, etc). The
+lower level API should still be available (fairly close to YABT 2.0 but
+there will certainly be some alterations).
+
+Any extra comments/changes you would like to make/see?
+
+Michael Whapples
+_______________________________________________
+Yabt-devel mailing list
+Yabt-devel at lists.berlios.de
+https://lists.berlios.de/mailman/listinfo/yabt-devel
+
+
+
+From mwhapples at aim.com  Mon May 25 20:32:22 2009
+From: mwhapples at aim.com (Michael Whapples)
+Date: Mon, 25 May 2009 19:32:22 +0100
+Subject: [Yabt-devel] Work for YABT 3.0
+In-Reply-To: <JNEPIPKLMDDNHIAOHDNBMEHHCCAA.fhaxbox66@googlemail.com>
+References: <JNEPIPKLMDDNHIAOHDNBMEHHCCAA.fhaxbox66@googlemail.com>
+Message-ID: <4A1AE436.9030207@aim.com>
+
+My reasoning on wanting the ABC functionality is that its a good way to 
+write down the API and try and ensure that anyone wanting to make an 
+alternative implementation will follow the API. Possibly what I really 
+want is interfaces but python has ABCs which are close enough. Also may 
+be there is a greater need and greater benefits in Java to having 
+interfaces and abstract classes. While I won't be doing too much type 
+checking, it does help in python for duck typing as its something which 
+may contain no implementation details which all classes implementing a 
+certain API can inherit from (in the python 2.6 what's new section it 
+gives examples of file like objects, iterable objects, etc, they need 
+not have a common implementation super type, just a type to say they 
+provide that method, which should developers absolutely need to check 
+the type they can check for).
+
+As I said how rules will actually work (as in how they will consider 
+whether to be applied or not) has not yet been decided and I will look 
+into all that has been said. I may just make some very basic example 
+rules (eg. word substitution initially to confirm that the API works).
+
+Michael Whapples
+On 25/05/09 19:02, Leo wrote:
+> On abc: don't know what this should be good for. Maybe I don't see merit in
+> this because I don't know Java. My feeling is Java programming should be
+> restricted by government for it tends to cause obsessions. Well, there may
+> be an esthetic aspect I do not currently see. - Seriously: How about
+> Pythonic duck typing or, if you are really really fond of type-checking:
+> function annotations? Other than that: isinstance(), bases() etc. do a good
+> job, I think. I personally do not understand abc anyway. But feel free to go
+> for it.
+>
+> Nice, your api ideas.
+>
+> My main concern, as you know, is an extensible set of node types. I would
+> really really suggest to have a look at ElementTree or, even better, lxml,
+> the latter, of course, creating a dependency.
+>
+> I don't know why 2.5 or earlier should be supported. When it is ready, 2.5
+> will be long ago. P3.0 support would seem imparative.
+>
+> Leo
+>
+> -----Ursprungliche Nachricht-----
+> Von: yabt-devel-bounces at lists.berlios.de
+> [mailto:yabt-devel-bounces at lists.berlios.de]Im Auftrag von Michael
+> Whapples
+> Gesendet: Montag, 25. Mai 2009 18:22
+> An: yabt-devel at lists.berlios.de
+> Betreff: [Yabt-devel] Work for YABT 3.0
+>
+>
+> Hello,
+> I am going to start on YABT 3.0 (I really need to just spend some time
+> on YABT so I get back into the flow of working on it, I think). Before I
+> do, I have a couple of questions (I feel now is best to ask as there
+> could be some major changes in YABT and so other changes may be more
+> possible):
+>
+> * I really want to set some interfaces/abstract classes for those who
+> may want to create alternatives. May be this comes from my java side,
+> but python's abstract base classes added in python 2.6 should give me
+> what I want. How much call is there for the various python versions? I
+> am particularly interested in whether there is any need for support
+> before python 2.6.
+> * Linked with the first point, how important is low dependency on other
+> python packages? I ideally want to keep YABT as self contained as
+> possible to maintain the ability to have YABT supported on as many
+> platforms as possible and also to make it easier to switch to python 3.0
+> (may be even have python 3.0 support in YABT 3.0 from the beginning).
+> How ever I don't intend to do this at the expense of having to re-event
+> the wheel, so should an external package work well or be important I
+> will depend on it.
+> * I plan to rework some of how YABT does its translation (IE. how the
+> rules actually work and so different translation tables will be needed).
+> I will look back over some of the ideas. I hope it will be better, but I
+> can't say exactly at the moment how it will look.
+> * I intend a high level API, again no fixed plan yet, but ideally for an
+> application using YABT it should be something like:
+>   >>>  YABT.listTranslators()
+>     [{"input": "text", "output": "Braille UK", "description": "Text to UK
+> Braille"}, {"input": "text", "output": "Speech UK", "description": "Text
+> to UK speech"}]
+>   >>>  translator = YABT.getTranslator(input="text", output="Braille UK")
+>   >>>  translator.listStates()
+>     ["Grade1", "Grade2", "Computer Braille"]
+>   >>>  translator.translate("Hello world", "Grade2", " ", " ")
+>     ",HELLO _W"
+>   >>>
+>
+> (actual final running may differ as this raises questions in my mind,
+> eg. looks like the above would do auto scanning of tables to suggest
+> what translations can occur, how might one add an extra table, what if
+> two translators equally meet a getTranslator call criteria, etc). The
+> lower level API should still be available (fairly close to YABT 2.0 but
+> there will certainly be some alterations).
+>
+> Any extra comments/changes you would like to make/see?
+>
+> Michael Whapples
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+
+
+
+From mwhapples at aim.com  Sun May 31 19:19:44 2009
+From: mwhapples at aim.com (Michael Whapples)
+Date: Sun, 31 May 2009 18:19:44 +0100
+Subject: [Yabt-devel] YABT 3.0 translation algorithm and some matters
+	relating to implementation
+Message-ID: <4A22BC30.2020802@aim.com>
+
+Hello,
+Before getting down to business I will just say again the java 
+development tried to distract me so I'm going to attend to YABT before 
+it does. I suppose we can just hope for Sun to set up a JA (java 
+annonymous) in my area, until that happens I may just need to 
+occasionally feed the java habbit. At the moment I have come across JNA 
+(java native access) which is like python's ctypes for java, although I 
+feel more comfortable with JNA. I have started making liblouis java 
+bindings using it (liblouis was a fairly simple but not trivial library 
+to start with, I intend to possibly change my media PC to use java for 
+the programming language).
+
+Anyway down to business with YABT. I have started looking at changing 
+YABT for 3.0, first thing is to remove that addCharacterMap method from 
+the translator class and anything to do with it. This though raises the 
+question of how to neatly deal with capitalisation (which is the reason 
+for making the change). My proposals are:
+
+* Use a custom object to represent the translation text. This object 
+would have the string in lowercase and a list/array of flags (possibly 
+as characters) representing the capitalisation of the character in that 
+position in the string (eg. flags may say capital, lowercase, either 
+case/no case, etc). Rules would use this object for matching. Flags may 
+not need to be limited to just capitalisation information, so this has 
+scope for future expansion. However it may be fiddly for surrounding 
+matching (eg. with regular expressions) as the string part is case 
+insensitive and the case may be wanted, it would require additional 
+manual checking of the case.
+* Alternatively to the above (possibly my preferred) is for the 
+translation text object to contain two copies of the text, one in 
+lowercase (eg. created by the lowercase function of python) and another 
+string being the original (so containing all the capitals, etc). This is 
+simpler for checking as the rule uses whichever string it wants to.
+
+Neither of the above will fully achieve what I want, adding the rules to 
+ensure capital signs are inserted where needed may require many rules to 
+get every situation, therefore I propose a zero length focus rule type. 
+These zero length rules would be checked first and should one match then 
+it may insert into the output but focus position will not be moved on in 
+the translation text, and then the standard rules are checked. This will 
+avoid me having to make the translator do something specific around 
+capitals, only rules need to be defined (what I mean is that liblouis 
+requires a capsign and such like to be defined in its tables but this is 
+awfully Braille specific as to when it should be used, YABT would allow 
+the rule to say when it should be used).
+
+I had a brief look back through my email and found a message where you 
+described a way possibly to do translation (infact two suggestions of 
+algorithms), this message is below. Out of the two I can imagine the 
+second better (I can almost imagine the code or at least the general 
+code structure). One question I have with this second algorithm is how 
+does it determine order of exceptions should we have more than one 
+exception of the same focus (eg. if focus is "sh" and we may have 
+exception saying "sh" followed by "ead" should be output as "sh" and 
+"sh" followed by anything else should be "%" (sh sign) (example may not 
+actually come to be if table was designed right but it gives the idea)). 
+Would this be expected to be order specific as very few will be in such 
+a situation and the ordering problem was to do with the huge number of 
+rules needing the correct order in the current YABT table system?
+
+The first one my questions are things like:
+
+* How do you determine what is the longest focus to start with?
+* If previous question answer is that it should be until the end of a 
+word, how do we deal with spaces, multi-word contractions (eg. "in to 
+the"), etc.
+
+Michael Whapples
+
+-------- Original Message --------
+Subject:    [Yabt-devel] Translation algorithm and tree structure
+Date:   Sat, 29 Nov 2008 13:30:12 +0100
+From:   Leo <fhaxbox66 at googlemail.com>
+Reply-To:   fhaxbox66 at googlemail.com, yabt-devel at lists.berlios.de
+To:     Yabt-Devel <yabt-devel at lists.berlios.de>
+
+
+
+My earlier proposal not published on this list was as follows:
+At the first level of the tree there are only rules checking for the 
+length of the original (i.e. substring to be translated by a single 
+contraction). So there are likely nor more than 5 to 10 nodes. On the 
+second level I suggested rules checking for the beginning or the end of 
+the word to single out contractions that may apply under such 
+circumstances. But as most contractions can occur anywhere, this 
+wouldn't reduce the problem very much. For the third level I suggested 
+to check in alphabetical order if the substring matches any of the 
+originals in the nodes. If so, the contraction may be used unless some 
+excemption contained in the subtree of that contraction applies.
+Today, an alternative algorithm came to my mind and I want to quickly 
+expose the idea so it is retained:
+We sort all contractions alphabetically using the original (eg: "that" 
+or "sh"). We arrange them in the tree as follows: At the first level 
+(i.e. root's children) each node corresponds to the first character of 
+the originals. So there are around 26 nodes. The contraction for 
+"always" will occur in the first node, "but and because in the second 
+and so forth. At level 2 we distinguish according to the second char of 
+the original. Here, we are likely to have much less nodes as, e.g. there 
+are no contractions whose original starts with "aa" or "jk". The depth 
+of the tree is equal to the length of the longest original. Walking 
+through the input string char by char will guide us to the longest 
+contraction which might apply. The subtree of that contraction may then 
+contain exemptions such as with "gateshead". If an exemption applies, 
+there may still be a shorter contraction encountered on our way up to 
+here. So we'll have to backtrack and check if that one applies.
+At a given level, each node must be checked until the char matches. This 
+may take long if the current letter is "z". To speed up things, one may 
+consider binary search in cases where there are many nodes. Another 
+option is to assemble the chars in each node to a string functioning as 
+an index to the nodes of each level. The index string for level 1 is 
+likely to contain the entire alphabet. At level 2, most strings will 
+have much less characters. Choosing the right node comes down to 
+searching the position where the character occurs in the index string.
+I don't know if this algorithm is smarter than the previous one. Its 
+downside might be that it disregards the context until a specific 
+contraction is singled out. In most cases, however, the described 
+iterative matching may yield good approximations.
+We may reconsider both alternatives when discussing which node types to 
+implement.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20090531/f665e8c6/attachment.html>
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: Attached Message Part
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20090531/f665e8c6/attachment.ksh>
+
+From fhaxbox66 at googlemail.com  Sun May 31 23:01:53 2009
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Sun, 31 May 2009 23:01:53 +0200
+Subject: [Yabt-devel] YABT 3.0 translation algorithm and some
+	mattersrelating to implementation
+In-Reply-To: <4A22BC30.2020802@aim.com>
+Message-ID: <JNEPIPKLMDDNHIAOHDNBMEIECCAA.fhaxbox66@googlemail.com>
+
+
+please mention the J-word never again here. Well, there might be one remote
+reason for me to look at J at some point: Android. But for now I count on
+Jython, if at all necessary.
+
+A few weeks ago I had a quick look at liblouis. The svn repo does contain
+Python bindings using ctypes. So you've wasted your time on that JNA stuff.
+;-)
+
+On capitals: no strong views. Leaving performance issues aside, there is no
+need for anything. Each rule's handler method could analyze the string as
+needed, e.g. by lowering it before any maching business. Talking about
+optimization, the flags proposal does make sense, maybe using a bytes object
+where each byte represents a character and some bits have a meaning, so you
+can use boolean operators. I would also put the original into the object;
+this is cheap. Performance-wise it might be a good idea to allow cheap tests
+whethere a word just starts with a capital letter such as Britain or
+contains only non-capitals or is completely capitalized such as USA.
+Mixtures such as McDonald are more exotic though. So a single int describing
+the whole word as cap, non-cap or fully-cap or undef would be nice.
+
+Algorithm: I think the second one is a bit easier to digest. Clearly you can
+also handle things like "to be", "for the" etc. Just allow spaces,
+punctuation etc. By the way, in German there are thinks like the following:
+"ich" becomes "#". But "ich," becomes "i4," because "#," would be
+misinterpreted as "1."
+
+But this is to be handled by exception nodes drawing on the context, or a
+handler method implements the rule and the exception rather than adding a
+dedicated exception node.
+
+A question might be whether you pass the focus as substrings extracted from
+a long text as slices, or just its indices.
+
+ Leo
+
+ [mailto:yabt-devel-bounces at lists.berlios.de]Im Auftrag von Michael Whapples
+Gesendet: Sonntag, 31. Mai 2009 19:20
+An: yabt-devel at lists.berlios.de
+Betreff: [Yabt-devel] YABT 3.0 translation algorithm and some
+mattersrelating to implementation
+
+
+  Hello,
+  Before getting down to business I will just say again the java development
+tried to distract me so I'm going to attend to YABT before it does. I
+suppose we can just hope for Sun to set up a JA (java annonymous) in my
+area, until that happens I may just need to occasionally feed the java
+habbit. At the moment I have come across JNA (java native access) which is
+like python's ctypes for java, although I feel more comfortable with JNA. I
+have started making liblouis java bindings using it (liblouis was a fairly
+simple but not trivial library to start with, I intend to possibly change my
+media PC to use java for the programming language).
+
+  Anyway down to business with YABT. I have started looking at changing YABT
+for 3.0, first thing is to remove that addCharacterMap method from the
+translator class and anything to do with it. This though raises the question
+of how to neatly deal with capitalisation (which is the reason for making
+the change). My proposals are:
+
+  * Use a custom object to represent the translation text. This object would
+have the string in lowercase and a list/array of flags (possibly as
+characters) representing the capitalisation of the character in that
+position in the string (eg. flags may say capital, lowercase, either case/no
+case, etc). Rules would use this object for matching. Flags may not need to
+be limited to just capitalisation information, so this has scope for future
+expansion. However it may be fiddly for surrounding matching (eg. with
+regular expressions) as the string part is case insensitive and the case may
+be wanted, it would require additional manual checking of the case.
+  * Alternatively to the above (possibly my preferred) is for the
+translation text object to contain two copies of the text, one in lowercase
+(eg. created by the lowercase function of python) and another string being
+the original (so containing all the capitals, etc). This is simpler for
+checking as the rule uses whichever string it wants to.
+
+  Neither of the above will fully achieve what I want, adding the rules to
+ensure capital signs are inserted where needed may require many rules to get
+every situation, therefore I propose a zero length focus rule type. These
+zero length rules would be checked first and should one match then it may
+insert into the output but focus position will not be moved on in the
+translation text, and then the standard rules are checked. This will avoid
+me having to make the translator do something specific around capitals, only
+rules need to be defined (what I mean is that liblouis requires a capsign
+and such like to be defined in its tables but this is awfully Braille
+specific as to when it should be used, YABT would allow the rule to say when
+it should be used).
+
+  I had a brief look back through my email and found a message where you
+described a way possibly to do translation (infact two suggestions of
+algorithms), this message is below. Out of the two I can imagine the second
+better (I can almost imagine the code or at least the general code
+structure). One question I have with this second algorithm is how does it
+determine order of exceptions should we have more than one exception of the
+same focus (eg. if focus is "sh" and we may have exception saying "sh"
+followed by "ead" should be output as "sh" and "sh" followed by anything
+else should be "%" (sh sign) (example may not actually come to be if table
+was designed right but it gives the idea)). Would this be expected to be
+order specific as very few will be in such a situation and the ordering
+problem was to do with the huge number of rules needing the correct order in
+the current YABT table system?
+
+  The first one my questions are things like:
+
+  * How do you determine what is the longest focus to start with?
+  * If previous question answer is that it should be until the end of a
+word, how do we deal with spaces, multi-word contractions (eg. "in to the"),
+etc.
+
+  Michael Whapples
+
+  -------- Original Message -------- Subject:  [Yabt-devel] Translation
+algorithm and tree structure
+        Date:  Sat, 29 Nov 2008 13:30:12 +0100
+        From:  Leo <fhaxbox66 at googlemail.com>
+        Reply-To:  fhaxbox66 at googlemail.com, yabt-devel at lists.berlios.de
+        To:  Yabt-Devel <yabt-devel at lists.berlios.de>
+
+
+
+  My earlier proposal not published on this list was as follows:
+
+  At the first level of the tree there are only rules checking for the
+length of the original (i.e. substring to be translated by a single
+contraction). So there are likely nor more than 5 to 10 nodes. On the second
+level I suggested rules checking for the beginning or the end of the word to
+single out contractions that may apply under such circumstances. But as most
+contractions can occur anywhere, this wouldn't reduce the problem very much.
+For the third level I suggested to check in alphabetical order if the
+substring matches any of the originals in the nodes. If so, the contraction
+may be used unless some excemption contained in the subtree of that
+contraction applies.
+
+  Today, an alternative algorithm came to my mind and I want to quickly
+expose the idea so it is retained:
+
+  We sort all contractions alphabetically using the original (eg: "that" or
+"sh"). We arrange them in the tree as follows: At the first level (i.e.
+root's children) each node corresponds to the first character of the
+originals. So there are around 26 nodes. The contraction for "always" will
+occur in the first node, "but and because in the second and so forth. At
+level 2 we distinguish according to the second char of the original. Here,
+we are likely to have much less nodes as, e.g. there are no contractions
+whose original starts with "aa" or "jk". The depth of the tree is equal to
+the length of the longest original. Walking through the input string char by
+char will guide us to the longest contraction which might apply. The subtree
+of that contraction may then contain exemptions such as with "gateshead". If
+an exemption applies, there may still be a shorter contraction encountered
+on our way up to here. So we'll have to backtrack and check if that one
+applies.
+
+  At a given level, each node must be checked until the char matches. This
+may take long if the current letter is "z". To speed up things, one may
+consider binary search in cases where there are many nodes. Another option
+is to assemble the chars in each node to a string functioning as an index to
+the nodes of each level. The index string for level 1 is likely to contain
+the entire alphabet. At level 2, most strings will have much less
+characters. Choosing the right node comes down to searching the position
+where the character occurs in the index string.
+
+  I don't know if this algorithm is smarter than the previous one. Its
+downside might be that it disregards the context until a specific
+contraction is singled out. In most cases, however, the described iterative
+matching may yield good approximations.
+
+  We may reconsider both alternatives when discussing which node types to
+implement.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20090531/90050239/attachment.html>
+
+From mwhapples at aim.com  Sun May 31 23:54:28 2009
+From: mwhapples at aim.com (Michael Whapples)
+Date: Sun, 31 May 2009 22:54:28 +0100
+Subject: [Yabt-devel] YABT 3.0 translation algorithm and
+ some	mattersrelating to implementation
+In-Reply-To: <JNEPIPKLMDDNHIAOHDNBMEIECCAA.fhaxbox66@googlemail.com>
+References: <JNEPIPKLMDDNHIAOHDNBMEIECCAA.fhaxbox66@googlemail.com>
+Message-ID: <4A22FC94.9030102@aim.com>
+
+Hello,
+My plan with rule exceptions is that if we can decend another level 
+because we can match another character then we do decend. Once we cannot 
+decend further it looks through the applicable substitutions at that 
+level. Should none of these match then we retreat a level and look at 
+the substitutions there. Substitutions at a given level are what have 
+been referred to as exceptions, but I used the term substitution as it 
+could be the naturally expected for some levels (IE. at the deepest we 
+can decend and there may only be the one, it relates as an exception as 
+we can't decend further).
+
+As for choosing particular options and how it may affect performance, as 
+I said in the past I want to try and keep performance reasonable and so 
+should be kept in mind (EG. YABT using psyco to optimise performance at 
+the moment takes about 8 seconds on my computer to translate the report 
+on BrailleTrans (converted to text using pdftotext, approx 150 pages) 
+where as liblouis takes under a second). Yes I think YABT and liblouis 
+have very different goals so possibly the performance hit of using YABT 
+is worth it but it is quite a significant difference in translation 
+time. Trying to optimise a few obvious things at the beginning (IE. not 
+repeating actions which you know you don't need to repeat, within a call 
+of translate the translation text will not change so any conversion to 
+lowercase only need happen once) I think is worth trying to design from 
+the beginning (string operations can be expensive, particularly on long 
+strings).
+
+As for J stuff, JNA isn't a waste of time, as I said I plan to use it in 
+my media PC, liblouis was simply something simple to try out JNA before 
+I start work on the more complicated library for the keypad and LCD 
+display of the PC. Also JNA as I said is preferable to me than ctypes, 
+it does feel more natural to use. Anyway as far as things go YABT is 
+python and python it will stay, YABT doesn't need either ctypes or JNA. 
+The only thing I will add is I have heard some people suggest that java 
+programmers prefer ruby rather than python, better keep me away from 
+ruby then.
+
+Michael Whapples
+On 31/05/09 22:01, Leo wrote:
+> please mention the J-word never again here. Well, there might be one 
+> remote reason for me to look at J at some point: Android. But for now 
+> I count on Jython, if at all necessary.
+> A few weeks ago I had a quick look at liblouis. The svn repo does 
+> contain Python bindings using ctypes. So you've wasted your time on 
+> that JNA stuff. ;-)
+> On capitals: no strong views. Leaving performance issues aside, there 
+> is no need for anything. Each rule's handler method could analyze the 
+> string as needed, e.g. by lowering it before any maching business. 
+> Talking about optimization, the flags proposal does make sense, maybe 
+> using a bytes object where each byte represents a character and some 
+> bits have a meaning, so you can use boolean operators. I would also 
+> put the original into the object; this is cheap. Performance-wise it 
+> might be a good idea to allow cheap tests whethere a word just starts 
+> with a capital letter such as Britain or contains only non-capitals or 
+> is completely capitalized such as USA. Mixtures such as McDonald are 
+> more exotic though. So a single int describing the whole word as cap, 
+> non-cap or fully-cap or undef would be nice.
+> Algorithm: I think the second one is a bit easier to digest. Clearly 
+> you can also handle things like "to be", "for the" etc. Just allow 
+> spaces, punctuation etc. By the way, in German there are thinks like 
+> the following: "ich" becomes "#". But "ich," becomes "i4," because 
+> "#," would be misinterpreted as "1."
+> But this is to be handled by exception nodes drawing on the context, 
+> or a handler method implements the rule and the exception rather than 
+> adding a dedicated exception node.
+> A question might be whether you pass the focus as substrings extracted 
+> from a long text as slices, or just its indices.
+>  Leo
+> [mailto:yabt-devel-bounces at lists.berlios.de]*Im Auftrag von *Michael 
+> Whapples
+> *Gesendet:* Sonntag, 31. Mai 2009 19:20
+> *An:* yabt-devel at lists.berlios.de
+> *Betreff:* [Yabt-devel] YABT 3.0 translation algorithm and some 
+> mattersrelating to implementation
+>
+>     Hello,
+>     Before getting down to business I will just say again the java
+>     development tried to distract me so I'm going to attend to YABT
+>     before it does. I suppose we can just hope for Sun to set up a JA
+>     (java annonymous) in my area, until that happens I may just need
+>     to occasionally feed the java habbit. At the moment I have come
+>     across JNA (java native access) which is like python's ctypes for
+>     java, although I feel more comfortable with JNA. I have started
+>     making liblouis java bindings using it (liblouis was a fairly
+>     simple but not trivial library to start with, I intend to possibly
+>     change my media PC to use java for the programming language).
+>
+>     Anyway down to business with YABT. I have started looking at
+>     changing YABT for 3.0, first thing is to remove that
+>     addCharacterMap method from the translator class and anything to
+>     do with it. This though raises the question of how to neatly deal
+>     with capitalisation (which is the reason for making the change).
+>     My proposals are:
+>
+>     * Use a custom object to represent the translation text. This
+>     object would have the string in lowercase and a list/array of
+>     flags (possibly as characters) representing the capitalisation of
+>     the character in that position in the string (eg. flags may say
+>     capital, lowercase, either case/no case, etc). Rules would use
+>     this object for matching. Flags may not need to be limited to just
+>     capitalisation information, so this has scope for future
+>     expansion. However it may be fiddly for surrounding matching (eg.
+>     with regular expressions) as the string part is case insensitive
+>     and the case may be wanted, it would require additional manual
+>     checking of the case.
+>     * Alternatively to the above (possibly my preferred) is for the
+>     translation text object to contain two copies of the text, one in
+>     lowercase (eg. created by the lowercase function of python) and
+>     another string being the original (so containing all the capitals,
+>     etc). This is simpler for checking as the rule uses whichever
+>     string it wants to.
+>
+>     Neither of the above will fully achieve what I want, adding the
+>     rules to ensure capital signs are inserted where needed may
+>     require many rules to get every situation, therefore I propose a
+>     zero length focus rule type. These zero length rules would be
+>     checked first and should one match then it may insert into the
+>     output but focus position will not be moved on in the translation
+>     text, and then the standard rules are checked. This will avoid me
+>     having to make the translator do something specific around
+>     capitals, only rules need to be defined (what I mean is that
+>     liblouis requires a capsign and such like to be defined in its
+>     tables but this is awfully Braille specific as to when it should
+>     be used, YABT would allow the rule to say when it should be used).
+>
+>     I had a brief look back through my email and found a message where
+>     you described a way possibly to do translation (infact two
+>     suggestions of algorithms), this message is below. Out of the two
+>     I can imagine the second better (I can almost imagine the code or
+>     at least the general code structure). One question I have with
+>     this second algorithm is how does it determine order of exceptions
+>     should we have more than one exception of the same focus (eg. if
+>     focus is "sh" and we may have exception saying "sh" followed by
+>     "ead" should be output as "sh" and "sh" followed by anything else
+>     should be "%" (sh sign) (example may not actually come to be if
+>     table was designed right but it gives the idea)). Would this be
+>     expected to be order specific as very few will be in such a
+>     situation and the ordering problem was to do with the huge number
+>     of rules needing the correct order in the current YABT table system?
+>
+>     The first one my questions are things like:
+>
+>     * How do you determine what is the longest focus to start with?
+>     * If previous question answer is that it should be until the end
+>     of a word, how do we deal with spaces, multi-word contractions
+>     (eg. "in to the"), etc.
+>
+>     Michael Whapples
+>
+>     -------- Original Message --------
+>     Subject:  [Yabt-devel] Translation algorithm and tree structure
+>     Date:     Sat, 29 Nov 2008 13:30:12 +0100
+>     From:     Leo <fhaxbox66 at googlemail.com>
+>     Reply-To:     fhaxbox66 at googlemail.com, yabt-devel at lists.berlios.de
+>     To:   Yabt-Devel <yabt-devel at lists.berlios.de>
+>
+>
+>
+>     My earlier proposal not published on this list was as follows:
+>     At the first level of the tree there are only rules checking for
+>     the length of the original (i.e. substring to be translated by a
+>     single contraction). So there are likely nor more than 5 to 10
+>     nodes. On the second level I suggested rules checking for the
+>     beginning or the end of the word to single out contractions that
+>     may apply under such circumstances. But as most contractions can
+>     occur anywhere, this wouldn't reduce the problem very much. For
+>     the third level I suggested to check in alphabetical order if the
+>     substring matches any of the originals in the nodes. If so, the
+>     contraction may be used unless some excemption contained in the
+>     subtree of that contraction applies.
+>     Today, an alternative algorithm came to my mind and I want to
+>     quickly expose the idea so it is retained:
+>     We sort all contractions alphabetically using the original (eg:
+>     "that" or "sh"). We arrange them in the tree as follows: At the
+>     first level (i.e. root's children) each node corresponds to the
+>     first character of the originals. So there are around 26 nodes.
+>     The contraction for "always" will occur in the first node, "but
+>     and because in the second and so forth. At level 2 we distinguish
+>     according to the second char of the original. Here, we are likely
+>     to have much less nodes as, e.g. there are no contractions whose
+>     original starts with "aa" or "jk". The depth of the tree is equal
+>     to the length of the longest original. Walking through the input
+>     string char by char will guide us to the longest contraction which
+>     might apply. The subtree of that contraction may then contain
+>     exemptions such as with "gateshead". If an exemption applies,
+>     there may still be a shorter contraction encountered on our way up
+>     to here. So we'll have to backtrack and check if that one applies.
+>     At a given level, each node must be checked until the char
+>     matches. This may take long if the current letter is "z". To speed
+>     up things, one may consider binary search in cases where there are
+>     many nodes. Another option is to assemble the chars in each node
+>     to a string functioning as an index to the nodes of each level.
+>     The index string for level 1 is likely to contain the entire
+>     alphabet. At level 2, most strings will have much less characters.
+>     Choosing the right node comes down to searching the position where
+>     the character occurs in the index string.
+>     I don't know if this algorithm is smarter than the previous one.
+>     Its downside might be that it disregards the context until a
+>     specific contraction is singled out. In most cases, however, the
+>     described iterative matching may yield good approximations.
+>     We may reconsider both alternatives when discussing which node
+>     types to implement.
+>
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20090531/fb9f350a/attachment.html>
+

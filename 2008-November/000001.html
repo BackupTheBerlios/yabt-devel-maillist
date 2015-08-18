@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] Development process for yabt
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-November/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Development%20process%20for%20yabt&In-Reply-To=%3C492C994C.3080103%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000000.html">
+   <LINK REL="Next"  HREF="000008.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] Development process for yabt</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Development%20process%20for%20yabt&In-Reply-To=%3C492C994C.3080103%40aim.com%3E"
+       TITLE="[Yabt-devel] Development process for yabt">mwhapples at aim.com
+       </A><BR>
+    <I>Wed Nov 26 01:33:16 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000000.html">[Yabt-devel] Development process for yabt
+</A></li>
+        <LI>Next message: <A HREF="000008.html">[Yabt-devel] Development process for yabt
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1">[ date ]</a>
+              <a href="thread.html#1">[ thread ]</a>
+              <a href="subject.html#1">[ subject ]</a>
+              <a href="author.html#1">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 25/11/08 23:52, Leo wrote:
+&gt;<i> Looks good, in particular the license quesion. That said, a design 
+</I>&gt;<i> specification will have to serve our goals, not those of others.
+</I>
+Yes except I don't want the license to make YABT so restricted that 
+nobody can use it.
+&gt;<i> But the hardest part has yet to be written. Do you intend to give it a 
+</I>&gt;<i> first go?
+</I>&gt;<i> One comment on the state attribute in yabt-1.0: It could be 
+</I>&gt;<i> generalized by passing to the translation classe's constructor a 
+</I>&gt;<i> 'settings' dictionary for storing arbitrary key - value pairs.
+</I>
+I feel minimal should be passed in to the constructor. May be this is to 
+do with some of my java knowledge, and the spring framework and how its 
+configuration works.
+
+As for state itself, this is something which I feel is fairly core. For 
+Braille translation YABT uses it for Braille grade, and this may vary 
+between calls. Why not use separate translators for different grades? I 
+believe smoother joins can be done if a single translator can move from 
+one to the other as it knows about both grades and so can deal with the 
+context around a grade change. Another use for the state could be in 
+preparation of text for a speech synthesiser, it could denote 
+punctuation level, abreviation level, etc. In fact for speech 
+preparation more than just state might be wanted, or state may be a 
+tuple in that case (mixed feelings here, may be the statically typed 
+language side of me is going, NO! how could you have state being two 
+different types?). State if not needed by a particular translation 
+system need not actually be used, the variable can just be left floating 
+about.
+
+Looking at this state issue further it seems possibly very problematic. 
+State I believe does belong to the translator (IE. I want to translate 
+in this state) but rules need to access state. If state can be different 
+types (or other properties are set dynamically) how does any particular 
+rule type know what it should find (IE. how to stop things just falling 
+apart?).
+
+I also have noticed something I really should get the list to reply to 
+the list by default.
+
+MIchael Whapples
+
+&gt;<i> d
+</I>&gt;<i> ------------------------------------------------------------------------
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Yabt-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;<i>    
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/yabt-devel/attachments/20081126/21379445/attachment.html">https://lists.berlios.de/pipermail/yabt-devel/attachments/20081126/21379445/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000000.html">[Yabt-devel] Development process for yabt
+</A></li>
+	<LI>Next message: <A HREF="000008.html">[Yabt-devel] Development process for yabt
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1">[ date ]</a>
+              <a href="thread.html#1">[ thread ]</a>
+              <a href="subject.html#1">[ subject ]</a>
+              <a href="author.html#1">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

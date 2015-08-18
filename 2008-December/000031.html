@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] push for YABT-2.0b2
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-December/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20push%20for%20YABT-2.0b2&In-Reply-To=%3C49398A20.1000703%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000030.html">
+   <LINK REL="Next"  HREF="000032.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] push for YABT-2.0b2</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20push%20for%20YABT-2.0b2&In-Reply-To=%3C49398A20.1000703%40aim.com%3E"
+       TITLE="[Yabt-devel] push for YABT-2.0b2">mwhapples at aim.com
+       </A><BR>
+    <I>Fri Dec  5 21:08:00 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000030.html">[Yabt-devel] push for YABT-2.0b2
+</A></li>
+        <LI>Next message: <A HREF="000032.html">[Yabt-devel] push for YABT-2.0b2
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#31">[ date ]</a>
+              <a href="thread.html#31">[ thread ]</a>
+              <a href="subject.html#31">[ subject ]</a>
+              <a href="author.html#31">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>This was the way I thought regarding the ChangeLog.
+
+I will do some checks myself over the docs to check whether it still 
+refers to &quot;Yet another Braille translator&quot; and alter accordingly.
+
+I will be targeting YABT-2.0b2 for python 2.5 and 2.6 (it didn't work on 
+python 2.4 when I tried and python 2.4 is quite old). As for python 3.0 
+unfortunately that has just been released and I would say ideally I 
+would want to support it but as YABT-2.0b2 didn't work out of the box 
+when I tried with a release candidate, I don't want to delay YABT-2.0b2 
+because of that.
+
+Michael Whapples
+
+On 05/12/08 17:02, Leo wrote:
+&gt;<i> As I am about to travel over the weekend, I cannot look at the repo right
+</I>&gt;<i> now.
+</I>&gt;<i>
+</I>&gt;<i> For PyHyphen I've lazily chosen not to maintain a 20th century style
+</I>&gt;<i> changelog file. A link to the hg repo, maybe in a file named changelog,
+</I>&gt;<i> should satisfy everybody's needs.
+</I>&gt;<i>
+</I>&gt;<i> -----Ursprungliche Nachricht-----
+</I>&gt;<i> Von: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel-bounces at lists.berlios.de</A>
+</I>&gt;<i> [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel-bounces at lists.berlios.de</A>]Im Auftrag von Michael
+</I>&gt;<i> Whapples
+</I>&gt;<i> Gesendet: Freitag, 5. Dezember 2008 17:49
+</I>&gt;<i> An: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> Betreff: [Yabt-devel] push for YABT-2.0b2
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I have now made some alterations to the description of YABT. A bit more
+</I>&gt;<i> than I hoped and I probably haven't done it all. Any way I have
+</I>&gt;<i> committed these changes to the mercurial repository. There is one main
+</I>&gt;<i> thing I found which I had forgotten about and want to sort out before
+</I>&gt;<i> YABT-2.0b2. I haven't been touching the ChangeLog file. I think this is
+</I>&gt;<i> something to do with me and so I want to do one of the following:
+</I>&gt;<i> * remove the file and just expect users to refer to the mercurial log if
+</I>&gt;<i> they wish to view changes.
+</I>&gt;<i> * Find some way to connect the mercurial log with the ChangeLog, so I am
+</I>&gt;<i> forced to enter the details into the ChangeLog as what I enter for the
+</I>&gt;<i> commit message is used in ChangeLog. A mercurial extension seems to be
+</I>&gt;<i> the option here.
+</I>&gt;<i>
+</I>&gt;<i> The first is simpler but those who only use releases won't have change
+</I>&gt;<i> information easily to hand. The second is more complete but does have
+</I>&gt;<i> greater work to do to implement (find the extension, where should it be
+</I>&gt;<i> server or local, commit or push/pull activated, etc).
+</I>&gt;<i>
+</I>&gt;<i> I personally wouldn't miss it if it went have you any views?
+</I>&gt;<i>
+</I>&gt;<i> This is the only issue outstanding, unless you find some in the latest
+</I>&gt;<i> repository commit.
+</I>&gt;<i>
+</I>&gt;<i> Michael Whapples
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Yabt-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Yabt-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;<i>    
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000030.html">[Yabt-devel] push for YABT-2.0b2
+</A></li>
+	<LI>Next message: <A HREF="000032.html">[Yabt-devel] push for YABT-2.0b2
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#31">[ date ]</a>
+              <a href="thread.html#31">[ thread ]</a>
+              <a href="subject.html#31">[ subject ]</a>
+              <a href="author.html#31">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

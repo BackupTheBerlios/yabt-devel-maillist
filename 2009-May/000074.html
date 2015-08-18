@@ -1,0 +1,271 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] YABT 3.0 translation algorithm and some	mattersrelating to implementation
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20YABT%203.0%20translation%20algorithm%20and%0A%20some%09mattersrelating%20to%20implementation&In-Reply-To=%3C4A22FC94.9030102%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000073.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] YABT 3.0 translation algorithm and some	mattersrelating to implementation</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20YABT%203.0%20translation%20algorithm%20and%0A%20some%09mattersrelating%20to%20implementation&In-Reply-To=%3C4A22FC94.9030102%40aim.com%3E"
+       TITLE="[Yabt-devel] YABT 3.0 translation algorithm and some	mattersrelating to implementation">mwhapples at aim.com
+       </A><BR>
+    <I>Sun May 31 23:54:28 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000073.html">[Yabt-devel] YABT 3.0 translation algorithm and some	mattersrelating to implementation
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#74">[ date ]</a>
+              <a href="thread.html#74">[ thread ]</a>
+              <a href="subject.html#74">[ subject ]</a>
+              <a href="author.html#74">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+My plan with rule exceptions is that if we can decend another level 
+because we can match another character then we do decend. Once we cannot 
+decend further it looks through the applicable substitutions at that 
+level. Should none of these match then we retreat a level and look at 
+the substitutions there. Substitutions at a given level are what have 
+been referred to as exceptions, but I used the term substitution as it 
+could be the naturally expected for some levels (IE. at the deepest we 
+can decend and there may only be the one, it relates as an exception as 
+we can't decend further).
+
+As for choosing particular options and how it may affect performance, as 
+I said in the past I want to try and keep performance reasonable and so 
+should be kept in mind (EG. YABT using psyco to optimise performance at 
+the moment takes about 8 seconds on my computer to translate the report 
+on BrailleTrans (converted to text using pdftotext, approx 150 pages) 
+where as liblouis takes under a second). Yes I think YABT and liblouis 
+have very different goals so possibly the performance hit of using YABT 
+is worth it but it is quite a significant difference in translation 
+time. Trying to optimise a few obvious things at the beginning (IE. not 
+repeating actions which you know you don't need to repeat, within a call 
+of translate the translation text will not change so any conversion to 
+lowercase only need happen once) I think is worth trying to design from 
+the beginning (string operations can be expensive, particularly on long 
+strings).
+
+As for J stuff, JNA isn't a waste of time, as I said I plan to use it in 
+my media PC, liblouis was simply something simple to try out JNA before 
+I start work on the more complicated library for the keypad and LCD 
+display of the PC. Also JNA as I said is preferable to me than ctypes, 
+it does feel more natural to use. Anyway as far as things go YABT is 
+python and python it will stay, YABT doesn't need either ctypes or JNA. 
+The only thing I will add is I have heard some people suggest that java 
+programmers prefer ruby rather than python, better keep me away from 
+ruby then.
+
+Michael Whapples
+On 31/05/09 22:01, Leo wrote:
+&gt;<i> please mention the J-word never again here. Well, there might be one 
+</I>&gt;<i> remote reason for me to look at J at some point: Android. But for now 
+</I>&gt;<i> I count on Jython, if at all necessary.
+</I>&gt;<i> A few weeks ago I had a quick look at liblouis. The svn repo does 
+</I>&gt;<i> contain Python bindings using ctypes. So you've wasted your time on 
+</I>&gt;<i> that JNA stuff. ;-)
+</I>&gt;<i> On capitals: no strong views. Leaving performance issues aside, there 
+</I>&gt;<i> is no need for anything. Each rule's handler method could analyze the 
+</I>&gt;<i> string as needed, e.g. by lowering it before any maching business. 
+</I>&gt;<i> Talking about optimization, the flags proposal does make sense, maybe 
+</I>&gt;<i> using a bytes object where each byte represents a character and some 
+</I>&gt;<i> bits have a meaning, so you can use boolean operators. I would also 
+</I>&gt;<i> put the original into the object; this is cheap. Performance-wise it 
+</I>&gt;<i> might be a good idea to allow cheap tests whethere a word just starts 
+</I>&gt;<i> with a capital letter such as Britain or contains only non-capitals or 
+</I>&gt;<i> is completely capitalized such as USA. Mixtures such as McDonald are 
+</I>&gt;<i> more exotic though. So a single int describing the whole word as cap, 
+</I>&gt;<i> non-cap or fully-cap or undef would be nice.
+</I>&gt;<i> Algorithm: I think the second one is a bit easier to digest. Clearly 
+</I>&gt;<i> you can also handle things like &quot;to be&quot;, &quot;for the&quot; etc. Just allow 
+</I>&gt;<i> spaces, punctuation etc. By the way, in German there are thinks like 
+</I>&gt;<i> the following: &quot;ich&quot; becomes &quot;#&quot;. But &quot;ich,&quot; becomes &quot;i4,&quot; because 
+</I>&gt;<i> &quot;#,&quot; would be misinterpreted as &quot;1.&quot;
+</I>&gt;<i> But this is to be handled by exception nodes drawing on the context, 
+</I>&gt;<i> or a handler method implements the rule and the exception rather than 
+</I>&gt;<i> adding a dedicated exception node.
+</I>&gt;<i> A question might be whether you pass the focus as substrings extracted 
+</I>&gt;<i> from a long text as slices, or just its indices.
+</I>&gt;<i>  Leo
+</I>&gt;<i> [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel-bounces at lists.berlios.de</A>]*Im Auftrag von *Michael 
+</I>&gt;<i> Whapples
+</I>&gt;<i> *Gesendet:* Sonntag, 31. Mai 2009 19:20
+</I>&gt;<i> *An:* <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> *Betreff:* [Yabt-devel] YABT 3.0 translation algorithm and some 
+</I>&gt;<i> mattersrelating to implementation
+</I>&gt;<i>
+</I>&gt;<i>     Hello,
+</I>&gt;<i>     Before getting down to business I will just say again the java
+</I>&gt;<i>     development tried to distract me so I'm going to attend to YABT
+</I>&gt;<i>     before it does. I suppose we can just hope for Sun to set up a JA
+</I>&gt;<i>     (java annonymous) in my area, until that happens I may just need
+</I>&gt;<i>     to occasionally feed the java habbit. At the moment I have come
+</I>&gt;<i>     across JNA (java native access) which is like python's ctypes for
+</I>&gt;<i>     java, although I feel more comfortable with JNA. I have started
+</I>&gt;<i>     making liblouis java bindings using it (liblouis was a fairly
+</I>&gt;<i>     simple but not trivial library to start with, I intend to possibly
+</I>&gt;<i>     change my media PC to use java for the programming language).
+</I>&gt;<i>
+</I>&gt;<i>     Anyway down to business with YABT. I have started looking at
+</I>&gt;<i>     changing YABT for 3.0, first thing is to remove that
+</I>&gt;<i>     addCharacterMap method from the translator class and anything to
+</I>&gt;<i>     do with it. This though raises the question of how to neatly deal
+</I>&gt;<i>     with capitalisation (which is the reason for making the change).
+</I>&gt;<i>     My proposals are:
+</I>&gt;<i>
+</I>&gt;<i>     * Use a custom object to represent the translation text. This
+</I>&gt;<i>     object would have the string in lowercase and a list/array of
+</I>&gt;<i>     flags (possibly as characters) representing the capitalisation of
+</I>&gt;<i>     the character in that position in the string (eg. flags may say
+</I>&gt;<i>     capital, lowercase, either case/no case, etc). Rules would use
+</I>&gt;<i>     this object for matching. Flags may not need to be limited to just
+</I>&gt;<i>     capitalisation information, so this has scope for future
+</I>&gt;<i>     expansion. However it may be fiddly for surrounding matching (eg.
+</I>&gt;<i>     with regular expressions) as the string part is case insensitive
+</I>&gt;<i>     and the case may be wanted, it would require additional manual
+</I>&gt;<i>     checking of the case.
+</I>&gt;<i>     * Alternatively to the above (possibly my preferred) is for the
+</I>&gt;<i>     translation text object to contain two copies of the text, one in
+</I>&gt;<i>     lowercase (eg. created by the lowercase function of python) and
+</I>&gt;<i>     another string being the original (so containing all the capitals,
+</I>&gt;<i>     etc). This is simpler for checking as the rule uses whichever
+</I>&gt;<i>     string it wants to.
+</I>&gt;<i>
+</I>&gt;<i>     Neither of the above will fully achieve what I want, adding the
+</I>&gt;<i>     rules to ensure capital signs are inserted where needed may
+</I>&gt;<i>     require many rules to get every situation, therefore I propose a
+</I>&gt;<i>     zero length focus rule type. These zero length rules would be
+</I>&gt;<i>     checked first and should one match then it may insert into the
+</I>&gt;<i>     output but focus position will not be moved on in the translation
+</I>&gt;<i>     text, and then the standard rules are checked. This will avoid me
+</I>&gt;<i>     having to make the translator do something specific around
+</I>&gt;<i>     capitals, only rules need to be defined (what I mean is that
+</I>&gt;<i>     liblouis requires a capsign and such like to be defined in its
+</I>&gt;<i>     tables but this is awfully Braille specific as to when it should
+</I>&gt;<i>     be used, YABT would allow the rule to say when it should be used).
+</I>&gt;<i>
+</I>&gt;<i>     I had a brief look back through my email and found a message where
+</I>&gt;<i>     you described a way possibly to do translation (infact two
+</I>&gt;<i>     suggestions of algorithms), this message is below. Out of the two
+</I>&gt;<i>     I can imagine the second better (I can almost imagine the code or
+</I>&gt;<i>     at least the general code structure). One question I have with
+</I>&gt;<i>     this second algorithm is how does it determine order of exceptions
+</I>&gt;<i>     should we have more than one exception of the same focus (eg. if
+</I>&gt;<i>     focus is &quot;sh&quot; and we may have exception saying &quot;sh&quot; followed by
+</I>&gt;<i>     &quot;ead&quot; should be output as &quot;sh&quot; and &quot;sh&quot; followed by anything else
+</I>&gt;<i>     should be &quot;%&quot; (sh sign) (example may not actually come to be if
+</I>&gt;<i>     table was designed right but it gives the idea)). Would this be
+</I>&gt;<i>     expected to be order specific as very few will be in such a
+</I>&gt;<i>     situation and the ordering problem was to do with the huge number
+</I>&gt;<i>     of rules needing the correct order in the current YABT table system?
+</I>&gt;<i>
+</I>&gt;<i>     The first one my questions are things like:
+</I>&gt;<i>
+</I>&gt;<i>     * How do you determine what is the longest focus to start with?
+</I>&gt;<i>     * If previous question answer is that it should be until the end
+</I>&gt;<i>     of a word, how do we deal with spaces, multi-word contractions
+</I>&gt;<i>     (eg. &quot;in to the&quot;), etc.
+</I>&gt;<i>
+</I>&gt;<i>     Michael Whapples
+</I>&gt;<i>
+</I>&gt;<i>     -------- Original Message --------
+</I>&gt;<i>     Subject:  [Yabt-devel] Translation algorithm and tree structure
+</I>&gt;<i>     Date:     Sat, 29 Nov 2008 13:30:12 +0100
+</I>&gt;<i>     From:     Leo &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">fhaxbox66 at googlemail.com</A>&gt;
+</I>&gt;<i>     Reply-To:     <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">fhaxbox66 at googlemail.com</A>, <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel at lists.berlios.de</A>
+</I>&gt;<i>     To:   Yabt-Devel &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel at lists.berlios.de</A>&gt;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>     My earlier proposal not published on this list was as follows:
+</I>&gt;<i>     At the first level of the tree there are only rules checking for
+</I>&gt;<i>     the length of the original (i.e. substring to be translated by a
+</I>&gt;<i>     single contraction). So there are likely nor more than 5 to 10
+</I>&gt;<i>     nodes. On the second level I suggested rules checking for the
+</I>&gt;<i>     beginning or the end of the word to single out contractions that
+</I>&gt;<i>     may apply under such circumstances. But as most contractions can
+</I>&gt;<i>     occur anywhere, this wouldn't reduce the problem very much. For
+</I>&gt;<i>     the third level I suggested to check in alphabetical order if the
+</I>&gt;<i>     substring matches any of the originals in the nodes. If so, the
+</I>&gt;<i>     contraction may be used unless some excemption contained in the
+</I>&gt;<i>     subtree of that contraction applies.
+</I>&gt;<i>     Today, an alternative algorithm came to my mind and I want to
+</I>&gt;<i>     quickly expose the idea so it is retained:
+</I>&gt;<i>     We sort all contractions alphabetically using the original (eg:
+</I>&gt;<i>     &quot;that&quot; or &quot;sh&quot;). We arrange them in the tree as follows: At the
+</I>&gt;<i>     first level (i.e. root's children) each node corresponds to the
+</I>&gt;<i>     first character of the originals. So there are around 26 nodes.
+</I>&gt;<i>     The contraction for &quot;always&quot; will occur in the first node, &quot;but
+</I>&gt;<i>     and because in the second and so forth. At level 2 we distinguish
+</I>&gt;<i>     according to the second char of the original. Here, we are likely
+</I>&gt;<i>     to have much less nodes as, e.g. there are no contractions whose
+</I>&gt;<i>     original starts with &quot;aa&quot; or &quot;jk&quot;. The depth of the tree is equal
+</I>&gt;<i>     to the length of the longest original. Walking through the input
+</I>&gt;<i>     string char by char will guide us to the longest contraction which
+</I>&gt;<i>     might apply. The subtree of that contraction may then contain
+</I>&gt;<i>     exemptions such as with &quot;gateshead&quot;. If an exemption applies,
+</I>&gt;<i>     there may still be a shorter contraction encountered on our way up
+</I>&gt;<i>     to here. So we'll have to backtrack and check if that one applies.
+</I>&gt;<i>     At a given level, each node must be checked until the char
+</I>&gt;<i>     matches. This may take long if the current letter is &quot;z&quot;. To speed
+</I>&gt;<i>     up things, one may consider binary search in cases where there are
+</I>&gt;<i>     many nodes. Another option is to assemble the chars in each node
+</I>&gt;<i>     to a string functioning as an index to the nodes of each level.
+</I>&gt;<i>     The index string for level 1 is likely to contain the entire
+</I>&gt;<i>     alphabet. At level 2, most strings will have much less characters.
+</I>&gt;<i>     Choosing the right node comes down to searching the position where
+</I>&gt;<i>     the character occurs in the index string.
+</I>&gt;<i>     I don't know if this algorithm is smarter than the previous one.
+</I>&gt;<i>     Its downside might be that it disregards the context until a
+</I>&gt;<i>     specific contraction is singled out. In most cases, however, the
+</I>&gt;<i>     described iterative matching may yield good approximations.
+</I>&gt;<i>     We may reconsider both alternatives when discussing which node
+</I>&gt;<i>     types to implement.
+</I>&gt;<i>
+</I>&gt;<i> ------------------------------------------------------------------------
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Yabt-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;<i>    
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/yabt-devel/attachments/20090531/fb9f350a/attachment.html">https://lists.berlios.de/pipermail/yabt-devel/attachments/20090531/fb9f350a/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000073.html">[Yabt-devel] YABT 3.0 translation algorithm and some	mattersrelating to implementation
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#74">[ date ]</a>
+              <a href="thread.html#74">[ thread ]</a>
+              <a href="subject.html#74">[ subject ]</a>
+              <a href="author.html#74">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

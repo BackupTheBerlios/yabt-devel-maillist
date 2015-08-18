@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] Further thoughts and explainations on my design of	YABT
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-December/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Further%20thoughts%20and%20explainations%20on%20my%20design%20of%0A%09YABT&In-Reply-To=%3CDKECKJNNEDEJAJDEPCMBGEEACIAA.fhaxbox66%40googlemail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000048.html">
+   <LINK REL="Next"  HREF="000054.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] Further thoughts and explainations on my design of	YABT</H1>
+    <B>Leo</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Further%20thoughts%20and%20explainations%20on%20my%20design%20of%0A%09YABT&In-Reply-To=%3CDKECKJNNEDEJAJDEPCMBGEEACIAA.fhaxbox66%40googlemail.com%3E"
+       TITLE="[Yabt-devel] Further thoughts and explainations on my design of	YABT">fhaxbox66 at googlemail.com
+       </A><BR>
+    <I>Mon Dec 15 23:52:01 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000048.html">[Yabt-devel] Further thoughts and explainations on my design of YABT
+</A></li>
+        <LI>Next message: <A HREF="000054.html">[Yabt-devel] Further thoughts and explainations on my design of	YABT
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#52">[ date ]</a>
+              <a href="thread.html#52">[ thread ]</a>
+              <a href="subject.html#52">[ subject ]</a>
+              <a href="author.html#52">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Interesting article. Reminds me of the bridge pattern as described by the
+Gang of Four.
+
+I share your view that loading a file into a translator is a fairly specific
+process: Whereas film databases are not designed specifically for a specific
+application that retrieves films directed by a particular director, rule
+tables will be written for a specific translator. In theory, a two-column
+csv file could be used by a context-sensitive xml engine: the loader would
+just create nodes on the fly... But this is academic I think. So I would
+assume that yabt comes up with a number of translators accomodating most
+needs. And table authors will choose their favorite one and write a table
+for it. I would change my mind if you wanted to allow yabt to use
+third-party tables written for another software, say, buxbury. But in this
+case, I would assume a one-off conversion would do well. This is another
+difference to a public film database that changes every day as new films
+come to light.
+
+As I said: I don't have strong views on loaders provided that in most cases
+users don't need to bother for them.
+
+As a dispatcher (I mentioned this in my earlier e-mail), let me give a short
+example:
+
+def __init__(self, location, sourcetype):
+    loader = getattr(self, sourcetype + '_loader')
+     self.rules = loader(location)
+
+This allows you to specify as many loader methods as you want such as
+ftp_loader, xml_loader, plaintext_loader etc. The init method does
+everything through the getattr trick. And innovative prople can easily
+extend this in subclasses to use an sqlite_loader which is called by
+something like mytranslator = translator('mytable', 'sqlite')
+
+
+ As regards the base translator and the engines (rules), I guess there is a
+greater need for decoupling. I would even decouple more than you as
+described in my earlier e-mail.
+
+
+
+
+
+
+-----Original Message-----
+From: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel-bounces at lists.berlios.de</A>
+[mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel-bounces at lists.berlios.de</A>]On Behalf Of Michael
+Whapples
+Sent: Monday, December 15, 2008 10:35 PM
+To: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel at lists.berlios.de</A>
+Subject: [Yabt-devel] Further thoughts and explainations on my design of
+YABT
+
+
+Hello,
+I think I have now found some articles wich explain what I am trying to
+do with YABT with my design.
+
+In previous messages I mentioned about spring and its configuration, yes
+it would be wrong for YABT to provide that configuration framework, but
+it should support being used within that framework (IE. support being
+used by those applications). Spring is huge and may over complicate what
+I am meaning, the part I am getting at is the inversion of control and
+dependency injection stuff. I have had a look for some explainations of
+it and found (<A HREF="http://wiki.python.org/moin/DependencyInjectionPattern">http://wiki.python.org/moin/DependencyInjectionPattern</A>).
+That particular page is not so useful on its own but it has some good
+links (Martin Fowler's article is good). I feel translators and rules
+should be loosely coupled, translators and loaders should be loosely
+couple but unfortunately loaders and rules may not be loosely coupled
+(reason being that loader deals with a data source representing rules).
+As dependency injection deals with plain old python objects (POPOs, I am
+using this to reflect the java term POJO) then YABT doesn't need to
+concern itself with anything of the controlling app (whether the
+controlling app actually uses a dependency ijection framework or what
+that framework is, or if the app just creates the objects as in yabt-trans).
+
+The configuration module I mentioned recently where all loaders and
+translators could register would be optional and potentially would
+provide a replacement to the dependency injection system. The
+configuration module would be more suited for dynamic applications where
+users may select the loaders and translators they want (eg. the
+controlling app might call a getTranslatorList method/function and use
+the information returned to display a list of translators and their
+descriptions to the user for the user to select which they want to use
+and then the app would get an instance by calling something like
+createTranslatorByName).
+
+How does my structure sound now I have mentioned all this?
+
+Michael Whapples
+_______________________________________________
+Yabt-devel mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000048.html">[Yabt-devel] Further thoughts and explainations on my design of YABT
+</A></li>
+	<LI>Next message: <A HREF="000054.html">[Yabt-devel] Further thoughts and explainations on my design of	YABT
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#52">[ date ]</a>
+              <a href="thread.html#52">[ thread ]</a>
+              <a href="subject.html#52">[ subject ]</a>
+              <a href="author.html#52">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

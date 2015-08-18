@@ -1,0 +1,230 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] Future of YABT, where is it going
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2009-October/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Future%20of%20YABT%2C%20where%20is%20it%20going&In-Reply-To=%3C4AD5009F.2020809%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000080.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] Future of YABT, where is it going</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Future%20of%20YABT%2C%20where%20is%20it%20going&In-Reply-To=%3C4AD5009F.2020809%40aim.com%3E"
+       TITLE="[Yabt-devel] Future of YABT, where is it going">mwhapples at aim.com
+       </A><BR>
+    <I>Wed Oct 14 00:35:11 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000080.html">[Yabt-devel] Future of YABT, where is it going
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#81">[ date ]</a>
+              <a href="thread.html#81">[ thread ]</a>
+              <a href="subject.html#81">[ subject ]</a>
+              <a href="author.html#81">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Good sounds like my thoughts make sense to more than just me. I feel 
+point one is only really going to make sense if those big changes which 
+should happen do happen, as YABT currently stands it doesn't have a huge 
+advantage over liblouis.
+
+Regarding setuptools then it should be a fairly easy task to create a 
+distutils test command, there unfortunately isn't one but in the past I 
+have written scripts to run tests so it should purely be linking 
+distutils to the code to execute a test. This is probably a high 
+priority as dropping setuptools support almost depends on this (yes 
+could drop the support and then do this but it would leave a temporary 
+gap in the feature.
+
+Py3k being the starting point for YABT 3.0 seems a bold step but I think 
+this might be a good way. Hopefully with correct coding style supporting 
+both shouldn't be an issue as YABT won't depend on anything else and so 
+won't be forced by other packages to the versions of python it supports.
+
+Finally on license, essentially I want to have it that YABT code should 
+stay opensource, but one thing I don't want to do is restrict people to 
+what license they can release their programs under just because they use 
+YABT. As an example the GPL has a requirement that anything that links 
+to it should give users all the right of the GPL, and as I understand it 
+that this must then continue all the way down the chain (IE. so anything 
+which uses a package which uses YABT would also need to give users the 
+GPL rights, and then if something uses this again that needs to give the 
+users the same rights). This as I understand it even applies to when a 
+package does an import (that is meant to be as good as linking), that 
+seems just wrong. The artistic 2.0 license seems to be a fairly easy to 
+read license and does mainly what I want. The MPL/EPL and such like also 
+seem to do what I want but seem to give slightly different rights (I 
+think, they aren't so simple in their language, that they allow people 
+to modify the package and any new files they add to the package can be 
+closed source) so I think a bit more free to users further down the 
+chain, they may not protect YABT quite so well. I think that the 
+artistic license is GPL compatible but I am not so sure about MPL and 
+EPL, so the artistic license would be better to let YABT mix with 
+software written by those who feel they must use the GPL.
+
+I will leave it there before I start on my rant of why not use the GPL 
+and why its so bad and possibly not as free as its supporters suggest, 
+the above probably gives you a good idea what I would be thinking of anyway.
+
+Michael Whapples
+On 13/10/09 22:26, Leo wrote:
+&gt;<i> Hello,
+</I>&gt;<i>
+</I>&gt;<i> 1. Is there a reason to develop yabt while there is liblouis?
+</I>&gt;<i>
+</I>&gt;<i> Yes, there are many, even if I don't know if they are compelling:
+</I>&gt;<i> - YABT is pure Python, liblouis difficult-to-compile C staff (at least on
+</I>&gt;<i> Windows there are problems. OK, they have a win32 dll for download, but it
+</I>&gt;<i> is still somdwhat difficult to get going unless you obtain the Python
+</I>&gt;<i> bindings from NVDA). OK, not very compelling for win32 users, nor for Unix
+</I>&gt;<i> as they can always compile C.
+</I>&gt;<i>
+</I>&gt;<i> - YABT's architecture, once finalized for 3.0 is by magnitudes more flexible
+</I>&gt;<i> and powerful than that of liblouis. I should reiterate that yabt should have
+</I>&gt;<i> support for liblouis tables to offset its first-mover advantage. Once you
+</I>&gt;<i> have all liblouis tables on board, the user base will quickly grow.
+</I>&gt;<i>
+</I>&gt;<i> - yabt is written in an easy-to-learn scripting language rather than tedious
+</I>&gt;<i> C. I have the impression that this is the reason why liblouis is not
+</I>&gt;<i> community-driven. Only the tables are. But here I may be wrong.
+</I>&gt;<i>
+</I>&gt;<i> 2. Setup tools / distributed
+</I>&gt;<i>
+</I>&gt;<i> There is also virtualenv. But frankly I would subscribe to the idea of
+</I>&gt;<i> droping setuptools. I guess distutils has its own test command. And if not,
+</I>&gt;<i> just call the scripts in the test subdir. If yabt itself has no
+</I>&gt;<i> dependencies, anyone who has setuptools installed can get yabt using
+</I>&gt;<i> easy_install. That's enough of convenience I think. And even if yabt had
+</I>&gt;<i> dependencies such as lxml, it would suffice to have an application that uses
+</I>&gt;<i> setuptools and gets yabt and lxml upon installation.
+</I>&gt;<i>
+</I>&gt;<i> 3. Develop YABT on P3k?
+</I>&gt;<i>
+</I>&gt;<i> Yes, good idea. You can backport it to 2.x on an as-needed basis once you
+</I>&gt;<i> are comfortable with the architecture.
+</I>&gt;<i>
+</I>&gt;<i> 4. License
+</I>&gt;<i>
+</I>&gt;<i> Don't know. I find it obscene though that people must pay for most assistive
+</I>&gt;<i> software such as Duxbury. I tend to use the GPL as I am too lazy to look for
+</I>&gt;<i> something else. But the idea of publishing always the sources does appeal to
+</I>&gt;<i> me.
+</I>&gt;<i>
+</I>&gt;<i> Leo
+</I>&gt;<i>
+</I>&gt;<i> -----Ursprungliche Nachricht-----
+</I>&gt;<i> Von: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel-bounces at lists.berlios.de</A>
+</I>&gt;<i> [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel-bounces at lists.berlios.de</A>]Im Auftrag von Michael
+</I>&gt;<i> Whapples
+</I>&gt;<i> Gesendet: Dienstag, 13. Oktober 2009 18:55
+</I>&gt;<i> An: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> Betreff: [Yabt-devel] Future of YABT, where is it going
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Hello,
+</I>&gt;<i> I firstly have to say that YABT has been pushed to the back for some
+</I>&gt;<i> time and really deserves some more attention. There are a few things I
+</I>&gt;<i> want to discuss.
+</I>&gt;<i>
+</I>&gt;<i> One of the reasons why YABT has been ignored is that there seems to be a
+</I>&gt;<i> bit of promise from liblouis/liblouisxml on the British maths Braille
+</I>&gt;<i> support. YABT was created because I felt at the time there was no
+</I>&gt;<i> suitable Braille translator for BrlTex to use to produce British maths
+</I>&gt;<i> Braille. I had looked at liblouis to see whether I could do anything but
+</I>&gt;<i> I have to say I never really got into it (never really got to understand
+</I>&gt;<i> it and was unsure whether it really could do what I wanted) so it seemed
+</I>&gt;<i> easier to create my own translator and YABT came into existence. As
+</I>&gt;<i> liblouis/liblouisxml now offers the British maths Braille support some
+</I>&gt;<i> of the motivation has gone (I am still to assess how suitable
+</I>&gt;<i> liblouis/liblouisxml really are). However I do feel there are certain
+</I>&gt;<i> design features of YABT which make it better than liblouis (eg. separate
+</I>&gt;<i> rule classes, a way to specify a function to call on no rule being
+</I>&gt;<i> found, etc). As some of this might be hard to add to liblouis there may
+</I>&gt;<i> still be good reasons to keep YABT under development. Any views?
+</I>&gt;<i>
+</I>&gt;<i> Another thing is that I have come across distribute which in its 0.6.x
+</I>&gt;<i> branch intends to be a replacement for setuptools. Now one feature
+</I>&gt;<i> distribute offers is python3 support, so I have had the chance to try
+</I>&gt;<i> YABT on python3 and there seems to be no issue (at least in the core
+</I>&gt;<i> code). I feel python3 support would be something good to offer, its
+</I>&gt;<i> almost tempting (particularly with the low number of dependencies YABT
+</I>&gt;<i> has) to switch to having python3 as the primary development version of
+</I>&gt;<i> python and just keep python2 support for as long as possible. However in
+</I>&gt;<i> the past there has been question of whether I should rid YABT of that
+</I>&gt;<i> setuptools dependency, well after coming across distribute and what I
+</I>&gt;<i> found on the distutils-sig mailing list in the last couple of days I
+</I>&gt;<i> have reached the conclusion that YABT must rid itself of that
+</I>&gt;<i> setuptools/distribute dependency as quick as possible. What might be
+</I>&gt;<i> affected by this decision:
+</I>&gt;<i>
+</I>&gt;<i> * Running of tests, at present setuptools provides the test command to
+</I>&gt;<i> run tests, YABT will need to provide its own.
+</I>&gt;<i> * Automatic script generation, is this really such a loss? In future I
+</I>&gt;<i> will just have to use the script stuff in distutils.
+</I>&gt;<i> * YABT won't be in an egg, translation tables will be just in the
+</I>&gt;<i> package tree, this probably means adjusting some code (eg. in the scripts).
+</I>&gt;<i> * YABT will finally be dependency free, it will only need python and the
+</I>&gt;<i> standard python packages.
+</I>&gt;<i>
+</I>&gt;<i> Any alterations I have missed? Again any views on dropping the
+</I>&gt;<i> dependency on setuptools?
+</I>&gt;<i>
+</I>&gt;<i> I feel YABT hasn't had the attention from me, so may be time for a
+</I>&gt;<i> project structure alteration. This would start with finding a more
+</I>&gt;<i> relaxed license, may be the artistic 2.0 license, may be an MPL type
+</I>&gt;<i> license (eg. EPL). Part of the reason I want to relax the license is
+</I>&gt;<i> that I would like other developers to feel they can contribute and if
+</I>&gt;<i> suitable people come forward I would consider adding them to the YABT
+</I>&gt;<i> project. Essentially I would like YABT to become a bit more open and
+</I>&gt;<i> community driven. Something I would hope that would come out of that
+</I>&gt;<i> would be a greater user base, as hopefully development would be faster
+</I>&gt;<i> and there could be better ideas for what YABT can do. Any views,
+</I>&gt;<i> particularly related to licensing, I want to choose a license which will
+</I>&gt;<i> best suit everyone's needs not just mine.
+</I>&gt;<i>
+</I>&gt;<i> Michael Whapples
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Yabt-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Yabt-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;<i>    
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000080.html">[Yabt-devel] Future of YABT, where is it going
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#81">[ date ]</a>
+              <a href="thread.html#81">[ thread ]</a>
+              <a href="subject.html#81">[ subject ]</a>
+              <a href="author.html#81">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

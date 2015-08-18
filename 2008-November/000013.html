@@ -1,0 +1,210 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] YABT versioning and distribution
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-November/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20YABT%20versioning%20and%20distribution&In-Reply-To=%3C90326f110811280549o1948ddf4pbcdeb3794f30b4d4%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000011.html">
+   <LINK REL="Next"  HREF="000014.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] YABT versioning and distribution</H1>
+    <B>Leo</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20YABT%20versioning%20and%20distribution&In-Reply-To=%3C90326f110811280549o1948ddf4pbcdeb3794f30b4d4%40mail.gmail.com%3E"
+       TITLE="[Yabt-devel] YABT versioning and distribution">fhaxbox66 at googlemail.com
+       </A><BR>
+    <I>Fri Nov 28 14:49:59 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000011.html">[Yabt-devel] YABT versioning and distribution
+</A></li>
+        <LI>Next message: <A HREF="000014.html">[Yabt-devel] YABT versioning and distribution
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#13">[ date ]</a>
+              <a href="thread.html#13">[ thread ]</a>
+              <a href="subject.html#13">[ subject ]</a>
+              <a href="author.html#13">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I must admit I do not currently anticipate a huge demand on the part
+of developers to have separate packages for the core and an xml-based
+implementation. Of course I would be convinced by some evidence with
+similar projects. But off hand I would say most people would be happy
+with an integral package of both core and some useful implementations.
+So nested repositories appear to me a luxury if not superfluous at
+this stage. Look at projects like numpy, scipy and indeed docutils
+which ship with all kinds of packages and subpackages in a single
+distribution and I haven't heard of any plans to move towards nested
+repositories. To the contrary: Sphinx is a good example of a
+substantial extension / implementation of docutils and it is used as
+from Python 2.6 and 3.0 as the standard Python documentation tool. Or
+have a look at rst2pdf which also builds on docutils rather than just
+docutils.core or whatever might be considered a useful subset to be
+released separately.
+
+That said, I certainly think that nested repositories could have
+important advantages. But I perceive a risk of being cide-tracked by
+all these issues even way before the first reasonably stable
+implementation of yabt is in sight. By the way, my fealing is that a
+considerable portion of yabt would be replaced by new code. So maybe a
+version 3.0 could make sense rather than coercing this substantial
+rewrite between v2beta2 and v2.0final.
+
+One of my favorite English sayings is: &quot;Let's cross that bridge when
+we come to it.&quot;. And many bridges can be avoided just by staying away
+from the forest.
+
+
+On 28/11/2008, Michael Whapples &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">mwhapples at aim.com</A>&gt; wrote:
+&gt;<i> Hello,
+</I>&gt;<i> I am trying to get up to date with my emails.
+</I>&gt;<i>
+</I>&gt;<i> Setuptools:
+</I>&gt;<i> My reasoning of setuptools over distutils:
+</I>&gt;<i> * Setuptools can manage dependencies for YABT (if any). If YABT was to
+</I>&gt;<i> be split into YABT.core and an implementation(s), then the
+</I>&gt;<i> implementation(s) will require YABT.core if they are distributed in
+</I>&gt;<i> separate egg files. Also this assists developers using YABT for a task
+</I>&gt;<i> in their applications (eg. if I structured BrlTex correct to use
+</I>&gt;<i> setuptools then it could add YABT as a dependency).
+</I>&gt;<i> * Setuptools and plugins for setuptools can provide file tracking. I
+</I>&gt;<i> mean that you don't need to create the manifest file to specify
+</I>&gt;<i> additional files to be included in source distributions, so long as they
+</I>&gt;<i> exist in the repository then setuptools (or for mercurial the
+</I>&gt;<i> hg.setuptools plug in) will automatically create the manifest file for you.
+</I>&gt;<i> * version management. Setuptools will allow multiple version of YABT to
+</I>&gt;<i> be installed and the correct version to be used in applications.
+</I>&gt;<i> * Entry points to support plugins. This feature allows developers to
+</I>&gt;<i> specify entry points in their egg files and setuptools automatically
+</I>&gt;<i> manages this. See how hg.setuptools is done as a plugin for setuptools,
+</I>&gt;<i> it only requires the user to install hg.setuptools for setuptools to
+</I>&gt;<i> support mercurial repositories (no configuration required).
+</I>&gt;<i>
+</I>&gt;<i> I am sure that there may be other advantages I have just missed. I also
+</I>&gt;<i> will admit setuptools does have its problems (no obvious way to
+</I>&gt;<i> uninstall packages, etc) so I am willing to look at alternatives if
+</I>&gt;<i> anyone can suggest better.
+</I>&gt;<i>
+</I>&gt;<i> Now for those versioning questions:
+</I>&gt;<i> Forest looks like it would solve YABT's requirements, but I still have
+</I>&gt;<i> some questions in my mind as to how or what things are for (eg. does the
+</I>&gt;<i> server need the forest extension, does every person using the repository
+</I>&gt;<i> need the forest extension, what happens if they don't have it if it is
+</I>&gt;<i> needed, what are the snapshot files for, etc). The other thing is that
+</I>&gt;<i> on the forest extension's page there is a link to a proposal for adding
+</I>&gt;<i> module support to mercurial. Unfortunately there is no clue as to when
+</I>&gt;<i> this might happen. An interesting thing I do notice is that git does
+</I>&gt;<i> seem to have a submodules system, might we be better served by git
+</I>&gt;<i> (there is a git setuptools plugin)? It also comes back to the question,
+</I>&gt;<i> should YABT.core be a separate egg to a YABT implementation made by the
+</I>&gt;<i> YABT project? Creating it as one egg does solve the issue of mercurial
+</I>&gt;<i> and the separation can still be achieved with python packages inside one
+</I>&gt;<i> egg, but separating into different packages would show how
+</I>&gt;<i> implementations should be done by external developers.
+</I>&gt;<i>
+</I>&gt;<i> As for naming the implementation packages, I selected YABT.braille as I
+</I>&gt;<i> want somewhere YABT to be obvious as to what it can be used for, rather
+</I>&gt;<i> than a library which looks so arbitary you can't really work out what it
+</I>&gt;<i> does. May be I was skipping a layer when thinking this, the people
+</I>&gt;<i> deciding to use a YABT implementation is not a end user, but a developer
+</I>&gt;<i> who hopefully can understand what YABT's potential is and doesn't need
+</I>&gt;<i> uses spelling out. Those developers using YABT in their application are
+</I>&gt;<i> the ones making YABT fit a users actual needs.
+</I>&gt;<i>
+</I>&gt;<i> I feel some of these distribution questions should be answered before
+</I>&gt;<i> progressing with YABT (except for making that YABT-2.0b2 release) as if
+</I>&gt;<i> a restructure of the repository is needed I don't want to have to do it
+</I>&gt;<i> in the midst of developing YABT and potentially having work flow
+</I>&gt;<i> severely disrupted.
+</I>&gt;<i>
+</I>&gt;<i> Michael Whapples
+</I>&gt;<i>
+</I>&gt;<i> On 27/11/08 16:16, Leo wrote:
+</I>&gt;&gt;<i> I don't have any views nor knowledge on this. Except that I find
+</I>&gt;&gt;<i> braille too specific a name for the implementation package. I don't
+</I>&gt;&gt;<i> see anything braille-specific in it let alone the xml-table. So I
+</I>&gt;&gt;<i> suggest as a subpackage name something like 'parsers' with further
+</I>&gt;&gt;<i> subpackages such as 'xmltable', 'jsontable' etc. Or you rename Braille
+</I>&gt;&gt;<i> to 'xmltable'. Otherwise, no one will believe that yabt can be used
+</I>&gt;&gt;<i> for other purposes.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Those who don't rely on psyco will have very few dependencies that
+</I>&gt;&gt;<i> setuptools could facilitate to handle. Sorry, but I have very little
+</I>&gt;&gt;<i> experience with setuptools. You may wish to post your question in the
+</I>&gt;&gt;<i> setuptools users list. From my vantage point yabt could live without
+</I>&gt;&gt;<i> setuptools for quite some time. But with setuptools it will be much
+</I>&gt;&gt;<i> mor elegant, I know.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On 26/11/2008, Michael Whapples&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">mwhapples at aim.com</A>&gt;  wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Hello,
+</I>&gt;&gt;&gt;<i> Firstly notes about version numbers. I said earlier I fall on the side
+</I>&gt;&gt;&gt;<i> of the date for development builds, that I am now reconsidering. Problem
+</I>&gt;&gt;&gt;<i> being the date given is for when the build is done, not when the commit
+</I>&gt;&gt;&gt;<i> into the repository is done (IE. if I build immediately after committing
+</I>&gt;&gt;&gt;<i> revision 66 on 2008-11-26 but you were to build revision 65 on the
+</I>&gt;&gt;&gt;<i> following day (2008-11-27) then according to version numbers you have
+</I>&gt;&gt;&gt;<i> the newer version where as I in fact have the later committed version).
+</I>&gt;&gt;&gt;<i> May be I will just have to go with customising hgversion.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Another problem I am hitting is that hg.setuptools and probably
+</I>&gt;&gt;&gt;<i> hgversion only work when at the top level directory in mercurial. It
+</I>&gt;&gt;&gt;<i> seems like one distribution per repository (I can see the sense).
+</I>&gt;&gt;&gt;<i> Question goes, is there a way to split up one distribution in setup.py,
+</I>&gt;&gt;&gt;<i> so it produces two eggs (one for YABT.core and one for YABT.braille).
+</I>&gt;&gt;&gt;<i> May be I will just have to resort to using the manifest files. The
+</I>&gt;&gt;&gt;<i> alternative is if there is a way to cluster more than one repository
+</I>&gt;&gt;&gt;<i> inside a repository. I can't remember exactly what the forest extension
+</I>&gt;&gt;&gt;<i> does for mercurial but it does something to do with clustering
+</I>&gt;&gt;&gt;<i> repositories (either making multiple repos appear as one or hopefully
+</I>&gt;&gt;&gt;<i> one contain multiple repos). I will try and hunt it out. SVN didn't have
+</I>&gt;&gt;&gt;<i> this problem, but I feel it did have other problems that DVCs solve.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Michael Whapples
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> Yabt-devel mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Yabt-devel mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000011.html">[Yabt-devel] YABT versioning and distribution
+</A></li>
+	<LI>Next message: <A HREF="000014.html">[Yabt-devel] YABT versioning and distribution
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#13">[ date ]</a>
+              <a href="thread.html#13">[ thread ]</a>
+              <a href="subject.html#13">[ subject ]</a>
+              <a href="author.html#13">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

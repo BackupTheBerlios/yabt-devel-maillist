@@ -1,0 +1,166 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] YABT-2.0b2
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-November/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20YABT-2.0b2&In-Reply-To=%3C49303FA6.60607%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000015.html">
+   <LINK REL="Next"  HREF="000017.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] YABT-2.0b2</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20YABT-2.0b2&In-Reply-To=%3C49303FA6.60607%40aim.com%3E"
+       TITLE="[Yabt-devel] YABT-2.0b2">mwhapples at aim.com
+       </A><BR>
+    <I>Fri Nov 28 19:59:50 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000015.html">[Yabt-devel] YABT-2.0b2
+</A></li>
+        <LI>Next message: <A HREF="000017.html">[Yabt-devel] YABT-2.0b2
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#16">[ date ]</a>
+              <a href="thread.html#16">[ thread ]</a>
+              <a href="subject.html#16">[ subject ]</a>
+              <a href="author.html#16">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>The only possible changes I would want to make to YABT-2.0b2 excluding 
+XML stuff is descriptions for YABT in the setup file. Currently it is 
+very Braille specific eg. YABT (Yet another braille translator) is the 
+short description and the long description is equally bBraille 
+orientated only hinting at other uses.
+
+If I was to permit XML changes (keeping backward compatability) would be 
+to add an include statement, but I don't know at this moment how much 
+work it might take to really implement it. As time is unknown, I would 
+give it the thumbs down for YABT-2.0b2.
+
+I am fairly certain on the XML limitation. I asked someone I know about 
+it, I did a google search and for the version of XML the python parsers 
+support it just won't take it. It isn't UTF8 characters which are the 
+problem, its these control characters in ASCII (eg. form feed, there are 
+others but this is one I really know about) and some other unicode 
+characters not used much. This is a limitation of the XML version used, 
+it is fixed by other XML versions (I mean by XML versions the actual XML 
+specification as defined at the top of documents eg.
+&lt;?xml version=&quot;1.0&quot; ?&gt;
+not the languages implementation of parsers). The only fixes I could 
+find suggested online were to use a child element as I have, use the 
+newer version of XML (except python doesn't support this) or create some 
+internal mark up (eg. the python \uXXXX notation in unicode strings). I 
+opted for the child element as this then fitted with XML notation. If 
+you need convincing about this lack of support, try creating XML using 
+the DOM packages (eg. minidom) and then use the toxml method to create 
+the XML string and then parse that, it will fail if you inserted a form 
+feed when creating a #text node in forming the original DOM.
+
+Michael Whapples
+
+On 28/11/08 16:26, Leo wrote:
+&gt;<i> I think it's a good idea to release 2.0b2 as soon as possible if only
+</I>&gt;<i> to open up our minds for the big bang that the new architecture will
+</I>&gt;<i> mean. So I tend to making only the urgent changes, leave the xml
+</I>&gt;<i> structure as it is stable.
+</I>&gt;<i>
+</I>&gt;<i> On 3.0 or 2.1: you are right: everything will depend on how much the
+</I>&gt;<i> API will change. And on that I have no clou either. So let's cross
+</I>&gt;<i> that bridge...
+</I>&gt;<i>
+</I>&gt;<i> On form feed: you are right: context strings should be able to contain
+</I>&gt;<i> anything including form feed. But even if xml does not allow to have
+</I>&gt;<i> these characters in attributes, there should be better workarounds
+</I>&gt;<i> then children. I could think of escape chars in strings, or certain
+</I>&gt;<i> flags. I think it is really really worthwhile doublechecking if xml
+</I>&gt;<i> really doesn't allow any utf8 char. json does!
+</I>&gt;<i>
+</I>&gt;<i>    Please release 2.0b2 asap so we get ready for the big bang and make
+</I>&gt;<i> yabt quickly the most compelling tool in its field...
+</I>&gt;<i>
+</I>&gt;<i> By the way: Have you received any feedback from yabt users, if any? I
+</I>&gt;<i> am optimistic you will have a lot once yabt works with end user apps.
+</I>&gt;<i>
+</I>&gt;<i> It may be useful to look at a tool to convert openoffice docs into
+</I>&gt;<i> braille. there is a package on the pypi making available the xml
+</I>&gt;<i> structure of oo docs to Python... You see my point?
+</I>&gt;<i>
+</I>&gt;<i> On 28/11/2008, Michael Whapples&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">mwhapples at aim.com</A>&gt;  wrote:
+</I>&gt;<i>    
+</I>&gt;&gt;<i> Hello,
+</I>&gt;&gt;<i> I really want to get YABT-2.0b2 pushed out. It shouldn't change much
+</I>&gt;&gt;<i> from what it is. It really is a marker point in development.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Particular points up for discussion/action:
+</I>&gt;&gt;<i> * That XML format... I feel it could be improved so much. particular
+</I>&gt;&gt;<i> points for alteration are:
+</I>&gt;&gt;<i> input class - Should this be an element? I feel this could become an
+</I>&gt;&gt;<i> attribute of rule. Also should I remove the limit of input class being
+</I>&gt;&gt;<i> just an int? Initial reason was done in YABT-1.0 for performance, but we
+</I>&gt;&gt;<i> now are doing less state checks so performance impact should be less now.
+</I>&gt;&gt;<i> final state - The same questions as input class.
+</I>&gt;&gt;<i> Context types - should the context type name become an attribute of the
+</I>&gt;&gt;<i> context elements (bfcontext and afcontext)? This then removes the 2
+</I>&gt;&gt;<i> character limit for type names, and names could be more meaningful, eg.
+</I>&gt;&gt;<i> always instead of ^a.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> As for the question of supporting control characters like form feed, my
+</I>&gt;&gt;<i> mind is not settled on that. Whilst things like form feed should really
+</I>&gt;&gt;<i> be the responsibility of applications, what about lazy text translation
+</I>&gt;&gt;<i> systems such as YABT_translate command? Also more importantly, I feel
+</I>&gt;&gt;<i> that context strings should support these control characters, as whilst
+</I>&gt;&gt;<i> the controlling app may handle the actual form feed, it possibly would
+</I>&gt;&gt;<i> want to tell YABT this translation happens at the end of a page. Whether
+</I>&gt;&gt;<i> the braille code (or other translation) actually has any differentce
+</I>&gt;&gt;<i> should not be of any concern to the application.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> My feeling is that the XML change should happen, whether before or after
+</I>&gt;&gt;<i> YABT-2.0b2 I don't mind.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Michael Whapples
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Yabt-devel mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>      
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Yabt-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;<i>    
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/yabt-devel/attachments/20081128/1bb4d127/attachment.html">https://lists.berlios.de/pipermail/yabt-devel/attachments/20081128/1bb4d127/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000015.html">[Yabt-devel] YABT-2.0b2
+</A></li>
+	<LI>Next message: <A HREF="000017.html">[Yabt-devel] YABT-2.0b2
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#16">[ date ]</a>
+              <a href="thread.html#16">[ thread ]</a>
+              <a href="subject.html#16">[ subject ]</a>
+              <a href="author.html#16">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

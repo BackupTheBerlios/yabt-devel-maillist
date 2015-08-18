@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] Comments on YABT_translate-script and README
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-December/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Comments%20on%20YABT_translate-script%20and%20README&In-Reply-To=%3C493FE0B4.8050805%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000035.html">
+   <LINK REL="Next"  HREF="000038.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] Comments on YABT_translate-script and README</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Comments%20on%20YABT_translate-script%20and%20README&In-Reply-To=%3C493FE0B4.8050805%40aim.com%3E"
+       TITLE="[Yabt-devel] Comments on YABT_translate-script and README">mwhapples at aim.com
+       </A><BR>
+    <I>Wed Dec 10 16:31:00 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000035.html">[Yabt-devel] Comments on YABT_translate-script and README
+</A></li>
+        <LI>Next message: <A HREF="000038.html">[Yabt-devel] Some thoughts on the current design of yabt-2.0b2 -	__init__.py and base_translator.addCharMapping
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#36">[ date ]</a>
+              <a href="thread.html#36">[ thread ]</a>
+              <a href="subject.html#36">[ subject ]</a>
+              <a href="author.html#36">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello again,
+I have added defaults to help in my local repository. I was planning to 
+make a few more changes before I push to the berlios repository, but 
+could do this sooner than later if desired.
+
+Regarding the program name, on Linux I seem to be getting the correct 
+value and according to the optparse docs it uses the base name of 
+sys.argv[0]. I question whether this is down to setuptools. I haven't 
+yet attended to the version issue (partly as I can't decide whether this 
+is correct or not, is it the version of the script or should the script 
+reflect the version of YABT as it is a demo script).
+
+I also am suspecting that I will need to use a manifest file instead of 
+hg.setuptools, as hg.setuptools isn't graceful if you aren't in a 
+repository.
+
+That question about hg.setuptools possibly raises another question I 
+have, how dependent should YABT be on 3rd party packages? As far as 
+things seem to go setuptools is all which is holding YABT back on a 
+python3.0 port (at least that is what 2to3 reports problems with).
+
+Michael Whapples
+
+On 09/12/08 22:02, Leo wrote:
+&gt;<i> I've only now looked at the script and I like it.
+</I>&gt;<i> That said, you could
+</I>&gt;<i> - make sure that the .exe version displays its correct file name 
+</I>&gt;<i> (rather than the name of the .py script) in the help strings. Should 
+</I>&gt;<i> be easy by using argv rather than hard-coding the file name)
+</I>&gt;<i> - allow the specification of an output file; redirection is not the 
+</I>&gt;<i> most obvious way.
+</I>&gt;<i> - add info on default values to the help text
+</I>&gt;<i> --version prints 2.0. Is this intended?
+</I>&gt;<i> On README
+</I>&gt;<i> You could copy some lines from the long_description in setup.py to 
+</I>&gt;<i> avoid a too Braille-centric appearance.
+</I>&gt;<i> But these are very minor comments that should not prevent you from 
+</I>&gt;<i> pushing 2.0b2 out immediately.
+</I>&gt;<i> ------------------------------------------------------------------------
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Yabt-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;<i>    
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/yabt-devel/attachments/20081210/b51680df/attachment.html">https://lists.berlios.de/pipermail/yabt-devel/attachments/20081210/b51680df/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000035.html">[Yabt-devel] Comments on YABT_translate-script and README
+</A></li>
+	<LI>Next message: <A HREF="000038.html">[Yabt-devel] Some thoughts on the current design of yabt-2.0b2 -	__init__.py and base_translator.addCharMapping
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#36">[ date ]</a>
+              <a href="thread.html#36">[ thread ]</a>
+              <a href="subject.html#36">[ subject ]</a>
+              <a href="author.html#36">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

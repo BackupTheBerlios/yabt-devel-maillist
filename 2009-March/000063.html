@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] Multiple loaders and other translation algorithms
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2009-March/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Multiple%20loaders%20and%20other%20translation%20algorithms&In-Reply-To=%3C49CCFC46.1020003%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000062.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] Multiple loaders and other translation algorithms</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Multiple%20loaders%20and%20other%20translation%20algorithms&In-Reply-To=%3C49CCFC46.1020003%40aim.com%3E"
+       TITLE="[Yabt-devel] Multiple loaders and other translation algorithms">mwhapples at aim.com
+       </A><BR>
+    <I>Fri Mar 27 17:18:14 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000062.html">[Yabt-devel] Multiple loaders and other translation algorithms
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#63">[ date ]</a>
+              <a href="thread.html#63">[ thread ]</a>
+              <a href="subject.html#63">[ subject ]</a>
+              <a href="author.html#63">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>After recovering from the shock of suggesting subclassing str or unicode 
+(shock caused by my java knowledge, String is defined as final and for 
+good reasons in java, don't know whether those reasons are still valid 
+for python) it should be fully possible to add a method for case 
+insensetive matching to unicode. The big question is what approach will 
+be the most efficient for YABT? For speed reasons I sway towards copying 
+the input to an upper case (or lower case if for some reason that would 
+be better) and then leave it to the rule to choose which to compare to. 
+I don't know how the internals of java's String class works for the 
+equalsIgnoreCase method, but the way I would do it in python would 
+involve conversion to upper case, this probably would have to happen 
+every time the method is called and so might get expensive for YABT's 
+speed. May be somewhere between the two is the answer.
+
+I am not sure whether a translation manager system would resolve the 
+issue I am referring to by saying about the &quot;mess&quot;. I actually think the 
+use of the word mess was meaning lots of complicated stuff which I 
+didn't want to try and explain at that time of night could occur and 
+lead to unexpected results. If I build on the example used when I 
+originally said that (where one loader said preprocessing should change 
+lowercase &quot;a&quot; to capital &quot;A&quot; and another loader being used in the same 
+translator says capital &quot;A&quot; should be preprocessed to lowecase &quot;a&quot;, 
+order of loading doesn't really matter), let's say we want to translate 
+the phrase &quot;A quarter to four&quot;. After preprocessing we end up with &quot;a 
+quArter to four&quot; (only one preprocessing rule/character mapping can be 
+applied to any given character). This string doesn't conform to either 
+loader's rules expectation (by implication of the preprocessing one 
+expects only lowercase &quot;a&quot; and the other only expects capital &quot;A&quot; but 
+the input still contains a mix of lowercase and capital letter &quot;a&quot; and 
+they don't even match with where we originally put them). This basically 
+means neither set of rules will work fully as expected. The only real 
+ways out I can see are either forbid preprocessing (may be not a bad 
+thing) or make it only apply for certain sets of rules (IE. those from a 
+particular loader, this would certainly call for the RuleSet idea).
+
+The problem is no table knows about any other table which might be used 
+in the same translator, so no preprocessing can be guaranteed as things 
+stand.
+
+This looseness between tables/loaders is good in one way but in another 
+it does cause problems as YABT will need to lay down the laws for what 
+they should and should not do so that they may work together without 
+issue (as I feel multiple loaders is a good thing in the main).
+
+I do see some advantages of the translation manager system but feel that 
+there are some core issues which really need some attention in YABT 
+first. May be I should place down some tasks and a rough plan for what 
+version what should happen. I do foresee a huge overhaul of the table 
+format, main rule system, etc coming up.
+
+Michael Whapples
+On 26/03/09 07:03, Leo wrote:
+&gt;<i> I see.
+</I>&gt;<i>
+</I>&gt;<i> Python has no built-in case-insensitive string matching. But you can
+</I>&gt;<i> subclass str or unicode overloading the __cmp__ method to do that job. Might
+</I>&gt;<i> be worth trying.
+</I>&gt;<i>
+</I>&gt;<i> Another option (I used it in PyHyphen) might be to lower- or upper-case each
+</I>&gt;<i> word before translating and restoring capitalization afterwards. But this
+</I>&gt;<i> may be a dull idea in Braille...
+</I>&gt;<i>
+</I>&gt;<i> Isn't the mess you've found here an argument for a translation manager
+</I>&gt;<i> class, i.e. adding another level of abstraction as I suggested in December?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>    
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000062.html">[Yabt-devel] Multiple loaders and other translation algorithms
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#63">[ date ]</a>
+              <a href="thread.html#63">[ thread ]</a>
+              <a href="subject.html#63">[ subject ]</a>
+              <a href="author.html#63">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

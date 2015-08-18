@@ -1,0 +1,346 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] draft specification
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-December/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20draft%20specification&In-Reply-To=%3C494B87F1.1020606%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000056.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] draft specification</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20draft%20specification&In-Reply-To=%3C494B87F1.1020606%40aim.com%3E"
+       TITLE="[Yabt-devel] draft specification">mwhapples at aim.com
+       </A><BR>
+    <I>Fri Dec 19 12:39:29 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000056.html">[Yabt-devel] draft specification
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#57">[ date ]</a>
+              <a href="thread.html#57">[ thread ]</a>
+              <a href="subject.html#57">[ subject ]</a>
+              <a href="author.html#57">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 19/12/08 07:20, Leo wrote:
+&gt;<i>
+</I>&gt;<i> You wrote:
+</I>&gt;<i>
+</I>&gt;<i> The only difference is that I feel a translator should be fully self 
+</I>&gt;<i> contained, IE. there should be no need for sending input through more 
+</I>&gt;<i> than one, and if there is it might be a special case and might be best 
+</I>&gt;<i> left to that particular application developer to do that in their own 
+</I>&gt;<i> code. This self contained thinking is why translators in my design do 
+</I>&gt;<i> character mappings (or may be if generalised preparation). These two 
+</I>&gt;<i> stages (preparation and translation should be enough for most cases.
+</I>&gt;<i>
+</I>&gt;<i> Agreed. But the appearance of one self-contained translator could be 
+</I>&gt;<i> achieved at translator level or at translator manager level. I guess 
+</I>&gt;<i> you mean the former; I for one am still open to both. In any event, 
+</I>&gt;<i> the design has to allow the following cases:
+</I>&gt;<i>
+</I>Is this preparation? If so YABT allows it but may be it could be 
+generalised so that it isn't limited to chars.
+&gt;<i>
+</I>&gt;<i> - char substitution throughout the text, no matter how long, how many 
+</I>&gt;<i> paragraphs, formfeed etc.
+</I>&gt;<i>
+</I>&gt;<i> - word substitution using, say, a two column table loaded from a csv 
+</I>&gt;<i> file. This should be tried for individual words. And if substitution 
+</I>&gt;<i> succeeds, the xml rules are not applied to that word because the 
+</I>&gt;<i> explicit translation table is presumed to be more accurate or just 
+</I>&gt;<i> faster than the rules.
+</I>Multiple loaders, may be I should create a word substitution loader and 
+rule system which can be applied. This might also highlight some of what 
+I feel the advantages of loaders are.
+&gt;<i> In my idea of an engine I tried to reflect the distinction through a 
+</I>&gt;<i> split_into_chunks method. This implies that some rules may apply to 
+</I>&gt;<i> the whole text whereas others apply only to individual words such that 
+</I>&gt;<i> the text (sequence) needs to have been split up before. But all this 
+</I>&gt;<i> would have to be refined.
+</I>The current XML rule system deals with varying length focus (IE. some 
+apply to a focus of 2 letters, some to 5 letters, or some to simply 1 
+letter, or infact any number of letters (0 should never be done as if it 
+could be applied then we would get stuck), and none of these lengths 
+need apply to a specific type of chunk, it may be a word, it may be part 
+of a word, etc its all down to what I call the context as to what that 
+particular focus dcan be). BufferedTranslator is making arbitrary splits 
+where it is unlikely that any rule will ever run across the join, and 
+the reason for the splitting is to help with speed, try that really long 
+example I mentioned before and observe the difference in processing time 
+(NOTE: it may take some time, with psyco it takes approx 8 seconds on my 
+2.4GHz machine and without psyco it takes 40+ seconds on the same 
+machine when using the BufferedTranslator, expect much longer times when 
+using the standard Translator).
+&gt;<i> You wrote:
+</I>&gt;<i> I question this on the meaning of context. I am using context to mean 
+</I>&gt;<i> what comes before the focus in the sequence to translate and what 
+</I>&gt;<i> comes after the focus in the sequence to translate. At some point 
+</I>&gt;<i> restrictions do need to be laid down, and I personally feel YABT at 
+</I>&gt;<i> the most flexible is to translate sequences into other sequences 
+</I>&gt;<i> (strings being a sequence of characters). I would argue that the 
+</I>&gt;<i> example you gave is not context but rather what is being translated or 
+</I>&gt;<i> state. Let me explain further:
+</I>&gt;<i> * If humidity, temperature and air pressure was only needed for the 
+</I>&gt;<i> current then it might be a state. This could be complicated as these 
+</I>&gt;<i> are continual variables, I would opt for next suggestion.
+</I>&gt;<i> * Humidity, temperature and air pressure may be part of the sequence 
+</I>&gt;<i> being translated (eg. we may be translating a sequence of atmospheres, 
+</I>&gt;<i> Atmosphere objects with temperature, humidity and pressure propertie, 
+</I>&gt;<i> it may have others as wells). Ideally the sequences used should be 
+</I>&gt;<i> sliceable (supporting the s[x:y] notation). Now focus and both 
+</I>&gt;<i> contexts can use all three properties. If say the translator in this 
+</I>&gt;<i> case (I don't quite know what use it really might have) was tracking 
+</I>&gt;<i> current values, obviously after context cannot be known, so all rules 
+</I>&gt;<i> used for that should simply use the always match context for after 
+</I>&gt;<i> context. I feel this is very flexible and powerful once understood.
+</I>&gt;&gt;<i> My example refers to an object describing an air-conditioning system 
+</I>&gt;&gt;<i> with properties such as propeller speed, heating or cooling activity, 
+</I>&gt;&gt;<i> permissible temperature interval or whatever. The purpose of a 
+</I>&gt;&gt;<i> translator could be to transform the current properties into new ones 
+</I>&gt;&gt;<i> taking into account the actual air properties (i.e. humidity, 
+</I>&gt;&gt;<i> temperature, pressure etc.) according to certain rules. Context could 
+</I>&gt;&gt;<i> be a sequence of atmosphere objects representing the change of air 
+</I>&gt;&gt;<i> properties over time. Rules could implement a function defined on two 
+</I>&gt;&gt;<i> variables (context and air-conditioning system) whereby each consists 
+</I>&gt;&gt;<i> of several attributes. The translator (= function) returns an air 
+</I>&gt;&gt;<i> condition system object. So I would describe a translator to be a 
+</I>&gt;&gt;<i> function defined on (input type, context type), returning an object 
+</I>&gt;&gt;<i> of the same type as input. Context and input can be arbitrary 
+</I>&gt;&gt;<i> objects. OK, now I see that splitting is too specific for that, as 
+</I>&gt;&gt;<i> air conditioning system objects cannot be split into chunks whereas 
+</I>&gt;&gt;<i> sequences can. Well, splitting an air-conditioning system (ACS) could 
+</I>&gt;&gt;<i> mean: extracting its temperature corridor (= a pair of two real 
+</I>&gt;&gt;<i> numbers), and pass it on to a more specific subrule. But this would 
+</I>&gt;&gt;<i> be at implementation level. Base_translator would not be concerned 
+</I>&gt;&gt;<i> with specific input or context types. Of course, context and input 
+</I>&gt;&gt;<i> can be objects of the same class (as you imply to be a reasonable 
+</I>&gt;&gt;<i> restriction). I, in turn, tend to believe this is just a special 
+</I>&gt;&gt;<i> case. In general, context and input can be of very different types. 
+</I>&gt;&gt;<i> This reflects most real life situations. Only when translating such 
+</I>&gt;&gt;<i> uniform things such as text, you have the privilege to consider left 
+</I>&gt;&gt;<i> and right characters / words etc. which happen to be of the same type 
+</I>&gt;&gt;<i> of what's to be translated.
+</I>&gt;&gt;<i> As regards your understanding of context, I have the impression that 
+</I>&gt;&gt;<i> your design mixes up the static context data (i.e. what's written 
+</I>&gt;&gt;<i> right or left of the focus), and the translator function (i.e. how 
+</I>&gt;&gt;<i> the output is calculated). A context that always matches means a 
+</I>&gt;&gt;<i> function that does not depend on the context, i.e. it is invariant 
+</I>&gt;&gt;<i> with regard to the value of context. I would assume this to be a 
+</I>&gt;&gt;<i> property of certain subrules, whereas you consider it to be a 
+</I>&gt;&gt;<i> property of certain context objhects. I find it difficult to follow 
+</I>&gt;&gt;<i> this approach as I believe a rule should decide how to change the 
+</I>&gt;&gt;<i> focus given the focus and the context, where as the context should be 
+</I>&gt;&gt;<i> just a description of something outside the focus. A rule that 
+</I>&gt;&gt;<i> happens to be context-invariant would consider just the focus and 
+</I>&gt;&gt;<i> apply some function on it, leaving the context aside. So in my mind 
+</I>&gt;&gt;<i> there is no such thing as a matching or unmatching context. There is 
+</I>&gt;&gt;<i> only a function which, given an input type object and a context 
+</I>&gt;&gt;<i> object, may return a new input type object or None. In the former 
+</I>&gt;&gt;<i> case one may say: the rule matches, in the latter that it does not 
+</I>&gt;&gt;<i> match.
+</I>This bit is slightly deeper than I want at this particular time, I 
+really need to work through this. From what I am understanding, the 
+following may help:
+* I made context objects always present in rule objects initially as 
+rules were so specific and it seemed simpler to just have something 
+which always says it matches than to have something in the rule class to 
+not check in specific cases/instances.
+* Following on with this simplicity, I still argue that it is easier to 
+say this context is applicable all the time (regardless of what the 
+actual context is) than to have all the cases (eg. the before context 
+not being used but the after context being used, the after context not 
+being used but the before context being used, neither context being used 
+or both contexts being used). This for the current design of YABT would 
+add so many different rule types.
+* it didn't feel to unatural to say that a rule should always match the 
+context.
+
+As for use with other systems (the air conditioning one I will continue 
+with), I would see it may be passing in a list of atomspheres (or may be 
+a list of tuples containing atmospheres and systems properties), with 
+each value being a different time point. To focus on one particular 
+part, the rule may say something like:
+if temperature &gt; desiredTemperature:
+   if previousTemperature &lt;= temperature:
+     coolFurther() # this would hopefully set a property for cooling to 
+be greater
+   else:
+     # set the cooling to what it is because it is going towards the 
+desired temperature anyway
+
+In this case we are still dealing with a sequence, and context still 
+falls in the definition of the points/slices of a list adjacent to the 
+focus.
+&gt;&gt;<i> You wrote:
+</I>&gt;&gt;<i> So could we be hitting problems because YABT is now &quot;a context 
+</I>&gt;&gt;<i> sensitive string manipulation tool&quot; and so the specific task 
+</I>&gt;&gt;<i> (originally Braille translation) is not focusing what is really 
+</I>&gt;&gt;<i> wanted? Whether this is right or wrong at the moment I am unsure, but 
+</I>&gt;&gt;<i> working to actual usage examples probably would help focus things.
+</I>&gt;&gt;<i> I suggest to work top-down, i.e. from the component class, through 
+</I>&gt;&gt;<i> the translation manager (if you agree on that it is useful), via the 
+</I>&gt;&gt;<i> base_translator down to implementations of base_translator, rules, 
+</I>&gt;&gt;<i> file formats etc. Now I guess I am on the base translator level. And 
+</I>&gt;&gt;<i> I must admit I have a bias for as much generality as possible (see 
+</I>&gt;&gt;<i> above). Willie's advice would, I think, apply to the implementations: 
+</I>&gt;&gt;<i> one for air-condition-systems, another for Braille text etc. But my 
+</I>&gt;&gt;<i> bias toward generality merely derives from a market intellectual 
+</I>&gt;&gt;<i> ambition rather than from my discontentment with existing 
+</I>&gt;&gt;<i> air-conditioning systems.
+</I>I think what I am thinking of is without knowing what particular 
+implementations want, how can we ensure the interfaces have that 
+feature? What I am considering is, do we need to focus on the braille 
+and speech examples, where possible use more generalised terms (eg. 
+string means sequence of characters, there fore the interface deals with 
+sequences of objects).
+&gt;&gt;<i>  You wrote:
+</I>&gt;&gt;<i> Loaders: I am unsure whether this is done for users purposes or mine. 
+</I>&gt;&gt;<i> It means that there may be a whole library of rule types and someone 
+</I>&gt;&gt;<i> could develop a table which could make use of a combination of those 
+</I>&gt;&gt;<i> rules never used together before. Whether anyone is going to do that 
+</I>&gt;&gt;<i> I don't know, but it would be nice to be able to say to someone who 
+</I>&gt;&gt;<i> asks for a particular translation system, yes it can be made easily 
+</I>&gt;&gt;<i> by just creating a new loader and then just making that loader for them.
+</I>&gt;&gt;<i> I now concur with the idea of different loader classes. That said, I 
+</I>&gt;&gt;<i> still don't understand why new rule types would require new 
+</I>&gt;&gt;<i> loaders... Loading an xml table with ElementTree is a one-liner for 
+</I>&gt;&gt;<i> any rule tree. Clearly, the translator must provide a handler 
+</I>&gt;&gt;<i> function for each rule type. But I fully see the necessity to have 
+</I>&gt;&gt;<i> different loaders for sqlite, plain text, xml from file, xml from the 
+</I>&gt;&gt;<i> internet etc. As regards my assertion on ElementTree, I may be 
+</I>&gt;&gt;<i> underestimating what your xml loaders do. I assume they are that 
+</I>&gt;&gt;<i> complicated because you are using xpat rather than ElementTree or 
+</I>&gt;&gt;<i> even lxml. Further, I do not understand what loaders do with regard 
+</I>&gt;&gt;<i> to states (see below).
+</I>Currently there is not anyway to specify rule class types in XML, but it 
+might be possible in future (eg. I could have a ruledef element where 
+people could specify the classes they want and then use that rule type. 
+I still haven't had the time to read about elementtree, my main concern 
+being that Translators need a known interface to work and by using 
+something like elementtree would I be tying translators to elementtree? 
+Reading to be done...
+&gt;&gt;<i>
+</I>&gt;&gt;<i> You wrote:
+</I>&gt;&gt;<i> The thought of getListStates is that a controlling app can find out 
+</I>&gt;&gt;<i> what states exist and so allow the user to select the one they wish 
+</I>&gt;&gt;<i> to use. Integers are meaningless in this case as why should the user 
+</I>&gt;&gt;<i> know what those integers mean. I feel uncomfortable with totally 
+</I>&gt;&gt;<i> unrestricted states, states need to follow some sort of standard 
+</I>&gt;&gt;<i> (even if it is a State object API). The other reason for getting the 
+</I>&gt;&gt;<i> known states is to alert the user they have requested an invalid 
+</I>&gt;&gt;<i> state, why should YABT try and process something which simply cannot 
+</I>&gt;&gt;<i> be translated (IE. no state exists for it)? States are causing me a 
+</I>&gt;&gt;<i> certain difficulty, rules are what actually use state, but how can a 
+</I>&gt;&gt;<i> translator find all states from rules? Currently states are 
+</I>&gt;&gt;<i> registered in the translator by the loader, this means that the rules 
+</I>&gt;&gt;<i> may not actually know anything about states but the loader can tell 
+</I>&gt;&gt;<i> the translator to accept any of the states it lists. I suppose this 
+</I>&gt;&gt;<i> separates states into two categories, those for rules, and those 
+</I>&gt;&gt;<i> permitted as starting states.
+</I>&gt;&gt;<i> For some reason I do not have any difficulty with states as I do not 
+</I>&gt;&gt;<i> see why a translator - whatever that is - should know all states. 
+</I>&gt;&gt;<i> Being told them by the loader is, from my perspective, unnecessary. A 
+</I>&gt;&gt;<i> state - being implemented as a dictionary or, if you feel a need for 
+</I>&gt;&gt;<i> hierarchical structures, a suitable recursive, simple class structure 
+</I>&gt;&gt;<i> - is to my mind a means to store variables accessed by rules. Each 
+</I>&gt;&gt;<i> xml file should contain a node called init_state or so, being a child 
+</I>&gt;&gt;<i> of root. It should be processed at load time. The corresponding 
+</I>&gt;&gt;<i> handler function should att the dictionary to the translator so any 
+</I>&gt;&gt;<i> rule handler can access it. After initializing the state from the 
+</I>&gt;&gt;<i> attributes of the init_state node, the init_state handler should 
+</I>&gt;&gt;<i> override it with a corresponding config section from the translator's 
+</I>&gt;&gt;<i> config file, finally with optional arguments passed to the 
+</I>&gt;&gt;<i> constructor. Then the translator is in a well-defined state. Certain 
+</I>&gt;&gt;<i> rule types will change some values within state. A state member could 
+</I>&gt;&gt;<i> be used, eg., to marshall statistics on the input stream, store info 
+</I>&gt;&gt;<i> on whether or not to use capitalization in the Braille output, define 
+</I>&gt;&gt;<i> formats for date, time, grade 1 or 2. It would have to be discussed 
+</I>&gt;&gt;<i> if, alongside with state, there should be some sort of settings 
+</I>&gt;&gt;<i> influencing the behavior of rules but which the rules cannot modify. 
+</I>&gt;&gt;<i> Much of this is, I understand, already implemented in yabt, except 
+</I>&gt;&gt;<i> for the config file. That said, I really do not see why the loader 
+</I>&gt;&gt;<i> should build up the state, rather than a node handler for init_state 
+</I>&gt;&gt;<i> called by some method that initializes the translator, maybe indeed 
+</I>&gt;&gt;<i> the loader, but not through proprietary code within the loader. The 
+</I>&gt;&gt;<i> init_state_handler would be reusable for all xml tables no matter 
+</I>&gt;&gt;<i> what rule types they use. I wouldn't even see a problem in allowing 
+</I>&gt;&gt;<i> rules to add new variables to state, if needed. But in most cases 
+</I>&gt;&gt;<i> this won't be necessary. With suitable rule types you could specify a 
+</I>&gt;&gt;<i> full-featured programming language.
+</I>&gt;&gt;<i> To distinguish state from context, I would say that each state can be 
+</I>&gt;&gt;<i> changed by certain rule types whereas context must be taken as it is. 
+</I>&gt;&gt;<i> Further, the apply method which executes the translator on a 
+</I>&gt;&gt;<i> particular input, must be given a new context, whereas the state is 
+</I>&gt;&gt;<i> not necessarily modified upon each call of the translator.
+</I>I am out of time, so I didn't get to read that bit about states. My 
+problem is that rules don't know about translators or what translator 
+instance owns them (so logng as rules aren't dynamic then they may 
+actually be owned by more than one translator). On the other hand 
+translators know about rules, and loaders know about both the rules and 
+translator, so to achieve the short circuit of if no state can ever be 
+reached of that value why even bother trying to translate? May be rules 
+could throw exceptions about this. The other problem I have is allowing 
+controlling apps to display possible states to users (eg. if I altered 
+state to be strings or have some way of associating names to them which 
+might mean something to a user) a translator must be able to get at the 
+states to create this list.
+
+Really must go now, sorry I didn't get through this. I will be away over 
+the Christmas and new year, plenty of reading. I will be away over 
+Christmas and new year, and also coming up in the early new year should 
+be my SCJP exam, so may be I need to say I will have a short step back 
+from YABT.
+
+PS. again email length was too long for list.
+
+Michael Whapples
+&gt;&gt;<i>
+</I>&gt;&gt;<i> On configuration
+</I>&gt;&gt;<i> Maybe the component class from docutils is a good starting point. But 
+</I>&gt;&gt;<i> ideally there would be a general config framework available both in 
+</I>&gt;&gt;<i> Python and Java. I don't know if such exists. You could look at 
+</I>&gt;&gt;<i> pyspring if you wish, or cfgparser that claims to be more convenient 
+</I>&gt;&gt;<i> and powerful than configparser from the standard library.
+</I>&gt;&gt;<i> I'll be travelling for the coming two weeks; internet access will be 
+</I>&gt;&gt;<i> sparse, if at all. So just in case: merry Xmas and best wishes for 
+</I>&gt;&gt;<i> the new year.
+</I>&gt;&gt;<i> Leo
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/yabt-devel/attachments/20081219/8f160bf3/attachment.html">https://lists.berlios.de/pipermail/yabt-devel/attachments/20081219/8f160bf3/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000056.html">[Yabt-devel] draft specification
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#57">[ date ]</a>
+              <a href="thread.html#57">[ thread ]</a>
+              <a href="subject.html#57">[ subject ]</a>
+              <a href="author.html#57">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

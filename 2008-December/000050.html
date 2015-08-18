@@ -1,0 +1,426 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] draft specification
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-December/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20draft%20specification&In-Reply-To=%3CDKECKJNNEDEJAJDEPCMBKEDNCIAA.fhaxbox66%40googlemail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000055.html">
+   <LINK REL="Next"  HREF="000051.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] draft specification</H1>
+    <B>Leo</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20draft%20specification&In-Reply-To=%3CDKECKJNNEDEJAJDEPCMBKEDNCIAA.fhaxbox66%40googlemail.com%3E"
+       TITLE="[Yabt-devel] draft specification">fhaxbox66 at googlemail.com
+       </A><BR>
+    <I>Mon Dec 15 22:52:13 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000055.html">[Yabt-devel] Further thoughts and explainations on my design	of	YABT
+</A></li>
+        <LI>Next message: <A HREF="000051.html">[Yabt-devel] draft specification
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#50">[ date ]</a>
+              <a href="thread.html#50">[ thread ]</a>
+              <a href="subject.html#50">[ subject ]</a>
+              <a href="author.html#50">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>This time I've changed the reply address manually, so it goes to the list.
+
+I guess your very general rule concept any my engine concept refer indeed to
+very similar tasks. I'd love to have an afternoon or so to look more deeply
+into the sources. But now that I have a couple of minutes to write this
+down, please forgive my superficiality.
+
+I don't insist on the name 'engine', even if I find your rule concept
+stretches a bit the natural meaning of 'rule'. But let's work on this basis.
+
+1. On the loader concept
+
+I see your point to the extent that you want a given translator to be abel
+to use different loaders and vice versa. My only response to the first point
+would be a dispatcher mechanism either through an (optional) argument to
+__init__ , or according to the file name extension (eg. xml, csv etc.). The
+second type of reuse (one loader for different translators) would seem to me
+an academic exercise but I may be wrong. But even if there are practical
+needs to reuse a given loader for various translators, I would assume that
+(multiple) inheritance is the most obvious way to reuse an existing loader.
+I cannot currently think of a practical need to allow the user to write a
+new loader complying with a particular translator's loader API. But I have
+no strong views on this. My only concern is that the loader concept seems
+somewhat awkward as it requires two steps to load a rule table: create a
+loader object and then pass it to the translator of your choice. These two
+steps may be required as you suspect for the future. But today most users
+would probably wonder what this is all good for. Can you think of a more
+convenient way, say, through a wrapper, default values for arguments etc.? -
+I guess the __init__ methods of subclasses would be a good place. I want to
+instantiate most translators just by giviny passing a filename of my
+favorite rule table, or even less than that (look at PyHyphen where I can
+write: h_uk = hyphenator('en_UK'), and the filename is constracted through a
+simple join. Clearly, this would require a filename convention which I don't
+think is appropriate here because we won't have a subclass for braille
+translation, but for, say, translation trees featuring a certain range of
+rule types.
+
+On rules
+
+It seems now we are closer than I'd thought yesterday.
+This being said:
+- I feel uncomfortable with that AddCharMapping staff in the base_class as
+char substitution is too specific. Further, as I wrote, char substitution
+should be an ordinary rule to be registered with the base class. So may I
+suggest you use a simple substitution rule fed either by a plain text file
+(as I suggested yesterday), or by a hard-coded dictionary or list of pairs.
+- What do you mean by GetListOfStates? I believe you cannot always list all
+possible states as these may be unknown or indefinite. I know: a finite
+state michine works on a finite number of states... But I'm not comfortable
+with this restriction as I feel a state should be defined not by an integer,
+but by an object containing multiple settings. Also, the name 'state'
+suggests that it may only refer to some property of the translator itself.
+However, I think we agree that state can describe any property of anything
+in the universe. So I would suggest to replace it by 'settings'.But the
+structure of settings objects would have to be defined. I guess a settings
+object would be a simple empty container that could store all kinds of data
+including settings objects for different translators or even specific
+subrules.
+- bf and afcontext: This seems to be too specific as well. So why not work
+with a context object which may then well be a pair of two strings each
+representing bf- and afcontext? Or it may be a triple of humidity,
+temperature and air pressure in Beijing if our translator works on
+air-conditioning systems rather than strings. That's the beauty of dynamic
+typing! Just learn to love this freedom, even if it may first seem
+frightening to a Java programmer!
+- translator.py, line 141: what is input class? What does this if...
+statement do here?
+ - line 151: logging should go into the base class controlled by some
+settings. I think we do need a configuration system. You should look at
+docutils... and become addicted to aspect-oriented programming.
+- - line 164: don't understand why you need the rule set class alongside
+with rule class.
+- line 192: I have the feeling that you need the AddChar stuff because your
+rule concept is too narrow to use it for efficient char substitution. In
+this respect, my engine idea could be more straightforward as it
+encapsulates everything, even translators with hard-coded one-line
+algorithms rather than loadable rule tables. I guess the constructor of an
+engine would take only a settings argument. It has an apply method taking
+the input object and a context object. I would have to think more thoroughly
+about focus, befor and after context. My only point here is that engines
+would be suitable both for simple char substitution, control of
+air-condition systems of Beijing-based hotels and xml-based rule trees. But
+I must admit that your code arguably does a good job.
+
+I must stop here. I'm not sure if I've convinced you to conceptualize the
+interaction between base_class and the rules a bit differntly. And I'm not
+even sure if it's worth trying, even I would have written this thing in a
+different way, because my thinking is influenced by docutils.
+
+Maybe I'll go on trying to convince you later this week.
+
+
+
+
+
+
+
+
+
+  -----Urspr&#252;ngliche Nachricht-----
+  Von: Michael Whapples [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">mwhapples at aim.com</A>]
+  Gesendet: Sonntag, 14. Dezember 2008 23:07
+  An: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">fhaxbox66 at googlemail.com</A>
+  Betreff: Re: AW: [Yabt-devel] draft specification
+
+
+  Hello,
+  From what I can tell the main questions relate to the loader concept and
+the translator/rule relationship.
+
+  Lets start with rules. As things stand at the moment rules contain details
+on what they should match (all checked through the isMatch method) and
+provide details of what should be substituted for the focus and the state
+the translator should be left in. So long as it provides the isMatch method
+and the object returned by isMatch has a translation and finalState property
+(or returned object can be None if the rule has no knowledge of what to do)
+then the translator class is happy. The translator has no knowledge how the
+match is determined (the rule can do anything it likes to find the match,
+even check what hardware is in the computer if it felt that could be useful
+in determining a match). So I suppose rules are like the translation engine.
+Rules being like translation engines is even more so when you consider rules
+with sub-rules (IE. the translator may only have one actual rule it knows of
+because all the rules are sub-rules of the rule the translator has).
+Sub-rules would not necessarily need to follow the rule API, but I would
+recommend it as types like the GroupStateRuleSet could make use of them.
+
+  The translator has a collection of rules (in YABT it currently is a list
+of rules). The translator tries the rules in order until a match is
+returned. This list structure need not be followed by rules containing
+sub-rules, GroupStateRuleSet uses a dictionary of rules with the key as a
+tuple of the group and state. The list structure in the translator gives the
+translator the ability to be a hybrid translator (eg. first rule may be a
+rule checking for a simple word match (context only can be that which could
+surround a word and state could be any), and the second in the list could
+then be the current context rule checker). As both of these follow the rule
+specification then what rules are used does not matter (eg. the same
+translator type could equally be configured to contain a rule to check
+whether the focus is at an embedded command, if not then the next rule could
+check if the focus is at a user defined exception substitution (like the
+word checker but may be substitutions are limited to user defined states),
+and if still not satisfied it could then check in the next rule which could
+be your binary search idea, and as a very last resort it could use the
+current context checker, and it need not stop there but for the purpose of
+an example I feel it should).
+
+  This leads on to the loader concept. A loader maps the contents of a data
+source into rules which it inserts into a translator. A loader may be used
+for more than one translator and one translator can recieve rules from more
+than one loader (eg. I may have a loader for a word substitution system
+where word substitution is in a plain text file containing two columns of
+words and I have my current XML context system loader, so I could load from
+the word substitution loader first and then from the XML loader into one
+translator. I could then re-use that word substitution loader in a
+translator where the second loader may deal with your binary search system).
+
+  Why not include the loader stuff in the rules classes? Simple answer is,
+is there only one way to store particular rules? eg. for the word
+substitution should a plain text file of two columns be the only storage
+system, a sqlite database might be just as good and might intergrate with an
+applications data storage better. Also should rules be tied to how they are
+used? eg. GroupStateRuleSet is a container rule, a loader could make it
+contain any rule like object not just the GeneralContextRule.
+
+  I feel there may be some parts which we might be meaning similar things
+but using different terms for, or may be I am heading for objects rather
+than methods/functions because of Java. EG. you refer to translators dealing
+with translation engines, I refer to rules, how different really are the
+tasks these are doing? There may be some difference (IE. my translator
+classes would deal with stepping through the input, I get the feeling that
+would be for the translation engine in your design).
+
+  I am wondering whether I should make simple examples of loaders and rules
+to demonstrate some of what I was meaning above, as it might be unclear
+without an actual working example. Might this be helpful?
+
+  Michael Whapples
+
+  On 14/12/08 19:48, Leo wrote:
+    That's the kind of discussion we need. Attached is the revised version
+containing my responses to your comments and some changes partly reflecting
+your comments, partly making my thinking hopefully clearer.
+
+    I see two main areas of diverging views which are due to our different
+past (you as the author of yabt, me as a somewhat chaotic hobby programmer
+attracted by some concepts of docutils)::
+
+    1. The role of base_translator:
+    - both: provide an API, subclassable to implement specific algorithms.
+    - you: base_class should provide some support for rule handling
+    - me: base_class should merely provide the API and some useful framework
+operations such as logging, dispatching, hosting (registration) of multiple
+algorithms...
+
+    2. Codes and subcodes (eg. English, math and music)
+    - you: a translation engine can be aware of these and handle them
+appropriately.
+    - me: the app should identify subcodes, eg., by parsing a marked-up
+input text, and call the appropriate translator.
+
+    ad 1.: This is a fundamental design choice. We should give more thought
+on that. Let me make a point in favor of my proposal: I believe it could be
+useful if base_translator could host third-party applications such as the
+unix commands pr, mroff, rst2latex etc., and camouflate them as ordinary
+yabt translator objects. I also think of third-party Braille translation
+tools such as to convert musicXML into braille notes. This is all very
+preliminary, of course.
+
+    ad 2.: It would depend on how much complexity an implementor may want to
+handle. In any event, there seems to be merit in having the app parse input
+texts and split it into different sections. Another example might be
+multilingual texts: the input text contains some mark-up, say, by extending
+reStructuredText. The app parses it and calls the translator for German or
+English where appropriate. This is more general than hard-coded $-commands
+(which might though be useful in certain contexts as well). A final example:
+html docs containing tables, lists, images etc, even if I have no idea on
+how to translate an image except for printing the alt-tag if present at all.
+    I guess this point is less fundamental and both approaches do not
+exclude one another. Well, they shouldn't exclude one another. hence, the
+$-commands should be configurable / be optional, through config files in
+order not to inferfere with other mark-up.
+
+    Leo
+
+      -----Urspr&#252;ngliche Nachricht-----
+      Von: Michael Whapples [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">mwhapples at aim.com</A>]
+      Gesendet: Samstag, 13. Dezember 2008 18:01
+      An: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">fhaxbox66 at googlemail.com</A>; <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel at lists.berlios.de</A>
+      Betreff: Re: [Yabt-devel] draft specification
+
+
+      Hello,
+      Time to get to the really interesting stuff, in some ways I am not
+over bothered about the scripts interface, it primarily was a demonstration
+app, the internals must be right as that can affect both the script and
+useage through the API.
+
+      I had a read of what you had written, my view is mixed. I think we
+have come at it from quite different angles. I tried to put in my comments
+(in two stages &lt;MW&gt; indicates initial thoughts and &lt;MW2&gt; indicates thoughts
+after leaving it and trying to leave some of my java views behind).
+
+      I have also decided, as the approaches were so different, it might be
+worth me expressing what I am thinking (the difference is so great I
+couldn't edit in my own thoughts for the design). I have written it in the
+body of this email.
+
+      Ideally before saying technically what methods/properties classes
+should have, let's consider what it should actually do/provide.
+
+      1. Translator
+
+      A translator should:
+      * translate some input into an output format.
+      * translation should be performed according to a collection of rules.
+      * a translator should be able to be configured to use particular rules
+(eg. rules for text to British Braille)
+      * to minimise the rules required simple substitutions may be performed
+before the main translation process.
+      * translation should permit smooth switching between different
+sub-codes of the main code (IE. British literary Braille and British maths
+Braille are sub-codes of British Braille. This could be taken further,
+Braille is a code, British Braille and German Braille are sub-codes). The
+definition of smooth switching is where specific things should be done at
+joins, then they should actually be done without the app using YABT to know
+of this code specific join detail (eg. in British Braille typically an in
+line equation should be followed by a dot 6 if the next character is
+punctuation, the controlling app should not know that British Braille would
+require this dot 6 in this case).
+      * the context of the translation should be specified (IE. does this
+translation belong next to the end of a page or does it have a maths
+equation after it, etc).
+
+      2. Rules
+
+      A rule should:
+      * Match if the current position meets certain criteria specified in
+the rule
+      * May contain other rules which it can check (IE. it can be a filter
+rule to lower the checks to be done). In this case it should report the
+match as the sub-rule which matches.
+      * As a rule knows how it should match, it should perform all checks to
+confirm if it is a match (IE. it should decide from all position information
+whether it matches and disregard/ignore any information not required by
+itself).
+
+      3. Loader
+
+      It is imagined that it would be useful to have tables stored on a
+storage device (eg. hard disk, USB memory stick, etc), so something needs to
+read this data and manipulate the translator to contain the correct rules
+(it would be too much to expect application developers to do all this
+themselves and by having common code for this could standardise the table
+formats whilst allowing developers flexibility to use their own if they so
+desire).
+
+      A loader should:
+      * load rules into a translator according to data in a data source.
+      * data source should be able to be specified by the controlling app
+      * loaders should be reuseable (IE. both specifying a different data
+source once used and also to load data into more than one translator).
+
+      4. Configuration module
+
+      I am uncertain whether this is needed or not, but here is my views of
+what it could provide if it were to be included.
+
+      * allow loaders and translators to register with it and provide user
+friendly names
+      * allow an application to enquire registered loaders and translators
+and obtain user friendly details
+      * allow selection of loader and translator (eg. as a factory,
+particular type could be specified by name returning a relevant instance)
+
+
+      I know none of that is implementation specific, but I feel it may be
+best to take this extra step back. If all of the above were to be done, then
+all YABT currently lacks is the configuration module and possibly it could
+do with better manipulation of rules in a translator (I could do with
+expanding on what I mean by configuration of rules). If I have to go to
+classes (I want to get specification at this level cleared up first) I would
+say:
+      * Different loaders deal with different input source types
+      * different translators deal with different translation types (eg.
+text to Braille, XML to speech, etc).
+
+      Comments welcome.
+
+      Michael Whapples
+
+
+      On 12/12/08 21:17, Leo wrote:
+        What do you think in terms of future design (core, base_translator,
+standard implementations etc.)? I'll read through the modules and hope to
+understand the bulk. But this may take some time. That said, I would assume
+it could be smarter to write down some fairly general specification of the
+base_class (to do it top-down), without too much looking at YABT. I say this
+because I personally feel I'd like more clarity on the design. You come from
+somewhere else, of course, as you know yabt by heart. This gives you a great
+advantage in terms of clarity on technical issues. But in an ideal world we
+would probably sit down on a hill, relax, draft what we believe would be an
+ideal architecture and find out afterwards what's already there. Then we
+would either take yabt as it is, because we believe it is ideal, take it and
+make some changes, or rewrite it from scratch, because we have found it not
+ideal at all. The second alternative seems most likely. You may find this
+approach annoying as you seem to know what an ideal translator would do. In
+my World though, there is little knowledge on YABT and much room for
+creativity. At the risk of wasting everybody's time (in case yabt is ideal),
+but in the hope that yabt's architecture leaves some room for enhancement, I
+attach a first and incomplete draft specification to be continued or
+dropped.
+
+
+
+        Happy to discuss.
+
+
+
+------------------------------------------------------------------------
+_______________________________________________
+Yabt-devel mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/yabt-devel/attachments/20081215/e5f4a262/attachment.html">https://lists.berlios.de/pipermail/yabt-devel/attachments/20081215/e5f4a262/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000055.html">[Yabt-devel] Further thoughts and explainations on my design	of	YABT
+</A></li>
+	<LI>Next message: <A HREF="000051.html">[Yabt-devel] draft specification
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#50">[ date ]</a>
+              <a href="thread.html#50">[ thread ]</a>
+              <a href="subject.html#50">[ subject ]</a>
+              <a href="author.html#50">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

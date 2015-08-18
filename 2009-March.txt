@@ -1,0 +1,947 @@
+From mwhapples at aim.com  Mon Mar 23 10:22:11 2009
+From: mwhapples at aim.com (Michael Whapples)
+Date: Mon, 23 Mar 2009 09:22:11 +0000
+Subject: [Yabt-devel] Multiple loaders and other translation algorithms
+Message-ID: <49C754C3.5010800@aim.com>
+
+Hello,
+I have finally got back to writing some more of YABT. I have now made a 
+simple word substitution dictionary system for the translator (currently 
+only in mercurial). To use this feature look at the -d (--dictionary) 
+option in the yabt-trans command.
+
+In short when using the -d option when YABT performs the translation it 
+first checks to see if a simple word substitution is possible, if there 
+is one then it just makes the substitution and moves on to the next 
+chunk of text, but if it doesn't have a substitution then it will check 
+through the rules as usual.
+
+The word substitution dictionary files are plain text files containing 
+three columns separated by whitespace. First column should be an integer 
+and should be the state in which the substitution can be made. The 
+second column is the original word (Please remember define in capitals 
+if working with the britishtobrl.xml rules as everything is converted to 
+capitals because of britishtobrl.xml's character maps, this may not 
+apply for other tables). The third column is the substitution. Any 
+line(s) not conforming to this in a dictionary file will be ignored.
+
+This word substitution system may not be optimised, it may not be as 
+flexible as it should, etc, I don't even know how much practical use it 
+will be. After saying all that, which really doesn't sell this, it is 
+done primarily as a proof of concept to demonstrate how multiple loaders 
+could be used to create a hybrid translation system.
+
+Is there any thoughts on this? Where might YABT go with this? If this 
+word substitution dictionary system isn't of great practical use what 
+might be?
+
+Also I am wanting to do more work on the main rule system (the one 
+britishtobrl.xml is a table for). This covers things like the table 
+format, should certain things be moved from that table format (eg. the 
+character maps), etc?
+
+Michael Whapples
+
+
+From fhaxbox66 at googlemail.com  Tue Mar 24 08:21:58 2009
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Tue, 24 Mar 2009 08:21:58 +0100
+Subject: [Yabt-devel] Multiple loaders and other translation algorithms
+In-Reply-To: <49C754C3.5010800@aim.com>
+Message-ID: <JNEPIPKLMDDNHIAOHDNBGEPGCBAA.fhaxbox66@googlemail.com>
+
+Hi,
+
+sounds great! It is useful indeed to allow users to prescribe specific
+translations of individual words such as names. All translation programs I
+am aware of feature this.
+Once yabt becomes open to different rule types and a tree structure of rules
+as discussed a few months ago, I am prepared to work on German rules. I
+would even implement new rule types once I understand how to. But as things
+stand, I believe it is not yet possible.
+
+Occasionally I work on a package I've called 'transcribo'. One day it should
+be able to work as a plain text layout engine using different front ends
+that work as bridges to input sources such as docutils, ODF processing
+libraries etc. Of course, each element of the input tree can specify its own
+translator such as YABT and its wrapper such as textwrap or my little hack
+(textwrap2) that embeds hyphenation. I hope that if things go well,
+transcribo will be able to format things like headings, lists, enumerations,
+multi-column text, page references, headers, footers etc. Styles will be
+stored in json files...
+
+I am not even half way there, but I am getting closer. It may still take a
+few weeks or months though to publish a demonstration version. With a few
+docutils directives or interpreted text roles this could make up a beautiful
+mixed content typesetting system for plain text and Braille by 2050...
+
+The other day I was thinking of how to hyphenate contracted Braille. Could
+one create specific dictionaries for PyHyphen? I would think so if one uses
+an appropriate character mapping that does not interfere with control chars
+used by the hyphenation library.
+
+ If you are still interested in Spring, you may wish to look at
+http://springpython.webfactional.com/
+
+Leo
+
+-----Ursprungliche Nachricht----
+Von: yabt-devel-bounces at lists.berlios.de
+[mailto:yabt-devel-bounces at lists.berlios.de]Im Auftrag von Michael
+Whapples
+Gesendet: Montag, 23. Marz 2009 10:22
+An: yabt-devel at lists.berlios.de
+Betreff: [Yabt-devel] Multiple loaders and other translation algorithms
+
+
+Hello,
+I have finally got back to writing some more of YABT. I have now made a
+simple word substitution dictionary system for the translator (currently
+only in mercurial). To use this feature look at the -d (--dictionary)
+option in the yabt-trans command.
+
+In short when using the -d option when YABT performs the translation it
+first checks to see if a simple word substitution is possible, if there
+is one then it just makes the substitution and moves on to the next
+chunk of text, but if it doesn't have a substitution then it will check
+through the rules as usual.
+
+The word substitution dictionary files are plain text files containing
+three columns separated by whitespace. First column should be an integer
+and should be the state in which the substitution can be made. The
+second column is the original word (Please remember define in capitals
+if working with the britishtobrl.xml rules as everything is converted to
+capitals because of britishtobrl.xml's character maps, this may not
+apply for other tables). The third column is the substitution. Any
+line(s) not conforming to this in a dictionary file will be ignored.
+
+This word substitution system may not be optimised, it may not be as
+flexible as it should, etc, I don't even know how much practical use it
+will be. After saying all that, which really doesn't sell this, it is
+done primarily as a proof of concept to demonstrate how multiple loaders
+could be used to create a hybrid translation system.
+
+Is there any thoughts on this? Where might YABT go with this? If this
+word substitution dictionary system isn't of great practical use what
+might be?
+
+Also I am wanting to do more work on the main rule system (the one
+britishtobrl.xml is a table for). This covers things like the table
+format, should certain things be moved from that table format (eg. the
+character maps), etc?
+
+Michael Whapples
+_______________________________________________
+Yabt-devel mailing list
+Yabt-devel at lists.berlios.de
+https://lists.berlios.de/mailman/listinfo/yabt-devel
+
+
+
+From mwhapples at aim.com  Wed Mar 25 18:21:56 2009
+From: mwhapples at aim.com (Michael Whapples)
+Date: Wed, 25 Mar 2009 17:21:56 +0000
+Subject: [Yabt-devel] Multiple loaders and other translation algorithms
+In-Reply-To: <JNEPIPKLMDDNHIAOHDNBGEPGCBAA.fhaxbox66@googlemail.com>
+References: <JNEPIPKLMDDNHIAOHDNBGEPGCBAA.fhaxbox66@googlemail.com>
+Message-ID: <49CA6834.7020307@aim.com>
+
+Hello,
+I hope the word substitution is what you mean, there are some 
+limitations to it (eg. only single words (IE. could not do the 
+translation for "of the" in British Braille due to the space between 
+words), unable to deal with words containing punctuation (eg. words 
+containing apostrophy like "he's", "you'll", etc or may be hyphenated 
+words (eg. this lists name "yabt-devel")) and other limitations possibly 
+not the fault of this substitution system directly (eg. having to 
+conform with character mappings from the main rule system means case 
+insensitive or possibly more accurately requires the definitions to be 
+capitalised).
+
+So where does this put YABT? First of all it prooves that hybrid 
+translation can be done. This has highlighted further problems with the 
+original rule system (IE. character mappings) along with the ones 
+already known (eg. requiring all rules to be defined in the correct 
+order, creating the correct rules being difficult, potentially requires 
+huge number of rules, etc). How ever I feel there are some advantages of 
+the main rule system (eg. very flexible to specify exactly under what 
+circumstances a translation should occur, nonspecific to a particular 
+system (eg. not specific for Braille), etc).
+
+What should be done? Ideally it needs to maintain the flexibility for 
+specifying conditions for which a translation should occur. An easier to 
+maintain system would be better (eg. no dependency on order of rules 
+specified, potentially simpler context specifying (may be even aliases 
+for commonly used ones like for beginning of word, etc), etc) and then 
+improvements for character handling like capitalisation (ideally I want 
+to get rid of character mappings from the Translator classes).
+
+I probably should go back and do some rereading, but how might your rule 
+system from a tree fit in with the above points/comments?
+
+Any thoughts on how to work around the character mapping/preprocessing 
+problem (IE. currently rule system X could break rule system Y if both 
+used together as X can modify character mappings Y sets or vice versa?
+
+Michael Whapples
+On 24/03/09 07:21, Leo wrote:
+> Hi,
+>
+> sounds great! It is useful indeed to allow users to prescribe specific
+> translations of individual words such as names. All translation programs I
+> am aware of feature this.
+> Once yabt becomes open to different rule types and a tree structure of rules
+> as discussed a few months ago, I am prepared to work on German rules. I
+> would even implement new rule types once I understand how to. But as things
+> stand, I believe it is not yet possible.
+>
+> Occasionally I work on a package I've called 'transcribo'. One day it should
+> be able to work as a plain text layout engine using different front ends
+> that work as bridges to input sources such as docutils, ODF processing
+> libraries etc. Of course, each element of the input tree can specify its own
+> translator such as YABT and its wrapper such as textwrap or my little hack
+> (textwrap2) that embeds hyphenation. I hope that if things go well,
+> transcribo will be able to format things like headings, lists, enumerations,
+> multi-column text, page references, headers, footers etc. Styles will be
+> stored in json files...
+>
+> I am not even half way there, but I am getting closer. It may still take a
+> few weeks or months though to publish a demonstration version. With a few
+> docutils directives or interpreted text roles this could make up a beautiful
+> mixed content typesetting system for plain text and Braille by 2050...
+>
+> The other day I was thinking of how to hyphenate contracted Braille. Could
+> one create specific dictionaries for PyHyphen? I would think so if one uses
+> an appropriate character mapping that does not interfere with control chars
+> used by the hyphenation library.
+>
+>   If you are still interested in Spring, you may wish to look at
+> http://springpython.webfactional.com/
+>
+> Leo
+>
+> -----Ursprungliche Nachricht----
+> Von: yabt-devel-bounces at lists.berlios.de
+> [mailto:yabt-devel-bounces at lists.berlios.de]Im Auftrag von Michael
+> Whapples
+> Gesendet: Montag, 23. Marz 2009 10:22
+> An: yabt-devel at lists.berlios.de
+> Betreff: [Yabt-devel] Multiple loaders and other translation algorithms
+>
+>
+> Hello,
+> I have finally got back to writing some more of YABT. I have now made a
+> simple word substitution dictionary system for the translator (currently
+> only in mercurial). To use this feature look at the -d (--dictionary)
+> option in the yabt-trans command.
+>
+> In short when using the -d option when YABT performs the translation it
+> first checks to see if a simple word substitution is possible, if there
+> is one then it just makes the substitution and moves on to the next
+> chunk of text, but if it doesn't have a substitution then it will check
+> through the rules as usual.
+>
+> The word substitution dictionary files are plain text files containing
+> three columns separated by whitespace. First column should be an integer
+> and should be the state in which the substitution can be made. The
+> second column is the original word (Please remember define in capitals
+> if working with the britishtobrl.xml rules as everything is converted to
+> capitals because of britishtobrl.xml's character maps, this may not
+> apply for other tables). The third column is the substitution. Any
+> line(s) not conforming to this in a dictionary file will be ignored.
+>
+> This word substitution system may not be optimised, it may not be as
+> flexible as it should, etc, I don't even know how much practical use it
+> will be. After saying all that, which really doesn't sell this, it is
+> done primarily as a proof of concept to demonstrate how multiple loaders
+> could be used to create a hybrid translation system.
+>
+> Is there any thoughts on this? Where might YABT go with this? If this
+> word substitution dictionary system isn't of great practical use what
+> might be?
+>
+> Also I am wanting to do more work on the main rule system (the one
+> britishtobrl.xml is a table for). This covers things like the table
+> format, should certain things be moved from that table format (eg. the
+> character maps), etc?
+>
+> Michael Whapples
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+
+
+
+From mwhapples at aim.com  Thu Mar 26 00:32:13 2009
+From: mwhapples at aim.com (Michael Whapples)
+Date: Wed, 25 Mar 2009 23:32:13 +0000
+Subject: [Yabt-devel] Multiple loaders and other translation algorithms
+In-Reply-To: <JNEPIPKLMDDNHIAOHDNBCEPNCBAA.fhaxbox66@googlemail.com>
+References: <JNEPIPKLMDDNHIAOHDNBCEPNCBAA.fhaxbox66@googlemail.com>
+Message-ID: <49CABEFD.1050005@aim.com>
+
+Hello,
+I think from reading your response that you misunderstood what I meant 
+by character mappings. Character mappings is probably a bad term for me 
+to use as it is used at other stages of Braille production to the one I 
+am meaning, a better term might be the preprocessing of the text (for 
+the rest of this email and hopefully for future ones I will keep to the 
+term preprocessing for what I am meaning).
+
+The preprocessing currently permits substitution of characters before 
+translation starts. The idea of this was taken from BrailleTrans 
+(http://alasdairking.me.uk/brailletrans) and is partly done to save on 
+number of rules (eg. lowercase letters can be transformed to uppercase 
+characters so that rules don't need to be defined for cases containing 
+uppercase letters, lowercase letters or even a combination of both 
+uppercase and lowercase letters). The problem with this approach is that 
+capitalisation information is lost when we do this substitution befor 
+translation. While brailletrans doesn't deal with capitalisation at the 
+moment I believe the information of type of character is stored some how 
+in a byte associated with the character. I made the mistake of believing 
+that this information byte for each character was to assist with the 
+context pattern matching system used in BrailleTrans only and so did not 
+implement it as regex would serve as well (possibly better than a custom 
+one I could create) but I missed the capitalisation issue.
+
+While the preprocessing is mainly used for letters to make it case 
+insensitive, BrailleTrans does actually use it to substitute some 
+punctuation characters.
+
+To just explain why this causes more problems as is than just the 
+capitalisation issue. Preprocessing happens before any rule sees the 
+translation string, in fact before any translation starts to happen the 
+whole input string is preprocessed. So let's have two loaders X and Y. 
+If X is loaded first and sets a preprocessing mapping so that "A" is 
+replaced with "a" and then loader Y is loaded and that sets a 
+preprocessing mapping for "a" to "A" then we hit a mess when trying to 
+apply the actual translation rules (this example needs more explaining 
+than I originally thought). Rules from loader X expect lowercase letter 
+"a" (this is implied by the preprocessing as if X was used alone then 
+all capital "A" would be preprocessed to lowercase) but loader Y set 
+preprocessing to convert lowercase "a" to capital "A" so we will get 
+capital "A" coming into the string for translation. We are getting a 
+conflict of interests from different loaders.
+
+This is why I am now thinking preprocessing should not occur, or if it 
+really must, it shouldn't happen in the global Translator class (it 
+should be for a specific rule, although that sounds processor/time 
+intensive).
+
+I am thinking one way round would be remove preprocessing and have an 
+option in the table which could say whether a rule is case sensetive or 
+not and then case sensetive matches would be used or not as appropriate. 
+I don't believe I have seen case insensetive matching in python for 
+strings/unicode, I am quite certain java does (java plug done). If 
+python doesn't have such a feature then may be two versions of the input 
+string could be held, one all in uppercase and one as original 
+(uppercase version used for case insensetive matches and the original 
+for case sensetive matches).
+
+I believe capitals are the main issue here, the repeated punctuation 
+characters aren't such a problem as there are less of them. As an 
+example: take the word "error", if all matches are case sensetive then 
+we need to define rules for:
+error
+Error
+ERROR
+and possibly more if we wanted to cover:
+eRROR, ERror, ERRor, etc (if they really should be contracted). So at 
+least for beginning contractions we have trebled the number of 
+contractions, that's why case insensetive matches are good!
+
+Enough of all that, hope it makes the description of what I had been 
+calling character maps clearer. I suggest the output from tables should 
+be either NABCC (ascii Braille) or the unicode Braille characters, 
+unless the format should be otherwise due to the type of translation 
+(eg. speech output preparation wouldn't make sense to be output in 
+unicode Braille, just stick to standard ascii text or unicode for that 
+format).
+
+That took longer than I expected so will get back about any other points.
+
+Michael Whapples
+On 25/03/09 21:42, Leo wrote:
+> On char mappings: I understand the people from www.libbraille.org have given
+> some thoughts on this. If it was only for capitalization, I guess that's
+> inevitable. If there is more, I wouldn't understand. Everything is unicode,
+> right? And the translation are irrelevant here. The translations as stored
+> in the table should be somewhat independent of the output device, i.e. the
+> char by char Braille substituion should be left up to the device driver. The
+> translator should be neutral. Don't know how to better explain, or I do not
+> fully understand the issues.
+>
+> We've discussed the rule structure extensively before Xmas. If I had to
+> write a translator right now, I'd probably take on board the loaders idea,
+> but rewrite the rules stuff from scratch, making sure the ole table can be
+> used as such or converted into a new format. But for the sake of usability
+> I'd add rules that allow users to implement a rule set for a new language
+> roughly by following the school books on contractions.
+>
+>
+>
+> -----Ursprungliche Nachricht-----
+> Von: Michael Whapples [mailto:mwhapples at aim.com]
+> Gesendet: Mittwoch, 25. Marz 2009 18:22
+> An: fhaxbox66 at googlemail.com; yabt-devel at lists.berlios.de
+> Betreff: Re: [Yabt-devel] Multiple loaders and other translation
+> algorithms
+>
+>
+> Hello,
+> I hope the word substitution is what you mean, there are some
+> limitations to it (eg. only single words (IE. could not do the
+> translation for "of the" in British Braille due to the space between
+> words), unable to deal with words containing punctuation (eg. words
+> containing apostrophy like "he's", "you'll", etc or may be hyphenated
+> words (eg. this lists name "yabt-devel")) and other limitations possibly
+> not the fault of this substitution system directly (eg. having to
+> conform with character mappings from the main rule system means case
+> insensitive or possibly more accurately requires the definitions to be
+> capitalised).
+>
+> So where does this put YABT? First of all it prooves that hybrid
+> translation can be done. This has highlighted further problems with the
+> original rule system (IE. character mappings) along with the ones
+> already known (eg. requiring all rules to be defined in the correct
+> order, creating the correct rules being difficult, potentially requires
+> huge number of rules, etc). How ever I feel there are some advantages of
+> the main rule system (eg. very flexible to specify exactly under what
+> circumstances a translation should occur, nonspecific to a particular
+> system (eg. not specific for Braille), etc).
+>
+> What should be done? Ideally it needs to maintain the flexibility for
+> specifying conditions for which a translation should occur. An easier to
+> maintain system would be better (eg. no dependency on order of rules
+> specified, potentially simpler context specifying (may be even aliases
+> for commonly used ones like for beginning of word, etc), etc) and then
+> improvements for character handling like capitalisation (ideally I want
+> to get rid of character mappings from the Translator classes).
+>
+> I probably should go back and do some rereading, but how might your rule
+> system from a tree fit in with the above points/comments?
+>
+> Any thoughts on how to work around the character mapping/preprocessing
+> problem (IE. currently rule system X could break rule system Y if both
+> used together as X can modify character mappings Y sets or vice versa?
+>
+> Michael Whapples
+> On 24/03/09 07:21, Leo wrote:
+>    
+>> Hi,
+>>
+>> sounds great! It is useful indeed to allow users to prescribe specific
+>> translations of individual words such as names. All translation programs I
+>> am aware of feature this.
+>> Once yabt becomes open to different rule types and a tree structure of
+>>      
+> rules
+>    
+>> as discussed a few months ago, I am prepared to work on German rules. I
+>> would even implement new rule types once I understand how to. But as
+>>      
+> things
+>    
+>> stand, I believe it is not yet possible.
+>>
+>> Occasionally I work on a package I've called 'transcribo'. One day it
+>>      
+> should
+>    
+>> be able to work as a plain text layout engine using different front ends
+>> that work as bridges to input sources such as docutils, ODF processing
+>> libraries etc. Of course, each element of the input tree can specify its
+>>      
+> own
+>    
+>> translator such as YABT and its wrapper such as textwrap or my little hack
+>> (textwrap2) that embeds hyphenation. I hope that if things go well,
+>> transcribo will be able to format things like headings, lists,
+>>      
+> enumerations,
+>    
+>> multi-column text, page references, headers, footers etc. Styles will be
+>> stored in json files...
+>>
+>> I am not even half way there, but I am getting closer. It may still take a
+>> few weeks or months though to publish a demonstration version. With a few
+>> docutils directives or interpreted text roles this could make up a
+>>      
+> beautiful
+>    
+>> mixed content typesetting system for plain text and Braille by 2050...
+>>
+>> The other day I was thinking of how to hyphenate contracted Braille. Could
+>> one create specific dictionaries for PyHyphen? I would think so if one
+>>      
+> uses
+>    
+>> an appropriate character mapping that does not interfere with control
+>>      
+> chars
+>    
+>> used by the hyphenation library.
+>>
+>>    If you are still interested in Spring, you may wish to look at
+>> http://springpython.webfactional.com/
+>>
+>> Leo
+>>
+>> -----Ursprungliche Nachricht----
+>> Von: yabt-devel-bounces at lists.berlios.de
+>> [mailto:yabt-devel-bounces at lists.berlios.de]Im Auftrag von Michael
+>> Whapples
+>> Gesendet: Montag, 23. Marz 2009 10:22
+>> An: yabt-devel at lists.berlios.de
+>> Betreff: [Yabt-devel] Multiple loaders and other translation algorithms
+>>
+>>
+>> Hello,
+>> I have finally got back to writing some more of YABT. I have now made a
+>> simple word substitution dictionary system for the translator (currently
+>> only in mercurial). To use this feature look at the -d (--dictionary)
+>> option in the yabt-trans command.
+>>
+>> In short when using the -d option when YABT performs the translation it
+>> first checks to see if a simple word substitution is possible, if there
+>> is one then it just makes the substitution and moves on to the next
+>> chunk of text, but if it doesn't have a substitution then it will check
+>> through the rules as usual.
+>>
+>> The word substitution dictionary files are plain text files containing
+>> three columns separated by whitespace. First column should be an integer
+>> and should be the state in which the substitution can be made. The
+>> second column is the original word (Please remember define in capitals
+>> if working with the britishtobrl.xml rules as everything is converted to
+>> capitals because of britishtobrl.xml's character maps, this may not
+>> apply for other tables). The third column is the substitution. Any
+>> line(s) not conforming to this in a dictionary file will be ignored.
+>>
+>> This word substitution system may not be optimised, it may not be as
+>> flexible as it should, etc, I don't even know how much practical use it
+>> will be. After saying all that, which really doesn't sell this, it is
+>> done primarily as a proof of concept to demonstrate how multiple loaders
+>> could be used to create a hybrid translation system.
+>>
+>> Is there any thoughts on this? Where might YABT go with this? If this
+>> word substitution dictionary system isn't of great practical use what
+>> might be?
+>>
+>> Also I am wanting to do more work on the main rule system (the one
+>> britishtobrl.xml is a table for). This covers things like the table
+>> format, should certain things be moved from that table format (eg. the
+>> character maps), etc?
+>>
+>> Michael Whapples
+>> _______________________________________________
+>> Yabt-devel mailing list
+>> Yabt-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>>
+>> _______________________________________________
+>> Yabt-devel mailing list
+>> Yabt-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>>
+>>      
+>    
+
+
+
+From fhaxbox66 at googlemail.com  Thu Mar 26 08:03:16 2009
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Thu, 26 Mar 2009 08:03:16 +0100
+Subject: [Yabt-devel] Multiple loaders and other translation algorithms
+In-Reply-To: <49CABEFD.1050005@aim.com>
+Message-ID: <JNEPIPKLMDDNHIAOHDNBIEPNCBAA.fhaxbox66@googlemail.com>
+
+I see.
+
+Python has no built-in case-insensitive string matching. But you can
+subclass str or unicode overloading the __cmp__ method to do that job. Might
+be worth trying.
+
+Another option (I used it in PyHyphen) might be to lower- or upper-case each
+word before translating and restoring capitalization afterwards. But this
+may be a dull idea in Braille...
+
+Isn't the mess you've found here an argument for a translation manager
+class, i.e. adding another level of abstraction as I suggested in December?
+
+
+-----Ursprungliche Nachricht-----
+Von: yabt-devel-bounces at lists.berlios.de
+[mailto:yabt-devel-bounces at lists.berlios.de]Im Auftrag von Michael
+Whapples
+Gesendet: Donnerstag, 26. Marz 2009 00:32
+An: yabt-devel at lists.berlios.de
+Betreff: Re: [Yabt-devel] Multiple loaders and other translation
+algorithms
+
+
+Hello,
+I think from reading your response that you misunderstood what I meant
+by character mappings. Character mappings is probably a bad term for me
+to use as it is used at other stages of Braille production to the one I
+am meaning, a better term might be the preprocessing of the text (for
+the rest of this email and hopefully for future ones I will keep to the
+term preprocessing for what I am meaning).
+
+The preprocessing currently permits substitution of characters before
+translation starts. The idea of this was taken from BrailleTrans
+(http://alasdairking.me.uk/brailletrans) and is partly done to save on
+number of rules (eg. lowercase letters can be transformed to uppercase
+characters so that rules don't need to be defined for cases containing
+uppercase letters, lowercase letters or even a combination of both
+uppercase and lowercase letters). The problem with this approach is that
+capitalisation information is lost when we do this substitution befor
+translation. While brailletrans doesn't deal with capitalisation at the
+moment I believe the information of type of character is stored some how
+in a byte associated with the character. I made the mistake of believing
+that this information byte for each character was to assist with the
+context pattern matching system used in BrailleTrans only and so did not
+implement it as regex would serve as well (possibly better than a custom
+one I could create) but I missed the capitalisation issue.
+
+While the preprocessing is mainly used for letters to make it case
+insensitive, BrailleTrans does actually use it to substitute some
+punctuation characters.
+
+To just explain why this causes more problems as is than just the
+capitalisation issue. Preprocessing happens before any rule sees the
+translation string, in fact before any translation starts to happen the
+whole input string is preprocessed. So let's have two loaders X and Y.
+If X is loaded first and sets a preprocessing mapping so that "A" is
+replaced with "a" and then loader Y is loaded and that sets a
+preprocessing mapping for "a" to "A" then we hit a mess when trying to
+apply the actual translation rules (this example needs more explaining
+than I originally thought). Rules from loader X expect lowercase letter
+"a" (this is implied by the preprocessing as if X was used alone then
+all capital "A" would be preprocessed to lowercase) but loader Y set
+preprocessing to convert lowercase "a" to capital "A" so we will get
+capital "A" coming into the string for translation. We are getting a
+conflict of interests from different loaders.
+
+This is why I am now thinking preprocessing should not occur, or if it
+really must, it shouldn't happen in the global Translator class (it
+should be for a specific rule, although that sounds processor/time
+intensive).
+
+I am thinking one way round would be remove preprocessing and have an
+option in the table which could say whether a rule is case sensetive or
+not and then case sensetive matches would be used or not as appropriate.
+I don't believe I have seen case insensetive matching in python for
+strings/unicode, I am quite certain java does (java plug done). If
+python doesn't have such a feature then may be two versions of the input
+string could be held, one all in uppercase and one as original
+(uppercase version used for case insensetive matches and the original
+for case sensetive matches).
+
+I believe capitals are the main issue here, the repeated punctuation
+characters aren't such a problem as there are less of them. As an
+example: take the word "error", if all matches are case sensetive then
+we need to define rules for:
+error
+Error
+ERROR
+and possibly more if we wanted to cover:
+eRROR, ERror, ERRor, etc (if they really should be contracted). So at
+least for beginning contractions we have trebled the number of
+contractions, that's why case insensetive matches are good!
+
+Enough of all that, hope it makes the description of what I had been
+calling character maps clearer. I suggest the output from tables should
+be either NABCC (ascii Braille) or the unicode Braille characters,
+unless the format should be otherwise due to the type of translation
+(eg. speech output preparation wouldn't make sense to be output in
+unicode Braille, just stick to standard ascii text or unicode for that
+format).
+
+That took longer than I expected so will get back about any other points.
+
+Michael Whapples
+On 25/03/09 21:42, Leo wrote:
+> On char mappings: I understand the people from www.libbraille.org have
+given
+> some thoughts on this. If it was only for capitalization, I guess that's
+> inevitable. If there is more, I wouldn't understand. Everything is
+unicode,
+> right? And the translation are irrelevant here. The translations as stored
+> in the table should be somewhat independent of the output device, i.e. the
+> char by char Braille substituion should be left up to the device driver.
+The
+> translator should be neutral. Don't know how to better explain, or I do
+not
+> fully understand the issues.
+>
+> We've discussed the rule structure extensively before Xmas. If I had to
+> write a translator right now, I'd probably take on board the loaders idea,
+> but rewrite the rules stuff from scratch, making sure the ole table can be
+> used as such or converted into a new format. But for the sake of usability
+> I'd add rules that allow users to implement a rule set for a new language
+> roughly by following the school books on contractions.
+>
+>
+>
+> -----Ursprungliche Nachricht-----
+> Von: Michael Whapples [mailto:mwhapples at aim.com]
+> Gesendet: Mittwoch, 25. Marz 2009 18:22
+> An: fhaxbox66 at googlemail.com; yabt-devel at lists.berlios.de
+> Betreff: Re: [Yabt-devel] Multiple loaders and other translation
+> algorithms
+>
+>
+> Hello,
+> I hope the word substitution is what you mean, there are some
+> limitations to it (eg. only single words (IE. could not do the
+> translation for "of the" in British Braille due to the space between
+> words), unable to deal with words containing punctuation (eg. words
+> containing apostrophy like "he's", "you'll", etc or may be hyphenated
+> words (eg. this lists name "yabt-devel")) and other limitations possibly
+> not the fault of this substitution system directly (eg. having to
+> conform with character mappings from the main rule system means case
+> insensitive or possibly more accurately requires the definitions to be
+> capitalised).
+>
+> So where does this put YABT? First of all it prooves that hybrid
+> translation can be done. This has highlighted further problems with the
+> original rule system (IE. character mappings) along with the ones
+> already known (eg. requiring all rules to be defined in the correct
+> order, creating the correct rules being difficult, potentially requires
+> huge number of rules, etc). How ever I feel there are some advantages of
+> the main rule system (eg. very flexible to specify exactly under what
+> circumstances a translation should occur, nonspecific to a particular
+> system (eg. not specific for Braille), etc).
+>
+> What should be done? Ideally it needs to maintain the flexibility for
+> specifying conditions for which a translation should occur. An easier to
+> maintain system would be better (eg. no dependency on order of rules
+> specified, potentially simpler context specifying (may be even aliases
+> for commonly used ones like for beginning of word, etc), etc) and then
+> improvements for character handling like capitalisation (ideally I want
+> to get rid of character mappings from the Translator classes).
+>
+> I probably should go back and do some rereading, but how might your rule
+> system from a tree fit in with the above points/comments?
+>
+> Any thoughts on how to work around the character mapping/preprocessing
+> problem (IE. currently rule system X could break rule system Y if both
+> used together as X can modify character mappings Y sets or vice versa?
+>
+> Michael Whapples
+> On 24/03/09 07:21, Leo wrote:
+>
+>> Hi,
+>>
+>> sounds great! It is useful indeed to allow users to prescribe specific
+>> translations of individual words such as names. All translation programs
+I
+>> am aware of feature this.
+>> Once yabt becomes open to different rule types and a tree structure of
+>>
+> rules
+>
+>> as discussed a few months ago, I am prepared to work on German rules. I
+>> would even implement new rule types once I understand how to. But as
+>>
+> things
+>
+>> stand, I believe it is not yet possible.
+>>
+>> Occasionally I work on a package I've called 'transcribo'. One day it
+>>
+> should
+>
+>> be able to work as a plain text layout engine using different front ends
+>> that work as bridges to input sources such as docutils, ODF processing
+>> libraries etc. Of course, each element of the input tree can specify its
+>>
+> own
+>
+>> translator such as YABT and its wrapper such as textwrap or my little
+hack
+>> (textwrap2) that embeds hyphenation. I hope that if things go well,
+>> transcribo will be able to format things like headings, lists,
+>>
+> enumerations,
+>
+>> multi-column text, page references, headers, footers etc. Styles will be
+>> stored in json files...
+>>
+>> I am not even half way there, but I am getting closer. It may still take
+a
+>> few weeks or months though to publish a demonstration version. With a few
+>> docutils directives or interpreted text roles this could make up a
+>>
+> beautiful
+>
+>> mixed content typesetting system for plain text and Braille by 2050...
+>>
+>> The other day I was thinking of how to hyphenate contracted Braille.
+Could
+>> one create specific dictionaries for PyHyphen? I would think so if one
+>>
+> uses
+>
+>> an appropriate character mapping that does not interfere with control
+>>
+> chars
+>
+>> used by the hyphenation library.
+>>
+>>    If you are still interested in Spring, you may wish to look at
+>> http://springpython.webfactional.com/
+>>
+>> Leo
+>>
+>> -----Ursprungliche Nachricht----
+>> Von: yabt-devel-bounces at lists.berlios.de
+>> [mailto:yabt-devel-bounces at lists.berlios.de]Im Auftrag von Michael
+>> Whapples
+>> Gesendet: Montag, 23. Marz 2009 10:22
+>> An: yabt-devel at lists.berlios.de
+>> Betreff: [Yabt-devel] Multiple loaders and other translation algorithms
+>>
+>>
+>> Hello,
+>> I have finally got back to writing some more of YABT. I have now made a
+>> simple word substitution dictionary system for the translator (currently
+>> only in mercurial). To use this feature look at the -d (--dictionary)
+>> option in the yabt-trans command.
+>>
+>> In short when using the -d option when YABT performs the translation it
+>> first checks to see if a simple word substitution is possible, if there
+>> is one then it just makes the substitution and moves on to the next
+>> chunk of text, but if it doesn't have a substitution then it will check
+>> through the rules as usual.
+>>
+>> The word substitution dictionary files are plain text files containing
+>> three columns separated by whitespace. First column should be an integer
+>> and should be the state in which the substitution can be made. The
+>> second column is the original word (Please remember define in capitals
+>> if working with the britishtobrl.xml rules as everything is converted to
+>> capitals because of britishtobrl.xml's character maps, this may not
+>> apply for other tables). The third column is the substitution. Any
+>> line(s) not conforming to this in a dictionary file will be ignored.
+>>
+>> This word substitution system may not be optimised, it may not be as
+>> flexible as it should, etc, I don't even know how much practical use it
+>> will be. After saying all that, which really doesn't sell this, it is
+>> done primarily as a proof of concept to demonstrate how multiple loaders
+>> could be used to create a hybrid translation system.
+>>
+>> Is there any thoughts on this? Where might YABT go with this? If this
+>> word substitution dictionary system isn't of great practical use what
+>> might be?
+>>
+>> Also I am wanting to do more work on the main rule system (the one
+>> britishtobrl.xml is a table for). This covers things like the table
+>> format, should certain things be moved from that table format (eg. the
+>> character maps), etc?
+>>
+>> Michael Whapples
+>> _______________________________________________
+>> Yabt-devel mailing list
+>> Yabt-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>>
+>> _______________________________________________
+>> Yabt-devel mailing list
+>> Yabt-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>>
+>>
+>
+
+_______________________________________________
+Yabt-devel mailing list
+Yabt-devel at lists.berlios.de
+https://lists.berlios.de/mailman/listinfo/yabt-devel
+
+
+
+From mwhapples at aim.com  Fri Mar 27 17:18:14 2009
+From: mwhapples at aim.com (Michael Whapples)
+Date: Fri, 27 Mar 2009 16:18:14 +0000
+Subject: [Yabt-devel] Multiple loaders and other translation algorithms
+In-Reply-To: <JNEPIPKLMDDNHIAOHDNBIEPNCBAA.fhaxbox66@googlemail.com>
+References: <JNEPIPKLMDDNHIAOHDNBIEPNCBAA.fhaxbox66@googlemail.com>
+Message-ID: <49CCFC46.1020003@aim.com>
+
+After recovering from the shock of suggesting subclassing str or unicode 
+(shock caused by my java knowledge, String is defined as final and for 
+good reasons in java, don't know whether those reasons are still valid 
+for python) it should be fully possible to add a method for case 
+insensetive matching to unicode. The big question is what approach will 
+be the most efficient for YABT? For speed reasons I sway towards copying 
+the input to an upper case (or lower case if for some reason that would 
+be better) and then leave it to the rule to choose which to compare to. 
+I don't know how the internals of java's String class works for the 
+equalsIgnoreCase method, but the way I would do it in python would 
+involve conversion to upper case, this probably would have to happen 
+every time the method is called and so might get expensive for YABT's 
+speed. May be somewhere between the two is the answer.
+
+I am not sure whether a translation manager system would resolve the 
+issue I am referring to by saying about the "mess". I actually think the 
+use of the word mess was meaning lots of complicated stuff which I 
+didn't want to try and explain at that time of night could occur and 
+lead to unexpected results. If I build on the example used when I 
+originally said that (where one loader said preprocessing should change 
+lowercase "a" to capital "A" and another loader being used in the same 
+translator says capital "A" should be preprocessed to lowecase "a", 
+order of loading doesn't really matter), let's say we want to translate 
+the phrase "A quarter to four". After preprocessing we end up with "a 
+quArter to four" (only one preprocessing rule/character mapping can be 
+applied to any given character). This string doesn't conform to either 
+loader's rules expectation (by implication of the preprocessing one 
+expects only lowercase "a" and the other only expects capital "A" but 
+the input still contains a mix of lowercase and capital letter "a" and 
+they don't even match with where we originally put them). This basically 
+means neither set of rules will work fully as expected. The only real 
+ways out I can see are either forbid preprocessing (may be not a bad 
+thing) or make it only apply for certain sets of rules (IE. those from a 
+particular loader, this would certainly call for the RuleSet idea).
+
+The problem is no table knows about any other table which might be used 
+in the same translator, so no preprocessing can be guaranteed as things 
+stand.
+
+This looseness between tables/loaders is good in one way but in another 
+it does cause problems as YABT will need to lay down the laws for what 
+they should and should not do so that they may work together without 
+issue (as I feel multiple loaders is a good thing in the main).
+
+I do see some advantages of the translation manager system but feel that 
+there are some core issues which really need some attention in YABT 
+first. May be I should place down some tasks and a rough plan for what 
+version what should happen. I do foresee a huge overhaul of the table 
+format, main rule system, etc coming up.
+
+Michael Whapples
+On 26/03/09 07:03, Leo wrote:
+> I see.
+>
+> Python has no built-in case-insensitive string matching. But you can
+> subclass str or unicode overloading the __cmp__ method to do that job. Might
+> be worth trying.
+>
+> Another option (I used it in PyHyphen) might be to lower- or upper-case each
+> word before translating and restoring capitalization afterwards. But this
+> may be a dull idea in Braille...
+>
+> Isn't the mess you've found here an argument for a translation manager
+> class, i.e. adding another level of abstraction as I suggested in December?
+>
+>
+>    
+
+
+

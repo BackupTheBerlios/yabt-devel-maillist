@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] Translation algorithm and tree structure
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-November/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Translation%20algorithm%20and%20tree%20structure&In-Reply-To=%3CDKECKJNNEDEJAJDEPCMBAEPOCHAA.fhaxbox66%40googlemail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000023.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] Translation algorithm and tree structure</H1>
+    <B>Leo</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Translation%20algorithm%20and%20tree%20structure&In-Reply-To=%3CDKECKJNNEDEJAJDEPCMBAEPOCHAA.fhaxbox66%40googlemail.com%3E"
+       TITLE="[Yabt-devel] Translation algorithm and tree structure">fhaxbox66 at googlemail.com
+       </A><BR>
+    <I>Sat Nov 29 13:30:12 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000023.html">[Yabt-devel] Task for creating versioning number scheme created
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#22">[ date ]</a>
+              <a href="thread.html#22">[ thread ]</a>
+              <a href="subject.html#22">[ subject ]</a>
+              <a href="author.html#22">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>My earlier proposal not published on this list was as follows:
+
+At the first level of the tree there are only rules checking for the length
+of the original (i.e. substring to be translated by a single contraction).
+So there are likely nor more than 5 to 10 nodes. On the second level I
+suggested rules checking for the beginning or the end of the word to single
+out contractions that may apply under such circumstances. But as most
+contractions can occur anywhere, this wouldn't reduce the problem very much.
+For the third level I suggested to check in alphabetical order if the
+substring matches any of the originals in the nodes. If so, the contraction
+may be used unless some excemption contained in the subtree of that
+contraction applies.
+
+Today, an alternative algorithm came to my mind and I want to quickly expose
+the idea so it is retained:
+
+We sort all contractions alphabetically using the original (eg: &quot;that&quot; or
+&quot;sh&quot;). We arrange them in the tree as follows: At the first level (i.e.
+root's children) each node corresponds to the first character of the
+originals. So there are around 26 nodes. The contraction for &quot;always&quot; will
+occur in the first node, &quot;but and because in the second and so forth. At
+level 2 we distinguish according to the second char of the original. Here,
+we are likely to have much less nodes as, e.g. there are no contractions
+whose original starts with &quot;aa&quot; or &quot;jk&quot;. The depth of the tree is equal to
+the length of the longest original. Walking through the input string char by
+char will guide us to the longest contraction which might apply. The subtree
+of that contraction may then contain exemptions such as with &quot;gateshead&quot;. If
+an exemption applies, there may still be a shorter contraction encountered
+on our way up to here. So we'll have to backtrack and check if that one
+applies.
+
+At a given level, each node must be checked until the char matches. This may
+take long if the current letter is &quot;z&quot;. To speed up things, one may consider
+binary search in cases where there are many nodes. Another option is to
+assemble the chars in each node to a string functioning as an index to the
+nodes of each level. The index string for level 1 is likely to contain the
+entire alphabet. At level 2, most strings will have much less characters.
+Choosing the right node comes down to searching the position where the
+character occurs in the index string.
+
+I don't know if this algorithm is smarter than the previous one. Its
+downside might be that it disregards the context until a specific
+contraction is singled out. In most cases, however, the described iterative
+matching may yield good approximations.
+
+We may reconsider both alternatives when discussing which node types to
+implement.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/yabt-devel/attachments/20081129/b93399f9/attachment.html">https://lists.berlios.de/pipermail/yabt-devel/attachments/20081129/b93399f9/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000023.html">[Yabt-devel] Task for creating versioning number scheme created
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#22">[ date ]</a>
+              <a href="thread.html#22">[ thread ]</a>
+              <a href="subject.html#22">[ subject ]</a>
+              <a href="author.html#22">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

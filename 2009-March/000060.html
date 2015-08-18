@@ -1,0 +1,192 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] Multiple loaders and other translation algorithms
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2009-March/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Multiple%20loaders%20and%20other%20translation%20algorithms&In-Reply-To=%3C49CA6834.7020307%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000059.html">
+   <LINK REL="Next"  HREF="000061.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] Multiple loaders and other translation algorithms</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Multiple%20loaders%20and%20other%20translation%20algorithms&In-Reply-To=%3C49CA6834.7020307%40aim.com%3E"
+       TITLE="[Yabt-devel] Multiple loaders and other translation algorithms">mwhapples at aim.com
+       </A><BR>
+    <I>Wed Mar 25 18:21:56 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000059.html">[Yabt-devel] Multiple loaders and other translation algorithms
+</A></li>
+        <LI>Next message: <A HREF="000061.html">[Yabt-devel] Multiple loaders and other translation algorithms
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#60">[ date ]</a>
+              <a href="thread.html#60">[ thread ]</a>
+              <a href="subject.html#60">[ subject ]</a>
+              <a href="author.html#60">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+I hope the word substitution is what you mean, there are some 
+limitations to it (eg. only single words (IE. could not do the 
+translation for &quot;of the&quot; in British Braille due to the space between 
+words), unable to deal with words containing punctuation (eg. words 
+containing apostrophy like &quot;he's&quot;, &quot;you'll&quot;, etc or may be hyphenated 
+words (eg. this lists name &quot;yabt-devel&quot;)) and other limitations possibly 
+not the fault of this substitution system directly (eg. having to 
+conform with character mappings from the main rule system means case 
+insensitive or possibly more accurately requires the definitions to be 
+capitalised).
+
+So where does this put YABT? First of all it prooves that hybrid 
+translation can be done. This has highlighted further problems with the 
+original rule system (IE. character mappings) along with the ones 
+already known (eg. requiring all rules to be defined in the correct 
+order, creating the correct rules being difficult, potentially requires 
+huge number of rules, etc). How ever I feel there are some advantages of 
+the main rule system (eg. very flexible to specify exactly under what 
+circumstances a translation should occur, nonspecific to a particular 
+system (eg. not specific for Braille), etc).
+
+What should be done? Ideally it needs to maintain the flexibility for 
+specifying conditions for which a translation should occur. An easier to 
+maintain system would be better (eg. no dependency on order of rules 
+specified, potentially simpler context specifying (may be even aliases 
+for commonly used ones like for beginning of word, etc), etc) and then 
+improvements for character handling like capitalisation (ideally I want 
+to get rid of character mappings from the Translator classes).
+
+I probably should go back and do some rereading, but how might your rule 
+system from a tree fit in with the above points/comments?
+
+Any thoughts on how to work around the character mapping/preprocessing 
+problem (IE. currently rule system X could break rule system Y if both 
+used together as X can modify character mappings Y sets or vice versa?
+
+Michael Whapples
+On 24/03/09 07:21, Leo wrote:
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> sounds great! It is useful indeed to allow users to prescribe specific
+</I>&gt;<i> translations of individual words such as names. All translation programs I
+</I>&gt;<i> am aware of feature this.
+</I>&gt;<i> Once yabt becomes open to different rule types and a tree structure of rules
+</I>&gt;<i> as discussed a few months ago, I am prepared to work on German rules. I
+</I>&gt;<i> would even implement new rule types once I understand how to. But as things
+</I>&gt;<i> stand, I believe it is not yet possible.
+</I>&gt;<i>
+</I>&gt;<i> Occasionally I work on a package I've called 'transcribo'. One day it should
+</I>&gt;<i> be able to work as a plain text layout engine using different front ends
+</I>&gt;<i> that work as bridges to input sources such as docutils, ODF processing
+</I>&gt;<i> libraries etc. Of course, each element of the input tree can specify its own
+</I>&gt;<i> translator such as YABT and its wrapper such as textwrap or my little hack
+</I>&gt;<i> (textwrap2) that embeds hyphenation. I hope that if things go well,
+</I>&gt;<i> transcribo will be able to format things like headings, lists, enumerations,
+</I>&gt;<i> multi-column text, page references, headers, footers etc. Styles will be
+</I>&gt;<i> stored in json files...
+</I>&gt;<i>
+</I>&gt;<i> I am not even half way there, but I am getting closer. It may still take a
+</I>&gt;<i> few weeks or months though to publish a demonstration version. With a few
+</I>&gt;<i> docutils directives or interpreted text roles this could make up a beautiful
+</I>&gt;<i> mixed content typesetting system for plain text and Braille by 2050...
+</I>&gt;<i>
+</I>&gt;<i> The other day I was thinking of how to hyphenate contracted Braille. Could
+</I>&gt;<i> one create specific dictionaries for PyHyphen? I would think so if one uses
+</I>&gt;<i> an appropriate character mapping that does not interfere with control chars
+</I>&gt;<i> used by the hyphenation library.
+</I>&gt;<i>
+</I>&gt;<i>   If you are still interested in Spring, you may wish to look at
+</I>&gt;<i> <A HREF="http://springpython.webfactional.com/">http://springpython.webfactional.com/</A>
+</I>&gt;<i>
+</I>&gt;<i> Leo
+</I>&gt;<i>
+</I>&gt;<i> -----Ursprungliche Nachricht----
+</I>&gt;<i> Von: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel-bounces at lists.berlios.de</A>
+</I>&gt;<i> [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel-bounces at lists.berlios.de</A>]Im Auftrag von Michael
+</I>&gt;<i> Whapples
+</I>&gt;<i> Gesendet: Montag, 23. Marz 2009 10:22
+</I>&gt;<i> An: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> Betreff: [Yabt-devel] Multiple loaders and other translation algorithms
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Hello,
+</I>&gt;<i> I have finally got back to writing some more of YABT. I have now made a
+</I>&gt;<i> simple word substitution dictionary system for the translator (currently
+</I>&gt;<i> only in mercurial). To use this feature look at the -d (--dictionary)
+</I>&gt;<i> option in the yabt-trans command.
+</I>&gt;<i>
+</I>&gt;<i> In short when using the -d option when YABT performs the translation it
+</I>&gt;<i> first checks to see if a simple word substitution is possible, if there
+</I>&gt;<i> is one then it just makes the substitution and moves on to the next
+</I>&gt;<i> chunk of text, but if it doesn't have a substitution then it will check
+</I>&gt;<i> through the rules as usual.
+</I>&gt;<i>
+</I>&gt;<i> The word substitution dictionary files are plain text files containing
+</I>&gt;<i> three columns separated by whitespace. First column should be an integer
+</I>&gt;<i> and should be the state in which the substitution can be made. The
+</I>&gt;<i> second column is the original word (Please remember define in capitals
+</I>&gt;<i> if working with the britishtobrl.xml rules as everything is converted to
+</I>&gt;<i> capitals because of britishtobrl.xml's character maps, this may not
+</I>&gt;<i> apply for other tables). The third column is the substitution. Any
+</I>&gt;<i> line(s) not conforming to this in a dictionary file will be ignored.
+</I>&gt;<i>
+</I>&gt;<i> This word substitution system may not be optimised, it may not be as
+</I>&gt;<i> flexible as it should, etc, I don't even know how much practical use it
+</I>&gt;<i> will be. After saying all that, which really doesn't sell this, it is
+</I>&gt;<i> done primarily as a proof of concept to demonstrate how multiple loaders
+</I>&gt;<i> could be used to create a hybrid translation system.
+</I>&gt;<i>
+</I>&gt;<i> Is there any thoughts on this? Where might YABT go with this? If this
+</I>&gt;<i> word substitution dictionary system isn't of great practical use what
+</I>&gt;<i> might be?
+</I>&gt;<i>
+</I>&gt;<i> Also I am wanting to do more work on the main rule system (the one
+</I>&gt;<i> britishtobrl.xml is a table for). This covers things like the table
+</I>&gt;<i> format, should certain things be moved from that table format (eg. the
+</I>&gt;<i> character maps), etc?
+</I>&gt;<i>
+</I>&gt;<i> Michael Whapples
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Yabt-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Yabt-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;<i>    
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000059.html">[Yabt-devel] Multiple loaders and other translation algorithms
+</A></li>
+	<LI>Next message: <A HREF="000061.html">[Yabt-devel] Multiple loaders and other translation algorithms
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#60">[ date ]</a>
+              <a href="thread.html#60">[ thread ]</a>
+              <a href="subject.html#60">[ subject ]</a>
+              <a href="author.html#60">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

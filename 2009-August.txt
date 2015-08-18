@@ -1,0 +1,292 @@
+From mwhapples at aim.com  Thu Aug  6 13:07:27 2009
+From: mwhapples at aim.com (Michael Whapples)
+Date: Thu, 06 Aug 2009 12:07:27 +0100
+Subject: [Yabt-devel] YABT 2.1 development started
+Message-ID: <4A7AB96F.2010508@aim.com>
+
+Hello,
+I have decided to back away from some of the things being discussed for 
+YABT 3.0 and decided to add some features which have been requested 
+which could go in YABT 2.1.
+
+The main feature I have done at the moment is made it possible for users 
+to use a setter for the state rather than have to specify it on the call 
+to translate, although should you wish to still call translate with the 
+state option you can, its now a keyword option.
+
+The aim of YABT 2.1 is to add features, but it should still allow 
+applications designed for YABT 2.0 to work without any change (ideally) 
+or very minimal change. However as features are being added, those 
+making use of new features in YABT 2.1 will not be able to use YABT 
+2.0.x, unless they specifically try and support it in another way.
+
+Another feature I would like to add is named states. Now I am referring 
+to them as named states specifically as for performance reasons I don't 
+want to lift the internal restriction of states being integers, instead 
+an object will be accepted and then assigned an integer (or some other 
+type should I feel it might be better with that) as an ID. Therefore the 
+user of YABT will have the appearance of states being of any type they 
+like, but internally YABT will be using state IDs. This won't break 
+backwards compatibility as integers will still be accepted (may be used 
+as the ID or may be assigned its own ID).
+
+Adding cursor positioning and position information would be nice, but I 
+am not quite so sure how it might be done without breaking backwards 
+compatibility.
+
+Any other thoughts of features which could be added?
+
+Michael Whapples
+
+
+From fhaxbox66 at googlemail.com  Sun Aug  9 22:41:52 2009
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Sun, 9 Aug 2009 22:41:52 +0200
+Subject: [Yabt-devel] YABT 2.1 development started
+In-Reply-To: <4A7AB96F.2010508@aim.com>
+Message-ID: <JNEPIPKLMDDNHIAOHDNBOEBDCDAA.fhaxbox66@googlemail.com>
+
+Some potentially superfluous remarks:
+
+1. The state should be settable at instantiation time so it functions as a
+default when calling the translator subsequently. For v3.x I would prefer
+not to allow to set states when calling the translator, because it is
+cleaner to separate these two tasks. Also, you should think about whether
+specifying the state through calling translate() is for one-off use or
+permanently such as when calling the set method. I would advocate one-off
+use which helps when writing a non-contractable name amidst a contracted
+text. . This feature might be worth retaining in v3.0. But offering two ways
+to do the same thing only confuses the reader.
+
+2. I don't quite understand what you mean by allowing objects of arbitrary
+types (which is good!) as states and then signing integers to these (which
+sounds somewhat strange). I would imagine the tables may refer to a specific
+state which entails comparisons etc. My hunch is that if table authors like
+non-integers as states at the expense of speed, so be it and vice versa. So
+why should you care about speed here? I don't think there is much to gain.
+Well, you will have good reasons... Have you looked at using the hash method
+in this context?
+
+3. While these small features are useful, the killing comes with 3.0 and
+custom node types / rules. I won't repeat myself here.
+
+Leo
+-----Ursprungliche Nachricht-----
+Von: yabt-devel-bounces at lists.berlios.de
+[mailto:yabt-devel-bounces at lists.berlios.de]Im Auftrag von Michael
+Whapples
+Gesendet: Donnerstag, 6. August 2009 13:07
+An: yabt-devel at lists.berlios.de
+Betreff: [Yabt-devel] YABT 2.1 development started
+
+
+Hello,
+I have decided to back away from some of the things being discussed for
+YABT 3.0 and decided to add some features which have been requested
+which could go in YABT 2.1.
+
+The main feature I have done at the moment is made it possible for users
+to use a setter for the state rather than have to specify it on the call
+to translate, although should you wish to still call translate with the
+state option you can, its now a keyword option.
+
+The aim of YABT 2.1 is to add features, but it should still allow
+applications designed for YABT 2.0 to work without any change (ideally)
+or very minimal change. However as features are being added, those
+making use of new features in YABT 2.1 will not be able to use YABT
+2.0.x, unless they specifically try and support it in another way.
+
+Another feature I would like to add is named states. Now I am referring
+to them as named states specifically as for performance reasons I don't
+want to lift the internal restriction of states being integers, instead
+an object will be accepted and then assigned an integer (or some other
+type should I feel it might be better with that) as an ID. Therefore the
+user of YABT will have the appearance of states being of any type they
+like, but internally YABT will be using state IDs. This won't break
+backwards compatibility as integers will still be accepted (may be used
+as the ID or may be assigned its own ID).
+
+Adding cursor positioning and position information would be nice, but I
+am not quite so sure how it might be done without breaking backwards
+compatibility.
+
+Any other thoughts of features which could be added?
+
+Michael Whapples
+_______________________________________________
+Yabt-devel mailing list
+Yabt-devel at lists.berlios.de
+https://lists.berlios.de/mailman/listinfo/yabt-devel
+
+
+
+From mwhapples at aim.com  Tue Aug 11 12:35:33 2009
+From: mwhapples at aim.com (Michael Whapples)
+Date: Tue, 11 Aug 2009 11:35:33 +0100
+Subject: [Yabt-devel] YABT 2.1 development started
+In-Reply-To: <JNEPIPKLMDDNHIAOHDNBOEBDCDAA.fhaxbox66@googlemail.com>
+References: <JNEPIPKLMDDNHIAOHDNBOEBDCDAA.fhaxbox66@googlemail.com>
+Message-ID: <4A814975.4070000@aim.com>
+
+Hello,
+Some good points. Yes I agree the really big differences should come 
+with 3.0, my thought is should it happen yet or should some of these 
+more smaller (possibly finer points) be worked out first and then when I 
+move on to YABT 3.0 I should be very clear on the basics and so not hit 
+annoying core definitions (how should state be seen, etc).
+
+Also may be my plan of 2.1 would fit better with java development (sorry 
+for bringing it up, but may be if I say how I was thinking then a more 
+pythonic way can be found). You mention having too many ways of doing 
+the same thing can become confusing, its this choice in python which is 
+as much its strength as its weakness. Simply put the choice means you 
+are more likely to find something to do what you want, but you may need 
+to consider whether you will get conflicts with the alternatives, and 
+possibly each alternative may not have the size of community to make it 
+really good. Anyway one way to solve this choice issue in one particular 
+package (IE. YABT) would be that in YABT 2.1 the old calling style may 
+be marked as deprecated, so new users know that if they are working with 
+YABT 2.1 or higher then they shouldn't use deprecated calls in YABT 2.1. 
+This is where I feel java may work better, as optional args aren't 
+possible in java you have multiple definitions of a method (overloading 
+the method) and any particular definition of the method can be marked as 
+deprecated (IE. we could mark translate with state specified as 
+deprecated, but the definitions of translate which don't have state 
+would not be deprecated). Any thoughts on how this can be done in python?
+
+Now going to the questions themselves:
+State: This is very tricky and its why I am wanting to work it out 
+fully. It is possible for a rule to actually alter the state (eg. you 
+can have embedded commands, and one could switch grade of Braille). The 
+question is whether when a rule does this, should that state become the 
+translators new default state? IE. if we call translate again without 
+giving a state should it be the one the last call to translate resulted 
+in or should we resort back to the one set explicitly with the state setter?
+
+Now for the question of state types: it probably is a matter of 
+implementation and not necessarily something which should have great 
+discussion. As I said if assigning an ID to assist with performance then 
+this should be as transparent as possible and should only concern those 
+working on internals of YABT. The thought of using hash, well if my java 
+definitions of the hashcode method is correct then this wouldn't do for 
+an ID. The java hashcode contract goes something like: if two objects 
+are considered equal (IE. equals method returns true) then their 
+hashcodes must be the same. If two hashcodes are the same this does not 
+mean that the objects are equal (IE. if the hashcodes are the same it 
+does not mean that equals will return true). The use of hashcodes is to 
+assist in finding objects in a collection (eg. in hashmap). In 
+collections using hashcodes, the objects are sorted into groups where 
+each group has the same hashcode, this means that when you come to 
+retrieve the object only that hashcode group needs to be searched, so in 
+a ideal case where hashcode is calculated well only a small part of the 
+collection is searched.
+
+In short an ID should be unique to equal objects but hashcode doesn't 
+meet this requirement. However may be I could make use of __eq__ (I 
+think that's python's version of equals).
+
+OK, finally: you mention about the node rule system, still trying to 
+fully grasp the idea. May be I have got confused along the way. I think 
+you had been suggesting to use a node visitor pattern. I had a look 
+about this (more related to the document processing and docutils) and a 
+little unsure of what it does in python and whether docutils has got it 
+the best way. In plasTeX rather than having a node visitor type, you 
+simply add functions/methods to a dictionary (keys being strings 
+representing the node names it should apply to (node names roughly 
+relate to the LaTeX commands) and the values are the functions/methods). 
+The functions/methods should accept one argument (obviously methods 
+should accept self as well) and this argument is the node to be worked 
+on. Now plasTeX does one thing I am not fully sure how it works, but to 
+tell plasTeX to continue rendering below the node you simply call 
+unicode(node) and catch the unicode returned and place this in your 
+output text you return from the function. I am not quite sure why 
+docutils goes with the more traditional node visitor pattern (IE. 
+requiring a NodeVisitor class) which may be needed for static languages 
+like java but seems a bit unnecessary for python.
+
+Anyway I think that's enough from me, it went on longer than expected. I 
+think this state setting/state meaning thing needs sorting out, I'm not 
+fully happy with how it works either.
+
+Michael Whapples
+On 09/08/09 21:41, Leo wrote:
+> Some potentially superfluous remarks:
+>
+> 1. The state should be settable at instantiation time so it functions as a
+> default when calling the translator subsequently. For v3.x I would prefer
+> not to allow to set states when calling the translator, because it is
+> cleaner to separate these two tasks. Also, you should think about whether
+> specifying the state through calling translate() is for one-off use or
+> permanently such as when calling the set method. I would advocate one-off
+> use which helps when writing a non-contractable name amidst a contracted
+> text. . This feature might be worth retaining in v3.0. But offering two ways
+> to do the same thing only confuses the reader.
+>
+> 2. I don't quite understand what you mean by allowing objects of arbitrary
+> types (which is good!) as states and then signing integers to these (which
+> sounds somewhat strange). I would imagine the tables may refer to a specific
+> state which entails comparisons etc. My hunch is that if table authors like
+> non-integers as states at the expense of speed, so be it and vice versa. So
+> why should you care about speed here? I don't think there is much to gain.
+> Well, you will have good reasons... Have you looked at using the hash method
+> in this context?
+>
+> 3. While these small features are useful, the killing comes with 3.0 and
+> custom node types / rules. I won't repeat myself here.
+>
+> Leo
+> -----Ursprungliche Nachricht-----
+> Von: yabt-devel-bounces at lists.berlios.de
+> [mailto:yabt-devel-bounces at lists.berlios.de]Im Auftrag von Michael
+> Whapples
+> Gesendet: Donnerstag, 6. August 2009 13:07
+> An: yabt-devel at lists.berlios.de
+> Betreff: [Yabt-devel] YABT 2.1 development started
+>
+>
+> Hello,
+> I have decided to back away from some of the things being discussed for
+> YABT 3.0 and decided to add some features which have been requested
+> which could go in YABT 2.1.
+>
+> The main feature I have done at the moment is made it possible for users
+> to use a setter for the state rather than have to specify it on the call
+> to translate, although should you wish to still call translate with the
+> state option you can, its now a keyword option.
+>
+> The aim of YABT 2.1 is to add features, but it should still allow
+> applications designed for YABT 2.0 to work without any change (ideally)
+> or very minimal change. However as features are being added, those
+> making use of new features in YABT 2.1 will not be able to use YABT
+> 2.0.x, unless they specifically try and support it in another way.
+>
+> Another feature I would like to add is named states. Now I am referring
+> to them as named states specifically as for performance reasons I don't
+> want to lift the internal restriction of states being integers, instead
+> an object will be accepted and then assigned an integer (or some other
+> type should I feel it might be better with that) as an ID. Therefore the
+> user of YABT will have the appearance of states being of any type they
+> like, but internally YABT will be using state IDs. This won't break
+> backwards compatibility as integers will still be accepted (may be used
+> as the ID or may be assigned its own ID).
+>
+> Adding cursor positioning and position information would be nice, but I
+> am not quite so sure how it might be done without breaking backwards
+> compatibility.
+>
+> Any other thoughts of features which could be added?
+>
+> Michael Whapples
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+
+
+

@@ -1,0 +1,3219 @@
+From mwhapples at aim.com  Mon Dec  1 17:10:13 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Mon, 01 Dec 2008 16:10:13 +0000
+Subject: [Yabt-devel] I believe version problem resolved
+Message-ID: <49340C65.2030405@aim.com>
+
+Hello,
+I believe I have come up with a satisfactory solution to denote 
+development versions. It has been uploaded to the BerliOS mercurial 
+repository and is used in setup.py. I now just await someone to break 
+it, otherwise I think this is completed.
+
+The module itself is version.py and usage is:
+ >>> import version
+ >>> version.getVersion(base_version_string)
+
+Where base_version_string is a string showing the base version number 
+(eg. 2.0b2 means the release version of 2.0b2 and inserting a .dev at 
+the end of the string means development version eg. 2.1.dev).
+
+I look forward to any comments, and may be pushing out YABT-2.0b2.
+
+Michael Whapples
+
+
+From fhaxbox66 at googlemail.com  Mon Dec  1 21:06:21 2008
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Mon, 1 Dec 2008 21:06:21 +0100
+Subject: [Yabt-devel] How to make the python interpreter when called from
+	the shell,
+	write traceback info to an arbitrary file instead of stderr?
+In-Reply-To: <49340C65.2030405@aim.com>
+Message-ID: <DKECKJNNEDEJAJDEPCMBMEANCIAA.fhaxbox66@googlemail.com>
+
+Congratulations for the versioning issue.
+
+OK. The question in the subject is off topic. But I count on your tolerance.
+Any quick idea?
+
+
+-----Ursprungliche Nachricht-----
+Von: yabt-devel-bounces at lists.berlios.de
+[mailto:yabt-devel-bounces at lists.berlios.de]Im Auftrag von Michael
+Whapples
+Gesendet: Montag, 1. Dezember 2008 17:10
+An: yabt-devel at lists.berlios.de
+Betreff: [Yabt-devel] I believe version problem resolved
+
+
+Hello,
+I believe I have come up with a satisfactory solution to denote
+development versions. It has been uploaded to the BerliOS mercurial
+repository and is used in setup.py. I now just await someone to break
+it, otherwise I think this is completed.
+
+The module itself is version.py and usage is:
+ >>> import version
+ >>> version.getVersion(base_version_string)
+
+Where base_version_string is a string showing the base version number
+(eg. 2.0b2 means the release version of 2.0b2 and inserting a .dev at
+the end of the string means development version eg. 2.1.dev).
+
+I look forward to any comments, and may be pushing out YABT-2.0b2.
+
+Michael Whapples
+_______________________________________________
+Yabt-devel mailing list
+Yabt-devel at lists.berlios.de
+https://lists.berlios.de/mailman/listinfo/yabt-devel
+
+
+
+From mwhapples at aim.com  Mon Dec  1 21:34:15 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Mon, 01 Dec 2008 20:34:15 +0000
+Subject: [Yabt-devel] How to make the python interpreter when called
+ from the shell, write traceback info to an arbitrary file instead of stderr?
+In-Reply-To: <DKECKJNNEDEJAJDEPCMBMEANCIAA.fhaxbox66@googlemail.com>
+References: <DKECKJNNEDEJAJDEPCMBMEANCIAA.fhaxbox66@googlemail.com>
+Message-ID: <49344A47.7000809@aim.com>
+
+Regarding your question, I think you provided the answer itself. Python 
+writes traceback to stderr, you just need to redirect this using the OS. 
+In bash use the 2> redirection, a command like
+
+python somescript 2>outputfile
+
+If it is a script you are writing only you want to put this info to a 
+file then you could use logging (I don't know whether python still 
+outputs the traceback if you reraise the exception on the last try: ... 
+except: ... block). Logging won't catch anything you don't try to catch, 
+that's why you might have a try: ... except: ... block right at the top 
+so that you can log even those critical unexpected exceptions and then 
+reraise or exit as you wish (I believe this is what NVDA do). I 
+personally feel logging is something every non-trivial applications 
+should do (YABT probably should do more except logging can impact on 
+performance and as YABT is looping so much logging's impact is 
+significant enough to make me back away from it initially, may be not if 
+I carefully plan the logging points).
+
+Michael Whapples
+
+On 01/12/08 20:06, Leo wrote:
+> Congratulations for the versioning issue.
+>
+> OK. The question in the subject is off topic. But I count on your tolerance.
+> Any quick idea?
+>
+>
+> -----Ursprungliche Nachricht-----
+> Von: yabt-devel-bounces at lists.berlios.de
+> [mailto:yabt-devel-bounces at lists.berlios.de]Im Auftrag von Michael
+> Whapples
+> Gesendet: Montag, 1. Dezember 2008 17:10
+> An: yabt-devel at lists.berlios.de
+> Betreff: [Yabt-devel] I believe version problem resolved
+>
+>
+> Hello,
+> I believe I have come up with a satisfactory solution to denote
+> development versions. It has been uploaded to the BerliOS mercurial
+> repository and is used in setup.py. I now just await someone to break
+> it, otherwise I think this is completed.
+>
+> The module itself is version.py and usage is:
+>   >>>  import version
+>   >>>  version.getVersion(base_version_string)
+>
+> Where base_version_string is a string showing the base version number
+> (eg. 2.0b2 means the release version of 2.0b2 and inserting a .dev at
+> the end of the string means development version eg. 2.1.dev).
+>
+> I look forward to any comments, and may be pushing out YABT-2.0b2.
+>
+> Michael Whapples
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+
+
+From fhaxbox66 at googlemail.com  Wed Dec  3 21:10:06 2008
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Wed, 3 Dec 2008 21:10:06 +0100
+Subject: [Yabt-devel] Quick comments on version.py
+Message-ID: <DKECKJNNEDEJAJDEPCMBOEBFCIAA.fhaxbox66@googlemail.com>
+
+I've had a quick look at it on Windows with hg installed as binary.
+
+If I call getVersion with less meaningful values such as '3.0' or '0.9',,
+the argument is returned unchanged. I'm not sure that this is what you want.
+But I must admit that I haven't fully understood what the whole thing does,
+as I haven't had a close enough look at hg and setuptools. Well, I imagine
+that it should append the changeset number to the version string if and only
+if the present repository represents the version number passed to
+getVersion.
+
+I tried with the value from setup.py (2.0b2.dev), and then the revision and
+hash code is returned, appended to 2.0b2. This is probably what you want.
+
+But this would mean that the whole lengthy version number will appear on the
+pypi once you upload it... Well, you don't need to upload it at all, just
+provide the download url, repository address or whatever is appropriate.
+
+Probably you will be aware of all this, but I thought I'd mention it just in
+case.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081203/19948c7c/attachment.html>
+
+From mwhapples at aim.com  Wed Dec  3 22:27:09 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Wed, 03 Dec 2008 21:27:09 +0000
+Subject: [Yabt-devel] Quick comments on version.py
+In-Reply-To: <DKECKJNNEDEJAJDEPCMBOEBFCIAA.fhaxbox66@googlemail.com>
+References: <DKECKJNNEDEJAJDEPCMBOEBFCIAA.fhaxbox66@googlemail.com>
+Message-ID: <4936F9AD.70809@aim.com>
+
+Good it sounds like it is working as expected. If you pass a release 
+number (eg. 3.0 or 0.9 or even a beta release 2.0b2) the revision and 
+changeset details are not appended as it seems to be a release. If you 
+append .dev to the end of the version number you pass getVersion then it 
+realises you are dealing with a development version so appends the 
+revision and changeset details. Call me lazy but this means that when I 
+am ready to push out YABT-2.0b2 all I need to do is remove the .dev and 
+create the distribution packages. When I move on to the next versions 
+development (eg. YABT-2.0b3) then all that is required is to remove the 
+2 after the b and type 3.dev.
+
+Admittedly the version numbers are long when dealing with a development 
+, snapshot, so the intention is that those will be released minimally, 
+only if there is an absolute requirement, and they may not make it to pypi.
+
+I am about to mark the task as complete (hopefully done this evening).
+
+Michael Whapples
+
+On 03/12/08 20:10, Leo wrote:
+> I've had a quick look at it on Windows with hg installed as binary.
+> If I call getVersion with less meaningful values such as '3.0' or 
+> '0.9',, the argument is returned unchanged. I'm not sure that this is 
+> what you want. But I must admit that I haven't fully understood what 
+> the whole thing does, as I haven't had a close enough look at hg and 
+> setuptools. Well, I imagine that it should append the changeset number 
+> to the version string if and only if the present repository 
+> represents the version number passed to getVersion.
+> I tried with the value from setup.py (2.0b2.dev), and then the 
+> revision and hash code is returned, appended to 2.0b2. This is 
+> probably what you want.
+> But this would mean that the whole lengthy version number will appear 
+> on the pypi once you upload it... Well, you don't need to upload it at 
+> all, just provide the download url, repository address or whatever is 
+> appropriate.
+> Probably you will be aware of all this, but I thought I'd mention it 
+> just in case.
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081203/12364eb0/attachment.html>
+
+From mwhapples at aim.com  Fri Dec  5 17:49:13 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Fri, 05 Dec 2008 16:49:13 +0000
+Subject: [Yabt-devel] push for YABT-2.0b2
+Message-ID: <49395B89.8070400@aim.com>
+
+I have now made some alterations to the description of YABT. A bit more 
+than I hoped and I probably haven't done it all. Any way I have 
+committed these changes to the mercurial repository. There is one main 
+thing I found which I had forgotten about and want to sort out before 
+YABT-2.0b2. I haven't been touching the ChangeLog file. I think this is 
+something to do with me and so I want to do one of the following:
+* remove the file and just expect users to refer to the mercurial log if 
+they wish to view changes.
+* Find some way to connect the mercurial log with the ChangeLog, so I am 
+forced to enter the details into the ChangeLog as what I enter for the 
+commit message is used in ChangeLog. A mercurial extension seems to be 
+the option here.
+
+The first is simpler but those who only use releases won't have change 
+information easily to hand. The second is more complete but does have 
+greater work to do to implement (find the extension, where should it be 
+server or local, commit or push/pull activated, etc).
+
+I personally wouldn't miss it if it went have you any views?
+
+This is the only issue outstanding, unless you find some in the latest 
+repository commit.
+
+Michael Whapples
+
+
+From fhaxbox66 at googlemail.com  Fri Dec  5 18:02:40 2008
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Fri, 5 Dec 2008 18:02:40 +0100
+Subject: [Yabt-devel] push for YABT-2.0b2
+In-Reply-To: <49395B89.8070400@aim.com>
+Message-ID: <DKECKJNNEDEJAJDEPCMBEEBMCIAA.fhaxbox66@googlemail.com>
+
+As I am about to travel over the weekend, I cannot look at the repo right
+now.
+
+For PyHyphen I've lazily chosen not to maintain a 20th century style
+changelog file. A link to the hg repo, maybe in a file named changelog,
+should satisfy everybody's needs.
+
+-----Ursprungliche Nachricht-----
+Von: yabt-devel-bounces at lists.berlios.de
+[mailto:yabt-devel-bounces at lists.berlios.de]Im Auftrag von Michael
+Whapples
+Gesendet: Freitag, 5. Dezember 2008 17:49
+An: yabt-devel at lists.berlios.de
+Betreff: [Yabt-devel] push for YABT-2.0b2
+
+
+I have now made some alterations to the description of YABT. A bit more
+than I hoped and I probably haven't done it all. Any way I have
+committed these changes to the mercurial repository. There is one main
+thing I found which I had forgotten about and want to sort out before
+YABT-2.0b2. I haven't been touching the ChangeLog file. I think this is
+something to do with me and so I want to do one of the following:
+* remove the file and just expect users to refer to the mercurial log if
+they wish to view changes.
+* Find some way to connect the mercurial log with the ChangeLog, so I am
+forced to enter the details into the ChangeLog as what I enter for the
+commit message is used in ChangeLog. A mercurial extension seems to be
+the option here.
+
+The first is simpler but those who only use releases won't have change
+information easily to hand. The second is more complete but does have
+greater work to do to implement (find the extension, where should it be
+server or local, commit or push/pull activated, etc).
+
+I personally wouldn't miss it if it went have you any views?
+
+This is the only issue outstanding, unless you find some in the latest
+repository commit.
+
+Michael Whapples
+_______________________________________________
+Yabt-devel mailing list
+Yabt-devel at lists.berlios.de
+https://lists.berlios.de/mailman/listinfo/yabt-devel
+
+
+
+From mwhapples at aim.com  Fri Dec  5 21:08:00 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Fri, 05 Dec 2008 20:08:00 +0000
+Subject: [Yabt-devel] push for YABT-2.0b2
+In-Reply-To: <DKECKJNNEDEJAJDEPCMBEEBMCIAA.fhaxbox66@googlemail.com>
+References: <DKECKJNNEDEJAJDEPCMBEEBMCIAA.fhaxbox66@googlemail.com>
+Message-ID: <49398A20.1000703@aim.com>
+
+This was the way I thought regarding the ChangeLog.
+
+I will do some checks myself over the docs to check whether it still 
+refers to "Yet another Braille translator" and alter accordingly.
+
+I will be targeting YABT-2.0b2 for python 2.5 and 2.6 (it didn't work on 
+python 2.4 when I tried and python 2.4 is quite old). As for python 3.0 
+unfortunately that has just been released and I would say ideally I 
+would want to support it but as YABT-2.0b2 didn't work out of the box 
+when I tried with a release candidate, I don't want to delay YABT-2.0b2 
+because of that.
+
+Michael Whapples
+
+On 05/12/08 17:02, Leo wrote:
+> As I am about to travel over the weekend, I cannot look at the repo right
+> now.
+>
+> For PyHyphen I've lazily chosen not to maintain a 20th century style
+> changelog file. A link to the hg repo, maybe in a file named changelog,
+> should satisfy everybody's needs.
+>
+> -----Ursprungliche Nachricht-----
+> Von: yabt-devel-bounces at lists.berlios.de
+> [mailto:yabt-devel-bounces at lists.berlios.de]Im Auftrag von Michael
+> Whapples
+> Gesendet: Freitag, 5. Dezember 2008 17:49
+> An: yabt-devel at lists.berlios.de
+> Betreff: [Yabt-devel] push for YABT-2.0b2
+>
+>
+> I have now made some alterations to the description of YABT. A bit more
+> than I hoped and I probably haven't done it all. Any way I have
+> committed these changes to the mercurial repository. There is one main
+> thing I found which I had forgotten about and want to sort out before
+> YABT-2.0b2. I haven't been touching the ChangeLog file. I think this is
+> something to do with me and so I want to do one of the following:
+> * remove the file and just expect users to refer to the mercurial log if
+> they wish to view changes.
+> * Find some way to connect the mercurial log with the ChangeLog, so I am
+> forced to enter the details into the ChangeLog as what I enter for the
+> commit message is used in ChangeLog. A mercurial extension seems to be
+> the option here.
+>
+> The first is simpler but those who only use releases won't have change
+> information easily to hand. The second is more complete but does have
+> greater work to do to implement (find the extension, where should it be
+> server or local, commit or push/pull activated, etc).
+>
+> I personally wouldn't miss it if it went have you any views?
+>
+> This is the only issue outstanding, unless you find some in the latest
+> repository commit.
+>
+> Michael Whapples
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+
+
+From mwhapples at aim.com  Fri Dec  5 22:20:33 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Fri, 05 Dec 2008 21:20:33 +0000
+Subject: [Yabt-devel] push for YABT-2.0b2
+In-Reply-To: <49398A20.1000703@aim.com>
+References: <DKECKJNNEDEJAJDEPCMBEEBMCIAA.fhaxbox66@googlemail.com>
+	<49398A20.1000703@aim.com>
+Message-ID: <49399B21.2050209@aim.com>
+
+I can confirm now that python3.0 is not going to be possible for 
+YABT-2.0b2. As a bit of fun I just tried running YABT_translate in 
+python2.6 with the -3 option and I now have YABT itself not issuing 
+warnings, but setuptools is. The core of YABT doesn't rely on setuptools 
+but the additional script (YABT_translate) does and I also quite like 
+setuptools resource system for data files to be included with packages.
+
+Michael Whapples
+
+On 05/12/08 20:08, Michael Whapples wrote:
+> This was the way I thought regarding the ChangeLog.
+>
+> I will do some checks myself over the docs to check whether it still
+> refers to "Yet another Braille translator" and alter accordingly.
+>
+> I will be targeting YABT-2.0b2 for python 2.5 and 2.6 (it didn't work on
+> python 2.4 when I tried and python 2.4 is quite old). As for python 3.0
+> unfortunately that has just been released and I would say ideally I
+> would want to support it but as YABT-2.0b2 didn't work out of the box
+> when I tried with a release candidate, I don't want to delay YABT-2.0b2
+> because of that.
+>
+> Michael Whapples
+>
+> On 05/12/08 17:02, Leo wrote:
+>    
+>> As I am about to travel over the weekend, I cannot look at the repo right
+>> now.
+>>
+>> For PyHyphen I've lazily chosen not to maintain a 20th century style
+>> changelog file. A link to the hg repo, maybe in a file named changelog,
+>> should satisfy everybody's needs.
+>>
+>> -----Ursprungliche Nachricht-----
+>> Von: yabt-devel-bounces at lists.berlios.de
+>> [mailto:yabt-devel-bounces at lists.berlios.de]Im Auftrag von Michael
+>> Whapples
+>> Gesendet: Freitag, 5. Dezember 2008 17:49
+>> An: yabt-devel at lists.berlios.de
+>> Betreff: [Yabt-devel] push for YABT-2.0b2
+>>
+>>
+>> I have now made some alterations to the description of YABT. A bit more
+>> than I hoped and I probably haven't done it all. Any way I have
+>> committed these changes to the mercurial repository. There is one main
+>> thing I found which I had forgotten about and want to sort out before
+>> YABT-2.0b2. I haven't been touching the ChangeLog file. I think this is
+>> something to do with me and so I want to do one of the following:
+>> * remove the file and just expect users to refer to the mercurial log if
+>> they wish to view changes.
+>> * Find some way to connect the mercurial log with the ChangeLog, so I am
+>> forced to enter the details into the ChangeLog as what I enter for the
+>> commit message is used in ChangeLog. A mercurial extension seems to be
+>> the option here.
+>>
+>> The first is simpler but those who only use releases won't have change
+>> information easily to hand. The second is more complete but does have
+>> greater work to do to implement (find the extension, where should it be
+>> server or local, commit or push/pull activated, etc).
+>>
+>> I personally wouldn't miss it if it went have you any views?
+>>
+>> This is the only issue outstanding, unless you find some in the latest
+>> repository commit.
+>>
+>> Michael Whapples
+>> _______________________________________________
+>> Yabt-devel mailing list
+>> Yabt-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>>
+>> _______________________________________________
+>> Yabt-devel mailing list
+>> Yabt-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>>
+>>      
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081205/8e66fba0/attachment.html>
+
+From mwhapples at aim.com  Tue Dec  9 15:17:56 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Tue, 09 Dec 2008 14:17:56 +0000
+Subject: [Yabt-devel] YABT 2.0b2 released
+Message-ID: <493E7E14.2080307@aim.com>
+
+Hello,
+I have made the release of YABT 2.0b2 earlier today. For the full 
+announcement I will leave it to you if you wish to read it in the news 
+section of the YABT project page.
+
+I feel more importantly now that this release has be made a full review 
+of what the next version of YABT should do/offer and review what might 
+be the best way to move it towards that. I personally feel that YABT in 
+its current form does offer most of what is needed but could do with 
+some work on the API to provide this better/more easily. Also according 
+to my versioning scheme as the 2.0 branch is not final yet it is 
+permisible to have significant changes to the API (ideally it should 
+have been in alpha stage but when I made the first YABT 2.0 branch 
+release I thought things were more final than they were). Due to this I 
+propose putting further development forward as working towards YABT-2.0b3.
+
+Michael Whapples
+
+
+From fhaxbox66 at googlemail.com  Tue Dec  9 23:02:53 2008
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Tue, 9 Dec 2008 23:02:53 +0100
+Subject: [Yabt-devel] Comments on YABT_translate-script and README
+Message-ID: <DKECKJNNEDEJAJDEPCMBKECECIAA.fhaxbox66@googlemail.com>
+
+I've only now looked at the script and I like it.
+
+That said, you could
+- make sure that the .exe version displays its correct file name (rather
+than the name of the .py script) in the help strings. Should be easy by
+using argv rather than hard-coding the file name)
+- allow the specification of an output file; redirection is not the most
+obvious way.
+- add info on default values to the help text
+
+--version prints 2.0. Is this intended?
+
+
+On README
+
+You could copy some lines from the long_description in setup.py to avoid a
+too Braille-centric appearance.
+
+But these are very minor comments that should not prevent you from pushing
+2.0b2 out immediately.
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081209/8ad05373/attachment.html>
+
+From mwhapples at aim.com  Wed Dec 10 15:49:48 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Wed, 10 Dec 2008 14:49:48 +0000
+Subject: [Yabt-devel] Comments on YABT_translate-script and README
+In-Reply-To: <DKECKJNNEDEJAJDEPCMBKECECIAA.fhaxbox66@googlemail.com>
+References: <DKECKJNNEDEJAJDEPCMBKECECIAA.fhaxbox66@googlemail.com>
+Message-ID: <493FD70C.6050706@aim.com>
+
+Hello,
+I have made some comments in amongst yours.
+
+On 09/12/08 22:02, Leo wrote:
+> I've only now looked at the script and I like it.
+> That said, you could
+> - make sure that the .exe version displays its correct file name 
+> (rather than the name of the .py script) in the help strings. Should 
+> be easy by using argv rather than hard-coding the file name
+)
+I am using the optparse module in python and as I remember I used the 
+string substitution stuff provided by that for the name. May be its not 
+working as I would have hoped/expected. I will see to this.
+> - allow the specification of an output file; redirection is not the 
+> most obvious way.
+I can add this easily. For a unix user redirection is well known and 
+very flexible but as I am targeting as many platforms as possible then I 
+could imagine its not so well known on Windows.
+
+> - add info on default values to the help text
+I will take a look at this, I can't remember what I meant to do on this. 
+Hopefully optparse will help.
+> --version prints 2.0. Is this intended?
+Yes, but maybe confusing, should I include a version variable inside the 
+package? May be I could get the information from setuptools (this is 
+where I feel I should naturally get it from as packages using this can 
+specify the version to use) but I don't remember seeing that in the 
+setuptools docs.
+> On README
+> You could copy some lines from the long_description in setup.py to 
+> avoid a too Braille-centric appearance
+Ideally I would have some sort of common source so that the two are kept 
+in sync but I can imagine that getting complex and distracting so may be 
+just copy and paste will work better.
+
+> .
+> But these are very minor comments that should not prevent you from 
+> pushing 2.0b2 out immediately.
+Unfortunately as far as the comments go, too late I pushed it out 
+yesterday. If any of these are felt to be critical then I can make 
+YABT-2.0b2.1 or YABT-2.0b2Update1 to indicate it essentially is 
+YABT-2.0b2 with corrections (this is why I wanted pre version 
+development numbering rather than post release numbering on mercurial 
+commits).
+
+Michael Whapples
+
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081210/3b8cdb5c/attachment.html>
+
+From mwhapples at aim.com  Wed Dec 10 16:31:00 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Wed, 10 Dec 2008 15:31:00 +0000
+Subject: [Yabt-devel] Comments on YABT_translate-script and README
+In-Reply-To: <DKECKJNNEDEJAJDEPCMBKECECIAA.fhaxbox66@googlemail.com>
+References: <DKECKJNNEDEJAJDEPCMBKECECIAA.fhaxbox66@googlemail.com>
+Message-ID: <493FE0B4.8050805@aim.com>
+
+Hello again,
+I have added defaults to help in my local repository. I was planning to 
+make a few more changes before I push to the berlios repository, but 
+could do this sooner than later if desired.
+
+Regarding the program name, on Linux I seem to be getting the correct 
+value and according to the optparse docs it uses the base name of 
+sys.argv[0]. I question whether this is down to setuptools. I haven't 
+yet attended to the version issue (partly as I can't decide whether this 
+is correct or not, is it the version of the script or should the script 
+reflect the version of YABT as it is a demo script).
+
+I also am suspecting that I will need to use a manifest file instead of 
+hg.setuptools, as hg.setuptools isn't graceful if you aren't in a 
+repository.
+
+That question about hg.setuptools possibly raises another question I 
+have, how dependent should YABT be on 3rd party packages? As far as 
+things seem to go setuptools is all which is holding YABT back on a 
+python3.0 port (at least that is what 2to3 reports problems with).
+
+Michael Whapples
+
+On 09/12/08 22:02, Leo wrote:
+> I've only now looked at the script and I like it.
+> That said, you could
+> - make sure that the .exe version displays its correct file name 
+> (rather than the name of the .py script) in the help strings. Should 
+> be easy by using argv rather than hard-coding the file name)
+> - allow the specification of an output file; redirection is not the 
+> most obvious way.
+> - add info on default values to the help text
+> --version prints 2.0. Is this intended?
+> On README
+> You could copy some lines from the long_description in setup.py to 
+> avoid a too Braille-centric appearance.
+> But these are very minor comments that should not prevent you from 
+> pushing 2.0b2 out immediately.
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081210/b51680df/attachment.html>
+
+From fhaxbox66 at googlemail.com  Wed Dec 10 21:41:44 2008
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Wed, 10 Dec 2008 21:41:44 +0100
+Subject: [Yabt-devel] YABT 2.0b2 released
+In-Reply-To: <493E7E14.2080307@aim.com>
+Message-ID: <DKECKJNNEDEJAJDEPCMBOECHCIAA.fhaxbox66@googlemail.com>
+
+Great! Congratulations! I've seen the announcement which reads quite nice...
+You may wish to update the cover page as well at some point. Further, I
+wonder if you want to upload a html version of the RST file containing the
+announcement.
+
+I wished I could spend more time on these issues. I guess I'll have to
+understand the nitty-gritty of yabt to make more meaningful suggestions on
+the design of 2.0b3...
+By the way: recently I bumped into another xml tool that is based on
+ElementTree: lxml - a wrapper around libxml2 which is Gnome's xml enging.
+See www.xmlsoft.org. It's also on the pypi. At some point we will have to
+decide if we want to write an xslt or dtd for yabt xml files... lxml could
+come in handy. But this is for the future.
+
+Like you, I would expect the design to be worked out best top-down, so
+xml-related subclasses would come at the end.
+
+
+
+
+
+-----Ursprungliche Nachricht-----
+Von: yabt-devel-bounces at lists.berlios.de
+[mailto:yabt-devel-bounces at lists.berlios.de]Im Auftrag von Michael
+Whapples
+Gesendet: Dienstag, 9. Dezember 2008 15:18
+An: yabt-devel at lists.berlios.de
+Betreff: [Yabt-devel] YABT 2.0b2 released
+
+
+Hello,
+I have made the release of YABT 2.0b2 earlier today. For the full
+announcement I will leave it to you if you wish to read it in the news
+section of the YABT project page.
+
+I feel more importantly now that this release has be made a full review
+of what the next version of YABT should do/offer and review what might
+be the best way to move it towards that. I personally feel that YABT in
+its current form does offer most of what is needed but could do with
+some work on the API to provide this better/more easily. Also according
+to my versioning scheme as the 2.0 branch is not final yet it is
+permisible to have significant changes to the API (ideally it should
+have been in alpha stage but when I made the first YABT 2.0 branch
+release I thought things were more final than they were). Due to this I
+propose putting further development forward as working towards YABT-2.0b3.
+
+Michael Whapples
+_______________________________________________
+Yabt-devel mailing list
+Yabt-devel at lists.berlios.de
+https://lists.berlios.de/mailman/listinfo/yabt-devel
+
+
+
+From fhaxbox66 at googlemail.com  Wed Dec 10 22:44:38 2008
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Wed, 10 Dec 2008 22:44:38 +0100
+Subject: [Yabt-devel] Some thoughts on the current design of yabt-2.0b2 -
+	__init__.py and base_translator.addCharMapping
+Message-ID: <DKECKJNNEDEJAJDEPCMBCECJCIAA.fhaxbox66@googlemail.com>
+
+On __init__.py
+
+I've seen these setuptools magic before and as an ignorant I don't know what
+it does... Doesn't matter. Does setuptools work with pydoc and such like?
+Haven't checkt this. But pydocs doc browser is just cute.I'd regret if
+setuptools disturbed pydoc. If you are annoyed by setuptools, just kick it
+out. I've no strong views. I wouldn't mind users who love yabt for its
+functionality while constantly complaining about its anti-setuptools
+philosophy.
+
+   On base_translator
+
+    def addCharacterMap(self, orig, repl):
+
+Char mapping is a delicate issue. Let alone the technical details: What do
+we expect char mappings to do? I assume char mapings to be dependent on the
+country, language, output device and maybe other circumstances I cannot
+think of right now. Should this be done at the very end? Probably not.
+Formatting needs to be aware of the final char set at least if certain
+representations expand to more than one physical char. I.e. if you map 2000
+Japanese signs (Khanji or whatever) to Braille, you will end up with many 2-
+or 3-form chars...
+
+I wonder if addCharacterMap on top of the class hierarchy is the best
+choice. How about a new class at implementation level that encapsulates the
+whole loading and mapping staff? - Further, I wonder if base_class should
+really be focused on strings rather than arbitrary objects.
+
+I believe that some smart people have worked on char sets before.
+http://www.libbraille.org should be interesting to look at. This library
+does have Python bindings by the way. Should yabt use it, maybe at
+implementation level?
+
+By the way: if you are interested in software development, you could benefit
+from PyContext on the pypi, at least when in a brain-storming mode as I am
+right now.  PyContext implements some new paradigms described in articles
+referred to in the README file.
+
+
+Enough for today.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081210/114de657/attachment.html>
+
+From fhaxbox66 at googlemail.com  Wed Dec 10 23:09:46 2008
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Wed, 10 Dec 2008 23:09:46 +0100
+Subject: [Yabt-devel] yabt_translate.exe
+Message-ID: <DKECKJNNEDEJAJDEPCMBGECKCIAA.fhaxbox66@googlemail.com>
+
+Congratulations! It outputs the correct version now. app is the perfect
+place for this.
+
+That said, the usage string still outputs the name of the .py script packed
+into the .exe. I guess the .py script doesn't even know that it lives in a
+win32 .exe.
+
+Not very important.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081210/4e1145d8/attachment.html>
+
+From mwhapples at aim.com  Wed Dec 10 23:17:12 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Wed, 10 Dec 2008 22:17:12 +0000
+Subject: [Yabt-devel] yabt_translate.exe
+In-Reply-To: <DKECKJNNEDEJAJDEPCMBGECKCIAA.fhaxbox66@googlemail.com>
+References: <DKECKJNNEDEJAJDEPCMBGECKCIAA.fhaxbox66@googlemail.com>
+Message-ID: <49403FE8.7050703@aim.com>
+
+As I said before I believe the file name issue for the windows .exe is 
+to do with setuptools and packing it into a exe (or may be not actually 
+packing it). On Linux the executeable is actually a python script with 
+no .py extension so may be that's why Linux works. I do have access to a 
+windows machine (not at this very moment) so I could look into this 
+further, or I could actually alter the script to use sys.argv[0] 
+(although this is what the optparse docs say it uses) and you could tell 
+me if it works. I suspect what is going on is that the exe is launching 
+a python shell and running a python script (compared to the freezing 
+solution where the script becomes embedded in the exe).
+
+The only other remaining option is to hard code the program name into 
+the script as YABT_translate, but I have views on having too much hard 
+coding of values like that.
+
+Michael Whapples
+
+On 10/12/08 22:09, Leo wrote:
+> Congratulations! It outputs the correct version now. app is the 
+> perfect place for this.
+> That said, the usage string still outputs the name of the .py script 
+> packed into the .exe. I guess the .py script doesn't even know that it 
+> lives in a win32 .exe.
+> Not very important.
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081210/288a19dc/attachment.html>
+
+From mwhapples at aim.com  Thu Dec 11 00:25:33 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Wed, 10 Dec 2008 23:25:33 +0000
+Subject: [Yabt-devel] Some thoughts on the current design of yabt-2.0b2
+ -	__init__.py and base_translator.addCharMapping
+In-Reply-To: <DKECKJNNEDEJAJDEPCMBCECJCIAA.fhaxbox66@googlemail.com>
+References: <DKECKJNNEDEJAJDEPCMBCECJCIAA.fhaxbox66@googlemail.com>
+Message-ID: <49404FED.2010201@aim.com>
+
+Find below.
+
+On 10/12/08 21:44, Leo wrote:
+> On __init__.py
+> I've seen these setuptools magic before and as an ignorant I don't 
+> know what it does... Doesn't matter. Does setuptools work with pydoc 
+> and such like? Haven't checkt this. But pydocs doc browser is just 
+> cute.I'd regret if setuptools disturbed pydoc. If you are annoyed by 
+> setuptools, just kick it out. I've no strong views. I wouldn't mind 
+> users who love yabt for its functionality while constantly complaining 
+> about its anti-setuptools philosophy.
+
+I'm not quite sure what you're meaning. If you mean the code in 
+YABT/__init__.py, this purely defines the package namespace as one which 
+may be used by other distributions. Currently not used by YABT, but 
+should I feel that YABT is too much as one distribution then it could be 
+split (eg. if I decide to make additional implementations which I feel 
+should be optional I may make YABT.extras.egg and this still can use the 
+YABT package for its own stuff).
+>    On base_translator
+>     def addCharacterMap(self, orig, repl):
+> Char mapping is a delicate issue. Let alone the technical details: 
+> What do we expect char mappings to do? I assume char mapings to 
+> be dependent on the country, language, output device and maybe other 
+> circumstances I cannot think of right now. Should this be done at the 
+> very end? Probably not. Formatting needs to be aware of the final char 
+> set at least if certain representations expand to more than one 
+> physical char. I.e. if you map 2000 Japanese signs (Khanji or 
+> whatever) to Braille, you will end up with many 2- or 3-form chars...
+
+Probably one of those very under documented features of YABT. The 
+character mapping is to lower the required rules. The mappings are run 
+before translation begins, so characters which should be treated the 
+same by the translator are mapped to one common character (eg. it can 
+cover those cases for the variety of quote marks which visually look 
+different but have the same meaning, and so on).
+>
+> I wonder if addCharacterMap on top of the class hierarchy is the best 
+> choice. How about a new class at implementation level that 
+> encapsulates the whole loading and mapping staff? - Further, I wonder 
+> if base_class should really be focused on strings rather than 
+> arbitrary objects.
+
+This is slightly where python gets me, from the source code I can't tell 
+really what I mean in regards to arbitary objects or strings. The 
+translator classes are probagbly going to be the tightest regarding what 
+the API should except as external applications will use it and shouldn't 
+need to get tied up with wrapping input into objects we know will always 
+work. They should just know that translators deal with strings/unicode 
+and similar. I will discuss this another time.
+> I believe that some smart people have worked on char sets before. 
+> http://www.libbraille.org should be interesting to look at. This 
+> library does have Python bindings by the way. Should yabt use it, 
+> maybe at implementation level?
+
+I will take a look, but one thing currently offered by the character 
+mapping in YABT is that it can actually deal with more than characters 
+(entire strings, so if I knew the unicode for the hyphen represented by 
+-- in plain text then I could map -- to that unicode character or vice 
+versa). It will end up being a balance of which offers more and which 
+performs fastest (as performance is still a concern although YABT I feel 
+runs fast enough I don't want to be careless and let it become slow).
+> By the way: if you are interested in software development, you could 
+> benefit from PyContext on the pypi, at least when in a brain-storming 
+> mode as I am right now.  PyContext implements some new paradigms 
+> described in articles referred to in the README file.
+
+More reading, I am really going to have to find a quiet corner.
+
+I had a look on pypi to see if I could find some alternatives for 
+setuptools, and just to get a general idea of some of the packages and I 
+found "behave". This has some interesting concepts which explain unit 
+testing well. Tests are something as well as docs I feel I should get up 
+to speed with for YABT.
+>
+> Enough for today.
+
+Think so.
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081210/84befaa8/attachment.html>
+
+From fhaxbox66 at googlemail.com  Fri Dec 12 22:17:48 2008
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Fri, 12 Dec 2008 22:17:48 +0100
+Subject: [Yabt-devel] draft specification
+Message-ID: <DKECKJNNEDEJAJDEPCMBKEDCCIAA.fhaxbox66@googlemail.com>
+
+What do you think in terms of future design (core, base_translator, standard
+implementations etc.)? I'll read through the modules and hope to understand
+the bulk. But this may take some time. That said, I would assume it could be
+smarter to write down some fairly general specification of the base_class
+(to do it top-down), without too much looking at YABT. I say this because I
+personally feel I'd like more clarity on the design. You come from somewhere
+else, of course, as you know yabt by heart. This gives you a great advantage
+in terms of clarity on technical issues. But in an ideal world we would
+probably sit down on a hill, relax, draft what we believe would be an ideal
+architecture and find out afterwards what's already there. Then we would
+either take yabt as it is, because we believe it is ideal, take it and make
+some changes, or rewrite it from scratch, because we have found it not ideal
+at all. The second alternative seems most likely. You may find this approach
+annoying as you seem to know what an ideal translator would do. In my World
+though, there is little knowledge on YABT and much room for creativity. At
+the risk of wasting everybody's time (in case yabt is ideal), but in the
+hope that yabt's architecture leaves some room for enhancement, I attach a
+first and incomplete draft specification to be continued or dropped.
+
+
+
+Happy to discuss.
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081212/0b254c8c/attachment.html>
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: yabt draft specification 081212.txt
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081212/0b254c8c/attachment.txt>
+
+From mwhapples at aim.com  Sat Dec 13 18:00:34 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Sat, 13 Dec 2008 17:00:34 +0000
+Subject: [Yabt-devel] draft specification
+In-Reply-To: <DKECKJNNEDEJAJDEPCMBKEDCCIAA.fhaxbox66@googlemail.com>
+References: <DKECKJNNEDEJAJDEPCMBKEDCCIAA.fhaxbox66@googlemail.com>
+Message-ID: <4943EA32.1050602@aim.com>
+
+Hello,
+Time to get to the really interesting stuff, in some ways I am not over 
+bothered about the scripts interface, it primarily was a demonstration 
+app, the internals must be right as that can affect both the script and 
+useage through the API.
+
+I had a read of what you had written, my view is mixed. I think we have 
+come at it from quite different angles. I tried to put in my comments 
+(in two stages <MW> indicates initial thoughts and <MW2> indicates 
+thoughts after leaving it and trying to leave some of my java views behind).
+
+I have also decided, as the approaches were so different, it might be 
+worth me expressing what I am thinking (the difference is so great I 
+couldn't edit in my own thoughts for the design). I have written it in 
+the body of this email.
+
+Ideally before saying technically what methods/properties classes should 
+have, let's consider what it should actually do/provide.
+
+1. Translator
+
+A translator should:
+* translate some input into an output format.
+* translation should be performed according to a collection of rules.
+* a translator should be able to be configured to use particular rules 
+(eg. rules for text to British Braille)
+* to minimise the rules required simple substitutions may be performed 
+before the main translation process.
+* translation should permit smooth switching between different sub-codes 
+of the main code (IE. British literary Braille and British maths Braille 
+are sub-codes of British Braille. This could be taken further, Braille 
+is a code, British Braille and German Braille are sub-codes). The 
+definition of smooth switching is where specific things should be done 
+at joins, then they should actually be done without the app using YABT 
+to know of this code specific join detail (eg. in British Braille 
+typically an in line equation should be followed by a dot 6 if the next 
+character is punctuation, the controlling app should not know that 
+British Braille would require this dot 6 in this case).
+* the context of the translation should be specified (IE. does this 
+translation belong next to the end of a page or does it have a maths 
+equation after it, etc).
+
+2. Rules
+
+A rule should:
+* Match if the current position meets certain criteria specified in the rule
+* May contain other rules which it can check (IE. it can be a filter 
+rule to lower the checks to be done). In this case it should report the 
+match as the sub-rule which matches.
+* As a rule knows how it should match, it should perform all checks to 
+confirm if it is a match (IE. it should decide from all position 
+information whether it matches and disregard/ignore any information not 
+required by itself).
+
+3. Loader
+
+It is imagined that it would be useful to have tables stored on a 
+storage device (eg. hard disk, USB memory stick, etc), so something 
+needs to read this data and manipulate the translator to contain the 
+correct rules (it would be too much to expect application developers to 
+do all this themselves and by having common code for this could 
+standardise the table formats whilst allowing developers flexibility to 
+use their own if they so desire).
+
+A loader should:
+* load rules into a translator according to data in a data source.
+* data source should be able to be specified by the controlling app
+* loaders should be reuseable (IE. both specifying a different data 
+source once used and also to load data into more than one translator).
+
+4. Configuration module
+
+I am uncertain whether this is needed or not, but here is my views of 
+what it could provide if it were to be included.
+
+* allow loaders and translators to register with it and provide user 
+friendly names
+* allow an application to enquire registered loaders and translators and 
+obtain user friendly details
+* allow selection of loader and translator (eg. as a factory, particular 
+type could be specified by name returning a relevant instance)
+
+
+I know none of that is implementation specific, but I feel it may be 
+best to take this extra step back. If all of the above were to be done, 
+then all YABT currently lacks is the configuration module and possibly 
+it could do with better manipulation of rules in a translator (I could 
+do with expanding on what I mean by configuration of rules). If I have 
+to go to classes (I want to get specification at this level cleared up 
+first) I would say:
+* Different loaders deal with different input source types
+* different translators deal with different translation types (eg. text 
+to Braille, XML to speech, etc).
+
+Comments welcome.
+
+Michael Whapples
+
+
+On 12/12/08 21:17, Leo wrote:
+>
+> What do you think in terms of future design (core, base_translator, 
+> standard implementations etc.)? I'll read through the modules and hope 
+> to understand the bulk. But this may take some time. That said, I 
+> would assume it could be smarter to write down some fairly general 
+> specification of the base_class (to do it top-down), without too much 
+> looking at YABT. I say this because I personally feel I'd like more 
+> clarity on the design. You come from somewhere else, of course, as you 
+> know yabt by heart. This gives you a great advantage in terms of 
+> clarity on technical issues. But in an ideal world we would probably 
+> sit down on a hill, relax, draft what we believe would be an ideal 
+> architecture and find out afterwards what's already there. Then we 
+> would either take yabt as it is, because we believe it is ideal, take 
+> it and make some changes, or rewrite it from scratch, because we have 
+> found it not ideal at all. The second alternative seems most likely. 
+> You may find this approach annoying as you seem to know what an ideal 
+> translator would do. In my World though, there is little knowledge on 
+> YABT and much room for creativity. At the risk of wasting everybody's 
+> time (in case yabt is ideal), but in the hope that yabt's architecture 
+> leaves some room for enhancement, I attach a first and incomplete 
+> draft specification to be continued or dropped.
+>
+> Happy to discuss.
+>
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081213/f5688ba4/attachment.html>
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: yabt draft specification 081212.txt
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081213/f5688ba4/attachment.txt>
+
+From mwhapples at aim.com  Sun Dec 14 19:16:41 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Sun, 14 Dec 2008 18:16:41 +0000
+Subject: [Yabt-devel] YABT reading from STDIN
+Message-ID: <49454D89.8070901@aim.com>
+
+Hello,
+I have just started looking at getting YABT_translate to accept input 
+from STDIN, but I have hit a question I am unsure of the answer.
+
+It would seem natural that when reading from STDIN it should process 
+line by line. When doing this it would mean each line is contextless 
+(IE. it is not affected by the cotents of the line either side of it. I 
+could do it that input is accepted via STDIN until the end of file 
+sequence is reached (control+d on unix, control+\-<enter> on windows 
+(the way you would exit an interactive python session)) and only at this 
+point the input will be translated.
+
+So the question is should it do it line by line but contextless lines or 
+by file (as that is what the end of file sequence would be doing even 
+though STDIN is not a file)?
+
+I don't really want to go with another option to specify line by line or 
+by file as YABT_translate is a demonstration application and should not 
+be too complicated. On what I know I would opt for by file but if a good 
+reason can be found for line by line then I will consider it.
+
+Michael Whapples
+
+
+From fhaxbox66 at googlemail.com  Sun Dec 14 20:50:54 2008
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Sun, 14 Dec 2008 20:50:54 +0100
+Subject: [Yabt-devel] YABT reading from STDIN
+In-Reply-To: <49454D89.8070901@aim.com>
+Message-ID: <DKECKJNNEDEJAJDEPCMBKEDGCIAA.fhaxbox66@googlemail.com>
+
+I don't see a reason for doing it line-by-line. In practice, piping will be
+the only meaningful use for stdin.
+
+
+-----Ursprungliche Nachricht-----
+Von: yabt-devel-bounces at lists.berlios.de
+[mailto:yabt-devel-bounces at lists.berlios.de]Im Auftrag von Michael
+Whapples
+Gesendet: Sonntag, 14. Dezember 2008 19:17
+An: yabt-devel at lists.berlios.de
+Betreff: [Yabt-devel] YABT reading from STDIN
+
+
+Hello,
+I have just started looking at getting YABT_translate to accept input
+from STDIN, but I have hit a question I am unsure of the answer.
+
+It would seem natural that when reading from STDIN it should process
+line by line. When doing this it would mean each line is contextless
+(IE. it is not affected by the cotents of the line either side of it. I
+could do it that input is accepted via STDIN until the end of file
+sequence is reached (control+d on unix, control+\-<enter> on windows
+(the way you would exit an interactive python session)) and only at this
+point the input will be translated.
+
+So the question is should it do it line by line but contextless lines or
+by file (as that is what the end of file sequence would be doing even
+though STDIN is not a file)?
+
+I don't really want to go with another option to specify line by line or
+by file as YABT_translate is a demonstration application and should not
+be too complicated. On what I know I would opt for by file but if a good
+reason can be found for line by line then I will consider it.
+
+Michael Whapples
+_______________________________________________
+Yabt-devel mailing list
+Yabt-devel at lists.berlios.de
+https://lists.berlios.de/mailman/listinfo/yabt-devel
+
+
+
+From mwhapples at aim.com  Sun Dec 14 21:39:59 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Sun, 14 Dec 2008 20:39:59 +0000
+Subject: [Yabt-devel] YABT reading from STDIN
+In-Reply-To: <DKECKJNNEDEJAJDEPCMBKEDGCIAA.fhaxbox66@googlemail.com>
+References: <DKECKJNNEDEJAJDEPCMBKEDGCIAA.fhaxbox66@googlemail.com>
+Message-ID: <49456F1F.6080006@aim.com>
+
+I was just considering what other apps seem to do and that ideally 
+fitting with what other apps do makes it more natural to users. As an 
+example look at python (although accepting from STDIN or interactive is 
+different there), espeak, liblouis's translate app and cat (these last 
+three examples being better) all read line by line. Reading line by line 
+doesn't seem correct for YABT and I don't believe (to be confirmed 
+though) by file would not affect piping.
+
+Michael Whapples
+
+On 14/12/08 19:50, Leo wrote:
+> I don't see a reason for doing it line-by-line. In practice, piping will be
+> the only meaningful use for stdin.
+>
+>
+> -----Ursprungliche Nachricht-----
+> Von: yabt-devel-bounces at lists.berlios.de
+> [mailto:yabt-devel-bounces at lists.berlios.de]Im Auftrag von Michael
+> Whapples
+> Gesendet: Sonntag, 14. Dezember 2008 19:17
+> An: yabt-devel at lists.berlios.de
+> Betreff: [Yabt-devel] YABT reading from STDIN
+>
+>
+> Hello,
+> I have just started looking at getting YABT_translate to accept input
+> from STDIN, but I have hit a question I am unsure of the answer.
+>
+> It would seem natural that when reading from STDIN it should process
+> line by line. When doing this it would mean each line is contextless
+> (IE. it is not affected by the cotents of the line either side of it. I
+> could do it that input is accepted via STDIN until the end of file
+> sequence is reached (control+d on unix, control+\-<enter>  on windows
+> (the way you would exit an interactive python session)) and only at this
+> point the input will be translated.
+>
+> So the question is should it do it line by line but contextless lines or
+> by file (as that is what the end of file sequence would be doing even
+> though STDIN is not a file)?
+>
+> I don't really want to go with another option to specify line by line or
+> by file as YABT_translate is a demonstration application and should not
+> be too complicated. On what I know I would opt for by file but if a good
+> reason can be found for line by line then I will consider it.
+>
+> Michael Whapples
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+
+
+From mwhapples at aim.com  Mon Dec 15 15:09:39 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Mon, 15 Dec 2008 14:09:39 +0000
+Subject: [Yabt-devel] YABT-2.0b2Update1
+Message-ID: <49466523.4000404@aim.com>
+
+===================
+YABT-2.0b2Update1 released
+===================
+
+YABT-2.0b2Update1 has been released and is now available on the python 
+package index at http://pypi.python.org/pypi/YABT. This is only an 
+update release which means that YABT has not changed in its API, only 
+bug fixes and very minor alterations have been made. Alterations include:
+* The YABT_translate script has been renamed to yabt-trans
+* The yabt-trans script has gained a -o option to optionally output to a 
+file (previously only possible by redirection in the past).
+* yabt-trans can accept input from standard input, so now yabt-trans can 
+be used within a pipe (for both input and output). This feature works by 
+file, so the end of file sequence needs to be given before translation 
+will start, this shouldn't affect piping or redirection, keyboard input 
+would be the only situation where this may be noticed.
+
+What is YABT
+============
+
+YABT originally was developed as a context sensetive Braille trnslation 
+system, but the code so general, particularly
+with this release, that it is now being just classified as a context 
+sensetive string manipulation tool. YABT comes with
+a rule implementation which uses a finite state machine and context 
+matching and a Braille translation table for text to
+British Braille.
+
+YABT looks to be as useful as possible to developers, so if you find 
+bugs or just have comments for how it could be
+improved then please don't hesitate to provide feedback.
+
+
+From mwhapples at aim.com  Mon Dec 15 22:34:53 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Mon, 15 Dec 2008 21:34:53 +0000
+Subject: [Yabt-devel] Further thoughts and explainations on my design of YABT
+Message-ID: <4946CD7D.1020705@aim.com>
+
+Hello,
+I think I have now found some articles wich explain what I am trying to 
+do with YABT with my design.
+
+In previous messages I mentioned about spring and its configuration, yes 
+it would be wrong for YABT to provide that configuration framework, but 
+it should support being used within that framework (IE. support being 
+used by those applications). Spring is huge and may over complicate what 
+I am meaning, the part I am getting at is the inversion of control and 
+dependency injection stuff. I have had a look for some explainations of 
+it and found (http://wiki.python.org/moin/DependencyInjectionPattern). 
+That particular page is not so useful on its own but it has some good 
+links (Martin Fowler's article is good). I feel translators and rules 
+should be loosely coupled, translators and loaders should be loosely 
+couple but unfortunately loaders and rules may not be loosely coupled 
+(reason being that loader deals with a data source representing rules). 
+As dependency injection deals with plain old python objects (POPOs, I am 
+using this to reflect the java term POJO) then YABT doesn't need to 
+concern itself with anything of the controlling app (whether the 
+controlling app actually uses a dependency ijection framework or what 
+that framework is, or if the app just creates the objects as in yabt-trans).
+
+The configuration module I mentioned recently where all loaders and 
+translators could register would be optional and potentially would 
+provide a replacement to the dependency injection system. The 
+configuration module would be more suited for dynamic applications where 
+users may select the loaders and translators they want (eg. the 
+controlling app might call a getTranslatorList method/function and use 
+the information returned to display a list of translators and their 
+descriptions to the user for the user to select which they want to use 
+and then the app would get an instance by calling something like 
+createTranslatorByName).
+
+How does my structure sound now I have mentioned all this?
+
+Michael Whapples
+
+
+From mwhapples at aim.com  Mon Dec 15 22:57:57 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Mon, 15 Dec 2008 21:57:57 +0000
+Subject: [Yabt-devel] YABT reading from STDIN
+In-Reply-To: <DKECKJNNEDEJAJDEPCMBIEDOCIAA.fhaxbox66@googlemail.com>
+References: <DKECKJNNEDEJAJDEPCMBIEDOCIAA.fhaxbox66@googlemail.com>
+Message-ID: <4946D2E5.5090505@aim.com>
+
+As I said this one has left the list some time ago, but if when AW: is 
+inserted is when the language isn't english may be it has something to 
+do with it. I have actually manually changed this to be the list again 
+so if you wish to try again with english then it should hopefully go to 
+the list. May be list language settings need altering.
+
+Michael Whapples
+
+On 15/12/08 21:59, Leo wrote:
+> OK. I've switched the e-mail format to English. Let's see if this helps.
+>
+>     -----Original Message-----
+>     *From:* Michael Whapples [mailto:mwhapples at aim.com]
+>     *Sent:* Monday, December 15, 2008 10:10 PM
+>     *To:* fhaxbox66 at googlemail.com
+>     *Subject:* Re: AW: AW: [Yabt-devel] YABT reading from STDIN
+>
+>     Hello,
+>     I don't fully understand why. Actually I do for this particular
+>     one, it got diverted off list before in a previous reply, so I am
+>     not rplying to list. The list is configured for reply to list but
+>     to show the senders address (I assume achieved by using the
+>     Return-Path: header). As I said it appears to be when your email
+>     inserts AW: when replying.
+>
+>     I could fix this by using the option in list configuration for
+>     sender as the list address, but this would seem odd to me and I
+>     remember on the brltty mailing list when Dave did this because of
+>     another problem there was a lot of comment. Have you encountered
+>     this problem with any other mailman based lists? IE. could it be a
+>     configuration issue I can resolve without resorting to that sender
+>     as list option.
+>
+>     Michael Whapples
+>
+>     On 15/12/08 20:15, Leo wrote:
+>>     Again: your aim.com address appears in the sender field. So this
+>>     message does not go to the list ( I am too lazy to change the
+>>     "To" field manually).
+>>
+>>         -----Urspr?ngliche Nachricht-----
+>>         *Von:* Michael Whapples [mailto:mwhapples at aim.com]
+>>         *Gesendet:* Sonntag, 14. Dezember 2008 23:34
+>>         *An:* fhaxbox66 at googlemail.com
+>>         *Betreff:* Re: AW: [Yabt-devel] YABT reading from STDIN
+>>
+>>         Essentially the last sentence meant, line by line as you said
+>>         would be wrong and unless reading from stdin by file causes a
+>>         problem with piping then I will do it by file like when a
+>>         file name is specified. IE. I won't use line by line unless
+>>         piping requires this.
+>>
+>>         Also can I ask how you did the reply this time, it seems
+>>         whenever you reply and AW: is inserted at the beginning of
+>>         the subject it doesn't go to the list.
+>>
+>>         Michael Whapples
+>>
+>>         On 14/12/08 21:20, Leo wrote:
+>>>         Although I do not fully understand your last sentence: to me, line-by-line
+>>>         is pointless, even in case of keyboard input (which is certainly very exotic
+>>>         and should not be considered as relevant). Otherwise, i.e. in case of
+>>>         piping, stdin should be treated exactly as any other file to deliver
+>>>         consistent results.
+>>>
+>>>
+>>>         -----Ursprungliche Nachricht-----
+>>>         Von: Michael Whapples [mailto:mwhapples at aim.com]
+>>>         Gesendet: Sonntag, 14. Dezember 2008 21:40
+>>>         An:fhaxbox66 at googlemail.com;yabt-devel at lists.berlios.de
+>>>         Betreff: Re: [Yabt-devel] YABT reading from STDIN
+>>>
+>>>
+>>>         I was just considering what other apps seem to do and that ideally
+>>>         fitting with what other apps do makes it more natural to users. As an
+>>>         example look at python (although accepting from STDIN or interactive is
+>>>         different there), espeak, liblouis's translate app and cat (these last
+>>>         three examples being better) all read line by line. Reading line by line
+>>>         doesn't seem correct for YABT and I don't believe (to be confirmed
+>>>         though) by file would not affect piping.
+>>>
+>>>         Michael Whapples
+>>>
+>>>         On 14/12/08 19:50, Leo wrote:
+>>>            
+>>>>         I don't see a reason for doing it line-by-line. In practice, piping will
+>>>>              
+>>>         be
+>>>            
+>>>>         the only meaningful use for stdin.
+>>>>
+>>>>
+>>>>         -----Ursprungliche Nachricht-----
+>>>>         Von:yabt-devel-bounces at lists.berlios.de
+>>>>         [mailto:yabt-devel-bounces at lists.berlios.de]Im Auftrag von Michael
+>>>>         Whapples
+>>>>         Gesendet: Sonntag, 14. Dezember 2008 19:17
+>>>>         An:yabt-devel at lists.berlios.de
+>>>>         Betreff: [Yabt-devel] YABT reading from STDIN
+>>>>
+>>>>
+>>>>         Hello,
+>>>>         I have just started looking at getting YABT_translate to accept input
+>>>>         from STDIN, but I have hit a question I am unsure of the answer.
+>>>>
+>>>>         It would seem natural that when reading from STDIN it should process
+>>>>         line by line. When doing this it would mean each line is contextless
+>>>>         (IE. it is not affected by the cotents of the line either side of it. I
+>>>>         could do it that input is accepted via STDIN until the end of file
+>>>>         sequence is reached (control+d on unix, control+\-<enter>   on windows
+>>>>         (the way you would exit an interactive python session)) and only at this
+>>>>         point the input will be translated.
+>>>>
+>>>>         So the question is should it do it line by line but contextless lines or
+>>>>         by file (as that is what the end of file sequence would be doing even
+>>>>         though STDIN is not a file)?
+>>>>
+>>>>         I don't really want to go with another option to specify line by line or
+>>>>         by file as YABT_translate is a demonstration application and should not
+>>>>         be too complicated. On what I know I would opt for by file but if a good
+>>>>         reason can be found for line by line then I will consider it.
+>>>>
+>>>>         Michael Whapples
+>>>>         _______________________________________________
+>>>>         Yabt-devel mailing list
+>>>>         Yabt-devel at lists.berlios.de
+>>>>         https://lists.berlios.de/mailman/listinfo/yabt-devel
+>>>>
+>>>>         _______________________________________________
+>>>>         Yabt-devel mailing list
+>>>>         Yabt-devel at lists.berlios.de
+>>>>         https://lists.berlios.de/mailman/listinfo/yabt-devel
+>>>>
+>>>>              
+>>>
+>>>            
+>>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081215/03abc93b/attachment.html>
+
+From fhaxbox66 at googlemail.com  Mon Dec 15 22:52:13 2008
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Mon, 15 Dec 2008 22:52:13 +0100
+Subject: [Yabt-devel] draft specification
+In-Reply-To: <4945839A.6070803@aim.com>
+Message-ID: <DKECKJNNEDEJAJDEPCMBKEDNCIAA.fhaxbox66@googlemail.com>
+
+This time I've changed the reply address manually, so it goes to the list.
+
+I guess your very general rule concept any my engine concept refer indeed to
+very similar tasks. I'd love to have an afternoon or so to look more deeply
+into the sources. But now that I have a couple of minutes to write this
+down, please forgive my superficiality.
+
+I don't insist on the name 'engine', even if I find your rule concept
+stretches a bit the natural meaning of 'rule'. But let's work on this basis.
+
+1. On the loader concept
+
+I see your point to the extent that you want a given translator to be abel
+to use different loaders and vice versa. My only response to the first point
+would be a dispatcher mechanism either through an (optional) argument to
+__init__ , or according to the file name extension (eg. xml, csv etc.). The
+second type of reuse (one loader for different translators) would seem to me
+an academic exercise but I may be wrong. But even if there are practical
+needs to reuse a given loader for various translators, I would assume that
+(multiple) inheritance is the most obvious way to reuse an existing loader.
+I cannot currently think of a practical need to allow the user to write a
+new loader complying with a particular translator's loader API. But I have
+no strong views on this. My only concern is that the loader concept seems
+somewhat awkward as it requires two steps to load a rule table: create a
+loader object and then pass it to the translator of your choice. These two
+steps may be required as you suspect for the future. But today most users
+would probably wonder what this is all good for. Can you think of a more
+convenient way, say, through a wrapper, default values for arguments etc.? -
+I guess the __init__ methods of subclasses would be a good place. I want to
+instantiate most translators just by giviny passing a filename of my
+favorite rule table, or even less than that (look at PyHyphen where I can
+write: h_uk = hyphenator('en_UK'), and the filename is constracted through a
+simple join. Clearly, this would require a filename convention which I don't
+think is appropriate here because we won't have a subclass for braille
+translation, but for, say, translation trees featuring a certain range of
+rule types.
+
+On rules
+
+It seems now we are closer than I'd thought yesterday.
+This being said:
+- I feel uncomfortable with that AddCharMapping staff in the base_class as
+char substitution is too specific. Further, as I wrote, char substitution
+should be an ordinary rule to be registered with the base class. So may I
+suggest you use a simple substitution rule fed either by a plain text file
+(as I suggested yesterday), or by a hard-coded dictionary or list of pairs.
+- What do you mean by GetListOfStates? I believe you cannot always list all
+possible states as these may be unknown or indefinite. I know: a finite
+state michine works on a finite number of states... But I'm not comfortable
+with this restriction as I feel a state should be defined not by an integer,
+but by an object containing multiple settings. Also, the name 'state'
+suggests that it may only refer to some property of the translator itself.
+However, I think we agree that state can describe any property of anything
+in the universe. So I would suggest to replace it by 'settings'.But the
+structure of settings objects would have to be defined. I guess a settings
+object would be a simple empty container that could store all kinds of data
+including settings objects for different translators or even specific
+subrules.
+- bf and afcontext: This seems to be too specific as well. So why not work
+with a context object which may then well be a pair of two strings each
+representing bf- and afcontext? Or it may be a triple of humidity,
+temperature and air pressure in Beijing if our translator works on
+air-conditioning systems rather than strings. That's the beauty of dynamic
+typing! Just learn to love this freedom, even if it may first seem
+frightening to a Java programmer!
+- translator.py, line 141: what is input class? What does this if...
+statement do here?
+ - line 151: logging should go into the base class controlled by some
+settings. I think we do need a configuration system. You should look at
+docutils... and become addicted to aspect-oriented programming.
+- - line 164: don't understand why you need the rule set class alongside
+with rule class.
+- line 192: I have the feeling that you need the AddChar stuff because your
+rule concept is too narrow to use it for efficient char substitution. In
+this respect, my engine idea could be more straightforward as it
+encapsulates everything, even translators with hard-coded one-line
+algorithms rather than loadable rule tables. I guess the constructor of an
+engine would take only a settings argument. It has an apply method taking
+the input object and a context object. I would have to think more thoroughly
+about focus, befor and after context. My only point here is that engines
+would be suitable both for simple char substitution, control of
+air-condition systems of Beijing-based hotels and xml-based rule trees. But
+I must admit that your code arguably does a good job.
+
+I must stop here. I'm not sure if I've convinced you to conceptualize the
+interaction between base_class and the rules a bit differntly. And I'm not
+even sure if it's worth trying, even I would have written this thing in a
+different way, because my thinking is influenced by docutils.
+
+Maybe I'll go on trying to convince you later this week.
+
+
+
+
+
+
+
+
+
+  -----Urspr?ngliche Nachricht-----
+  Von: Michael Whapples [mailto:mwhapples at aim.com]
+  Gesendet: Sonntag, 14. Dezember 2008 23:07
+  An: fhaxbox66 at googlemail.com
+  Betreff: Re: AW: [Yabt-devel] draft specification
+
+
+  Hello,
+  From what I can tell the main questions relate to the loader concept and
+the translator/rule relationship.
+
+  Lets start with rules. As things stand at the moment rules contain details
+on what they should match (all checked through the isMatch method) and
+provide details of what should be substituted for the focus and the state
+the translator should be left in. So long as it provides the isMatch method
+and the object returned by isMatch has a translation and finalState property
+(or returned object can be None if the rule has no knowledge of what to do)
+then the translator class is happy. The translator has no knowledge how the
+match is determined (the rule can do anything it likes to find the match,
+even check what hardware is in the computer if it felt that could be useful
+in determining a match). So I suppose rules are like the translation engine.
+Rules being like translation engines is even more so when you consider rules
+with sub-rules (IE. the translator may only have one actual rule it knows of
+because all the rules are sub-rules of the rule the translator has).
+Sub-rules would not necessarily need to follow the rule API, but I would
+recommend it as types like the GroupStateRuleSet could make use of them.
+
+  The translator has a collection of rules (in YABT it currently is a list
+of rules). The translator tries the rules in order until a match is
+returned. This list structure need not be followed by rules containing
+sub-rules, GroupStateRuleSet uses a dictionary of rules with the key as a
+tuple of the group and state. The list structure in the translator gives the
+translator the ability to be a hybrid translator (eg. first rule may be a
+rule checking for a simple word match (context only can be that which could
+surround a word and state could be any), and the second in the list could
+then be the current context rule checker). As both of these follow the rule
+specification then what rules are used does not matter (eg. the same
+translator type could equally be configured to contain a rule to check
+whether the focus is at an embedded command, if not then the next rule could
+check if the focus is at a user defined exception substitution (like the
+word checker but may be substitutions are limited to user defined states),
+and if still not satisfied it could then check in the next rule which could
+be your binary search idea, and as a very last resort it could use the
+current context checker, and it need not stop there but for the purpose of
+an example I feel it should).
+
+  This leads on to the loader concept. A loader maps the contents of a data
+source into rules which it inserts into a translator. A loader may be used
+for more than one translator and one translator can recieve rules from more
+than one loader (eg. I may have a loader for a word substitution system
+where word substitution is in a plain text file containing two columns of
+words and I have my current XML context system loader, so I could load from
+the word substitution loader first and then from the XML loader into one
+translator. I could then re-use that word substitution loader in a
+translator where the second loader may deal with your binary search system).
+
+  Why not include the loader stuff in the rules classes? Simple answer is,
+is there only one way to store particular rules? eg. for the word
+substitution should a plain text file of two columns be the only storage
+system, a sqlite database might be just as good and might intergrate with an
+applications data storage better. Also should rules be tied to how they are
+used? eg. GroupStateRuleSet is a container rule, a loader could make it
+contain any rule like object not just the GeneralContextRule.
+
+  I feel there may be some parts which we might be meaning similar things
+but using different terms for, or may be I am heading for objects rather
+than methods/functions because of Java. EG. you refer to translators dealing
+with translation engines, I refer to rules, how different really are the
+tasks these are doing? There may be some difference (IE. my translator
+classes would deal with stepping through the input, I get the feeling that
+would be for the translation engine in your design).
+
+  I am wondering whether I should make simple examples of loaders and rules
+to demonstrate some of what I was meaning above, as it might be unclear
+without an actual working example. Might this be helpful?
+
+  Michael Whapples
+
+  On 14/12/08 19:48, Leo wrote:
+    That's the kind of discussion we need. Attached is the revised version
+containing my responses to your comments and some changes partly reflecting
+your comments, partly making my thinking hopefully clearer.
+
+    I see two main areas of diverging views which are due to our different
+past (you as the author of yabt, me as a somewhat chaotic hobby programmer
+attracted by some concepts of docutils)::
+
+    1. The role of base_translator:
+    - both: provide an API, subclassable to implement specific algorithms.
+    - you: base_class should provide some support for rule handling
+    - me: base_class should merely provide the API and some useful framework
+operations such as logging, dispatching, hosting (registration) of multiple
+algorithms...
+
+    2. Codes and subcodes (eg. English, math and music)
+    - you: a translation engine can be aware of these and handle them
+appropriately.
+    - me: the app should identify subcodes, eg., by parsing a marked-up
+input text, and call the appropriate translator.
+
+    ad 1.: This is a fundamental design choice. We should give more thought
+on that. Let me make a point in favor of my proposal: I believe it could be
+useful if base_translator could host third-party applications such as the
+unix commands pr, mroff, rst2latex etc., and camouflate them as ordinary
+yabt translator objects. I also think of third-party Braille translation
+tools such as to convert musicXML into braille notes. This is all very
+preliminary, of course.
+
+    ad 2.: It would depend on how much complexity an implementor may want to
+handle. In any event, there seems to be merit in having the app parse input
+texts and split it into different sections. Another example might be
+multilingual texts: the input text contains some mark-up, say, by extending
+reStructuredText. The app parses it and calls the translator for German or
+English where appropriate. This is more general than hard-coded $-commands
+(which might though be useful in certain contexts as well). A final example:
+html docs containing tables, lists, images etc, even if I have no idea on
+how to translate an image except for printing the alt-tag if present at all.
+    I guess this point is less fundamental and both approaches do not
+exclude one another. Well, they shouldn't exclude one another. hence, the
+$-commands should be configurable / be optional, through config files in
+order not to inferfere with other mark-up.
+
+    Leo
+
+      -----Urspr?ngliche Nachricht-----
+      Von: Michael Whapples [mailto:mwhapples at aim.com]
+      Gesendet: Samstag, 13. Dezember 2008 18:01
+      An: fhaxbox66 at googlemail.com; yabt-devel at lists.berlios.de
+      Betreff: Re: [Yabt-devel] draft specification
+
+
+      Hello,
+      Time to get to the really interesting stuff, in some ways I am not
+over bothered about the scripts interface, it primarily was a demonstration
+app, the internals must be right as that can affect both the script and
+useage through the API.
+
+      I had a read of what you had written, my view is mixed. I think we
+have come at it from quite different angles. I tried to put in my comments
+(in two stages <MW> indicates initial thoughts and <MW2> indicates thoughts
+after leaving it and trying to leave some of my java views behind).
+
+      I have also decided, as the approaches were so different, it might be
+worth me expressing what I am thinking (the difference is so great I
+couldn't edit in my own thoughts for the design). I have written it in the
+body of this email.
+
+      Ideally before saying technically what methods/properties classes
+should have, let's consider what it should actually do/provide.
+
+      1. Translator
+
+      A translator should:
+      * translate some input into an output format.
+      * translation should be performed according to a collection of rules.
+      * a translator should be able to be configured to use particular rules
+(eg. rules for text to British Braille)
+      * to minimise the rules required simple substitutions may be performed
+before the main translation process.
+      * translation should permit smooth switching between different
+sub-codes of the main code (IE. British literary Braille and British maths
+Braille are sub-codes of British Braille. This could be taken further,
+Braille is a code, British Braille and German Braille are sub-codes). The
+definition of smooth switching is where specific things should be done at
+joins, then they should actually be done without the app using YABT to know
+of this code specific join detail (eg. in British Braille typically an in
+line equation should be followed by a dot 6 if the next character is
+punctuation, the controlling app should not know that British Braille would
+require this dot 6 in this case).
+      * the context of the translation should be specified (IE. does this
+translation belong next to the end of a page or does it have a maths
+equation after it, etc).
+
+      2. Rules
+
+      A rule should:
+      * Match if the current position meets certain criteria specified in
+the rule
+      * May contain other rules which it can check (IE. it can be a filter
+rule to lower the checks to be done). In this case it should report the
+match as the sub-rule which matches.
+      * As a rule knows how it should match, it should perform all checks to
+confirm if it is a match (IE. it should decide from all position information
+whether it matches and disregard/ignore any information not required by
+itself).
+
+      3. Loader
+
+      It is imagined that it would be useful to have tables stored on a
+storage device (eg. hard disk, USB memory stick, etc), so something needs to
+read this data and manipulate the translator to contain the correct rules
+(it would be too much to expect application developers to do all this
+themselves and by having common code for this could standardise the table
+formats whilst allowing developers flexibility to use their own if they so
+desire).
+
+      A loader should:
+      * load rules into a translator according to data in a data source.
+      * data source should be able to be specified by the controlling app
+      * loaders should be reuseable (IE. both specifying a different data
+source once used and also to load data into more than one translator).
+
+      4. Configuration module
+
+      I am uncertain whether this is needed or not, but here is my views of
+what it could provide if it were to be included.
+
+      * allow loaders and translators to register with it and provide user
+friendly names
+      * allow an application to enquire registered loaders and translators
+and obtain user friendly details
+      * allow selection of loader and translator (eg. as a factory,
+particular type could be specified by name returning a relevant instance)
+
+
+      I know none of that is implementation specific, but I feel it may be
+best to take this extra step back. If all of the above were to be done, then
+all YABT currently lacks is the configuration module and possibly it could
+do with better manipulation of rules in a translator (I could do with
+expanding on what I mean by configuration of rules). If I have to go to
+classes (I want to get specification at this level cleared up first) I would
+say:
+      * Different loaders deal with different input source types
+      * different translators deal with different translation types (eg.
+text to Braille, XML to speech, etc).
+
+      Comments welcome.
+
+      Michael Whapples
+
+
+      On 12/12/08 21:17, Leo wrote:
+        What do you think in terms of future design (core, base_translator,
+standard implementations etc.)? I'll read through the modules and hope to
+understand the bulk. But this may take some time. That said, I would assume
+it could be smarter to write down some fairly general specification of the
+base_class (to do it top-down), without too much looking at YABT. I say this
+because I personally feel I'd like more clarity on the design. You come from
+somewhere else, of course, as you know yabt by heart. This gives you a great
+advantage in terms of clarity on technical issues. But in an ideal world we
+would probably sit down on a hill, relax, draft what we believe would be an
+ideal architecture and find out afterwards what's already there. Then we
+would either take yabt as it is, because we believe it is ideal, take it and
+make some changes, or rewrite it from scratch, because we have found it not
+ideal at all. The second alternative seems most likely. You may find this
+approach annoying as you seem to know what an ideal translator would do. In
+my World though, there is little knowledge on YABT and much room for
+creativity. At the risk of wasting everybody's time (in case yabt is ideal),
+but in the hope that yabt's architecture leaves some room for enhancement, I
+attach a first and incomplete draft specification to be continued or
+dropped.
+
+
+
+        Happy to discuss.
+
+
+
+------------------------------------------------------------------------
+_______________________________________________
+Yabt-devel mailing list
+Yabt-devel at lists.berlios.de
+https://lists.berlios.de/mailman/listinfo/yabt-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081215/e5f4a262/attachment.html>
+
+From mwhapples at aim.com  Mon Dec 15 23:29:21 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Mon, 15 Dec 2008 22:29:21 +0000
+Subject: [Yabt-devel] draft specification
+In-Reply-To: <DKECKJNNEDEJAJDEPCMBKEDNCIAA.fhaxbox66@googlemail.com>
+References: <DKECKJNNEDEJAJDEPCMBKEDNCIAA.fhaxbox66@googlemail.com>
+Message-ID: <4946DA41.40608@aim.com>
+
+Hello,
+I won't try and answer all of it now, I don't know if you had a chance 
+of reading through those pages I referred to in another mail regarding 
+dependency injection. Anyway I need to sit down properly and read and 
+fully understand what you have said below.
+
+I will make a couple quick comments:
+* translators.py: line 141: Well done you found the code I missed 
+removing when I did the external rules stuff. Simply ignore _Rule inner 
+class, I have removed it in the last commit. The input class idea still 
+exists though, an input class is a group of states, this saves having to 
+list all states again and again, you can just say rule applies in any 
+state in particular input class.
+* Logging: this is actually one of the parts where I say configuration 
+module needed, NO! The python logger has its own configuration system, 
+and the YABT logger can be done through that (either by code or a config 
+file), just configure the loggers of names beginning with YABT (eg. 
+YABT.translators, etc, I really should have a list and document the list).
+* AspectJ was something I never got round to in java and aspect 
+orientated programming in python I haven't really got round to either.
+
+I will try and get to the rest soon.
+
+Please note this mail was originally too big for the default maximum 
+size in the list configuration, I can raise it if necessary but ideally 
+we should try and trim messages (I am as bad as anyone on that, so I 
+can't point fingers). As I am bad enough on forgetting to trim messages 
+I did allow it, and probably will continue so long as the message is on 
+topic.
+
+Michael Whapples
+
+On 15/12/08 21:52, Leo wrote:
+> This time I've changed the reply address manually, so it goes to the list.
+> I guess your very general rule concept any my engine concept refer 
+> indeed to very similar tasks. I'd love to have an afternoon or so to 
+> look more deeply into the sources. But now that I have a couple of 
+> minutes to write this down, please forgive my superficiality.
+> I don't insist on the name 'engine', even if I find your rule concept 
+> stretches a bit the natural meaning of 'rule'. But let's work on this 
+> basis.
+> 1. On the loader concept
+> I see your point to the extent that you want a given translator to be 
+> abel to use different loaders and vice versa. My only response to the 
+> first point would be a dispatcher mechanism either through an 
+> (optional) argument to __init__ , or according to the file name 
+> extension (eg. xml, csv etc.). The second type of reuse (one loader 
+> for different translators) would seem to me an academic exercise but I 
+> may be wrong. But even if there are practical needs to reuse a given 
+> loader for various translators, I would assume that (multiple) 
+> inheritance is the most obvious way to reuse an existing loader. I 
+> cannot currently think of a practical need to allow the user to write 
+> a new loader complying with a particular translator's loader API. But 
+> I have no strong views on this. My only concern is that the loader 
+> concept seems somewhat awkward as it requires two steps to load a rule 
+> table: create a loader object and then pass it to the translator of 
+> your choice. These two steps may be required as you suspect for the 
+> future. But today most users would probably wonder what this is all 
+> good for. Can you think of a more convenient way, say, through 
+> a wrapper, default values for arguments etc.? - I guess the __init__ 
+> methods of subclasses would be a good place. I want to instantiate 
+> most translators just by giviny passing a filename of my favorite rule 
+> table, or even less than that (look at PyHyphen where I can write: 
+> h_uk = hyphenator('en_UK'), and the filename is constracted through a 
+> simple join. Clearly, this would require a filename convention which I 
+> don't think is appropriate here because we won't have a subclass for 
+> braille translation, but for, say, translation trees featuring a 
+> certain range of rule types.
+> On rules
+> It seems now we are closer than I'd thought yesterday.
+> This being said:
+> - I feel uncomfortable with that AddCharMapping staff in the 
+> base_class as char substitution is too specific. Further, as I wrote, 
+> char substitution should be an ordinary rule to be registered with the 
+> base class. So may I suggest you use a simple substitution rule fed 
+> either by a plain text file (as I suggested yesterday), or by a 
+> hard-coded dictionary or list of pairs.
+> - What do you mean by GetListOfStates? I believe you cannot always 
+> list all possible states as these may be unknown or indefinite. I 
+> know: a finite state michine works on a finite number of states... But 
+> I'm not comfortable with this restriction as I feel a state should be 
+> defined not by an integer, but by an object containing multiple 
+> settings. Also, the name 'state' suggests that it may only refer to 
+> some property of the translator itself. However, I think we agree that 
+> state can describe any property of anything in the universe. So I 
+> would suggest to replace it by 'settings'.But the structure of 
+> settings objects would have to be defined. I guess a settings object 
+> would be a simple empty container that could store all kinds of data 
+> including settings objects for different translators or even specific 
+> subrules.
+> - bf and afcontext: This seems to be too specific as well. So why not 
+> work with a context object which may then well be a pair of two 
+> strings each representing bf- and afcontext? Or it may be a triple of 
+> humidity, temperature and air pressure in Beijing if our translator 
+> works on air-conditioning systems rather than strings. That's the 
+> beauty of dynamic typing! Just learn to love this freedom, even if it 
+> may first seem frightening to a Java programmer!
+> - translator.py, line 141: what is input class? What does this if... 
+> statement do here?
+>  - line 151: logging should go into the base class controlled by some 
+> settings. I think we do need a configuration system. You should look 
+> at docutils... and become addicted to aspect-oriented programming.
+> - - line 164: don't understand why you need the rule set class 
+> alongside with rule class.
+> - line 192: I have the feeling that you need the AddChar stuff because 
+> your rule concept is too narrow to use it for efficient char 
+> substitution. In this respect, my engine idea could be more 
+> straightforward as it encapsulates everything, even translators with 
+> hard-coded one-line algorithms rather than loadable rule tables. I 
+> guess the constructor of an engine would take only a settings 
+> argument. It has an apply method taking the input object and a context 
+> object. I would have to think more thoroughly about focus, befor and 
+> after context. My only point here is that engines would be suitable 
+> both for simple char substitution, control of air-condition systems of 
+> Beijing-based hotels and xml-based rule trees. But I must admit that 
+> your code arguably does a good job.
+> I must stop here. I'm not sure if I've convinced you to conceptualize 
+> the interaction between base_class and the rules a bit differntly. And 
+> I'm not even sure if it's worth trying, even I would have written this 
+> thing in a different way, because my thinking is influenced by docutils.
+> Maybe I'll go on trying to convince you later this week.
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081215/af895cf0/attachment.html>
+
+From fhaxbox66 at googlemail.com  Mon Dec 15 23:52:01 2008
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Mon, 15 Dec 2008 23:52:01 +0100
+Subject: [Yabt-devel] Further thoughts and explainations on my design of
+	YABT
+In-Reply-To: <4946CD7D.1020705@aim.com>
+Message-ID: <DKECKJNNEDEJAJDEPCMBGEEACIAA.fhaxbox66@googlemail.com>
+
+Interesting article. Reminds me of the bridge pattern as described by the
+Gang of Four.
+
+I share your view that loading a file into a translator is a fairly specific
+process: Whereas film databases are not designed specifically for a specific
+application that retrieves films directed by a particular director, rule
+tables will be written for a specific translator. In theory, a two-column
+csv file could be used by a context-sensitive xml engine: the loader would
+just create nodes on the fly... But this is academic I think. So I would
+assume that yabt comes up with a number of translators accomodating most
+needs. And table authors will choose their favorite one and write a table
+for it. I would change my mind if you wanted to allow yabt to use
+third-party tables written for another software, say, buxbury. But in this
+case, I would assume a one-off conversion would do well. This is another
+difference to a public film database that changes every day as new films
+come to light.
+
+As I said: I don't have strong views on loaders provided that in most cases
+users don't need to bother for them.
+
+As a dispatcher (I mentioned this in my earlier e-mail), let me give a short
+example:
+
+def __init__(self, location, sourcetype):
+    loader = getattr(self, sourcetype + '_loader')
+     self.rules = loader(location)
+
+This allows you to specify as many loader methods as you want such as
+ftp_loader, xml_loader, plaintext_loader etc. The init method does
+everything through the getattr trick. And innovative prople can easily
+extend this in subclasses to use an sqlite_loader which is called by
+something like mytranslator = translator('mytable', 'sqlite')
+
+
+ As regards the base translator and the engines (rules), I guess there is a
+greater need for decoupling. I would even decouple more than you as
+described in my earlier e-mail.
+
+
+
+
+
+
+-----Original Message-----
+From: yabt-devel-bounces at lists.berlios.de
+[mailto:yabt-devel-bounces at lists.berlios.de]On Behalf Of Michael
+Whapples
+Sent: Monday, December 15, 2008 10:35 PM
+To: yabt-devel at lists.berlios.de
+Subject: [Yabt-devel] Further thoughts and explainations on my design of
+YABT
+
+
+Hello,
+I think I have now found some articles wich explain what I am trying to
+do with YABT with my design.
+
+In previous messages I mentioned about spring and its configuration, yes
+it would be wrong for YABT to provide that configuration framework, but
+it should support being used within that framework (IE. support being
+used by those applications). Spring is huge and may over complicate what
+I am meaning, the part I am getting at is the inversion of control and
+dependency injection stuff. I have had a look for some explainations of
+it and found (http://wiki.python.org/moin/DependencyInjectionPattern).
+That particular page is not so useful on its own but it has some good
+links (Martin Fowler's article is good). I feel translators and rules
+should be loosely coupled, translators and loaders should be loosely
+couple but unfortunately loaders and rules may not be loosely coupled
+(reason being that loader deals with a data source representing rules).
+As dependency injection deals with plain old python objects (POPOs, I am
+using this to reflect the java term POJO) then YABT doesn't need to
+concern itself with anything of the controlling app (whether the
+controlling app actually uses a dependency ijection framework or what
+that framework is, or if the app just creates the objects as in yabt-trans).
+
+The configuration module I mentioned recently where all loaders and
+translators could register would be optional and potentially would
+provide a replacement to the dependency injection system. The
+configuration module would be more suited for dynamic applications where
+users may select the loaders and translators they want (eg. the
+controlling app might call a getTranslatorList method/function and use
+the information returned to display a list of translators and their
+descriptions to the user for the user to select which they want to use
+and then the app would get an instance by calling something like
+createTranslatorByName).
+
+How does my structure sound now I have mentioned all this?
+
+Michael Whapples
+_______________________________________________
+Yabt-devel mailing list
+Yabt-devel at lists.berlios.de
+https://lists.berlios.de/mailman/listinfo/yabt-devel
+
+
+
+From mwhapples at aim.com  Tue Dec 16 12:59:10 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Tue, 16 Dec 2008 11:59:10 +0000
+Subject: [Yabt-devel] draft specification
+In-Reply-To: <DKECKJNNEDEJAJDEPCMBKEDNCIAA.fhaxbox66@googlemail.com>
+References: <DKECKJNNEDEJAJDEPCMBKEDNCIAA.fhaxbox66@googlemail.com>
+Message-ID: <4947980E.8030002@aim.com>
+
+Find comments below.Find my comments below.
+
+On 15/12/08 21:52, Leo wrote:
+> This time I've changed the reply address manually, so it goes to the list.
+> I guess your very general rule concept any my engine concept refer 
+> indeed to very similar tasks. I'd love to have an afternoon or so to 
+> look more deeply into the sources. But now that I have a couple of 
+> minutes to write this down, please forgive my superficiality.
+> I don't insist on the name 'engine', even if I find your rule concept 
+> stretches a bit the natural meaning of 'rule'. But let's work on this 
+> basis.
+May be rule is poorly named, but I felt it fitted as it determines 
+whether a translation can occur and how it should occur. Different 
+instances of these objects may determine if a translation can occur in 
+different ways (even yielding different answers) and may say that the 
+translation should be applied in a different way. To me a single 
+component, of which there may be many, which decides on if and how to do 
+something is a rule. Reflecting on this may be my rule is at a slightly 
+different level in the process. I think this difference in assigning 
+what is where is better shown else where, read on.
+> 1. On the loader concept
+> I see your point to the extent that you want a given translator to be 
+> abel to use different loaders and vice versa. My only response to the 
+> first point would be a dispatcher mechanism either through an 
+> (optional) argument to __init__ , or according to the file name 
+> extension (eg. xml, csv etc.). The second type of reuse (one loader 
+> for different translators) would seem to me an academic exercise but I 
+> may be wrong. But even if there are practical needs to reuse a given 
+> loader for various translators, I would assume that (multiple) 
+> inheritance is the most obvious way to reuse an existing loader. I 
+> cannot currently think of a practical need to allow the user to write 
+> a new loader complying with a particular translator's loader API. But 
+> I have no strong views on this. My only concern is that the loader 
+> concept seems somewhat awkward as it requires two steps to load a rule 
+> table: create a loader object and then pass it to the translator of 
+> your choice. These two steps may be required as you suspect for the 
+> future. But today most users would probably wonder what this is all 
+> good for. Can you think of a more convenient way, say, through 
+> a wrapper, default values for arguments etc.? - I guess the __init__ 
+> methods of subclasses would be a good place. I want to instantiate 
+> most translators just by giviny passing a filename of my favorite rule 
+> table, or even less than that (look at PyHyphen where I can write: 
+> h_uk = hyphenator('en_UK'), and the filename is constracted through a 
+> simple join. Clearly, this would require a filename convention which I 
+> don't think is appropriate here because we won't have a subclass for 
+> braille translation, but for, say, translation trees featuring a 
+> certain range of rule types.
+This raises a few questions:
+* The problem that we have no specific translator for Braille, I 
+remember Willie Walker in an Orca presentation saying that one piece of 
+advice he was given that he feels was good is to not generalise unless 
+you have enough cases to require you to generalise. So could we be 
+hitting problems because YABT is now "a context sensitive string 
+manipulation tool" and so the specific task (originally Braille 
+translation) is not focusing what is really wanted? Whether this is 
+right or wrong at the moment I am unsure, but working to actual usage 
+examples probably would help focus things.
+* Loaders: I am unsure whether this is done for users purposes or mine. 
+It means that there may be a whole library of rule types and someone 
+could develop a table which could make use of a combination of those 
+rules never used together before. Whether anyone is going to do that I 
+don't know, but it would be nice to be able to say to someone who asks 
+for a particular translation system, yes it can be made easily by just 
+creating a new loader and then just making that loader for them. The 
+other reason I want the loader system is my own purpose. If at some 
+point I wish to change the table format (as I feel the existing XML 
+format needs to be) then I can leave the existing loader in place 
+develop the new loader, test it out my self, then add a way users can 
+opt to use it and then in one simple change of code make the new loader 
+the default (and all I need to do is sit back and wait for all the 
+emails describing all the problems caused by the sudden change).
+* Creating a translator in one quick simple single liner, yes YABT 
+doesn't do it currently, but does YABT need to change its design or does 
+YABT just need another layer, eg. what I have referred to as a config 
+module, but may be it would be better called a translator manager 
+module, or may be just something else. I haven't really given this layer 
+much thought, it may do more of what you call the dispatcher,  or may be 
+it would just be a factory module (eg. createTranslator(translatorType, 
+tableSource, tableType) (or something like that) which would return a 
+translator class pre-loaded with rules from a loader registered for 
+processing tableType).
+> On rules
+> It seems now we are closer than I'd thought yesterday.
+> This being said:
+> - I feel uncomfortable with that AddCharMapping staff in the 
+> base_class as char substitution is too specific. Further, as I wrote, 
+> char substitution should be an ordinary rule to be registered with the 
+> base class. So may I suggest you use a simple substitution rule fed 
+> either by a plain text file (as I suggested yesterday), or by a 
+> hard-coded dictionary or list of pairs.
+May be AddCharMapping could be changed, it might be addPrepRule(Rule) 
+which means that any rule can be added for the preparation stage but 
+these should be simple although YABT won't restrict this.
+> - What do you mean by GetListOfStates? I believe you cannot always 
+> list all possible states as these may be unknown or indefinite. I 
+> know: a finite state michine works on a finite number of states... But 
+> I'm not comfortable with this restriction as I feel a state should be 
+> defined not by an integer, but by an object containing multiple 
+> settings. Also, the name 'state' suggests that it may only refer to 
+> some property of the translator itself. However, I think we agree that 
+> state can describe any property of anything in the universe. So I 
+> would suggest to replace it by 'settings'.But the structure of 
+> settings objects would have to be defined. I guess a settings object 
+> would be a simple empty container that could store all kinds of data 
+> including settings objects for different translators or even specific 
+> subrules.
+The thought of getListStates is that a controlling app can find out what 
+states exist and so allow the user to select the one they wish to use. 
+Integers are meaningless in this case as why should the user know what 
+those integers mean. I feel uncomfortable with totally unrestricted 
+states, states need to follow some sort of standard (even if it is a 
+State object API). The other reason for getting the known states is to 
+alert the user they have requested an invalid state, why should YABT try 
+and process something which simply cannot be translated (IE. no state 
+exists for it)? States are causing me a certain difficulty, rules are 
+what actually use state, but how can a translator find all states from 
+rules? Currently states are registered in the translator by the loader, 
+this means that the rules may not actually know anything about states 
+but the loader can tell the translator to accept any of the states it 
+lists. I suppose this separates states into two categories, those for 
+rules, and those permitted as starting states.
+> - bf and afcontext: This seems to be too specific as well. So why not 
+> work with a context object which may then well be a pair of two 
+> strings each representing bf- and afcontext? Or it may be a triple of 
+> humidity, temperature and air pressure in Beijing if our translator 
+> works on air-conditioning systems rather than strings. That's the 
+> beauty of dynamic typing! Just learn to love this freedom, even if it 
+> may first seem frightening to a Java programmer!
+I question this on the meaning of context. I am using context to mean 
+what comes before the focus in the sequence to translate and what comes 
+after the focus in the sequence to translate. At some point restrictions 
+do need to be laid down, and I personally feel YABT at the most flexible 
+is to translate sequences into other sequences (strings being a sequence 
+of characters). I would argue that the example you gave is not context 
+but rather what is being translated or state. Let me explain further:
+* If humidity, temperature and air pressure was only needed for the 
+current then it might be a state. This could be complicated as these are 
+continual variables, I would opt for next suggestion.
+* Humidity, temperature and air pressure may be part of the sequence 
+being translated (eg. we may be translating a sequence of atmospheres, 
+Atmosphere objects with temperature, humidity and pressure propertie, it 
+may have others as wells). Ideally the sequences used should be 
+sliceable (supporting the s[x:y] notation). Now focus and both contexts 
+can use all three properties. If say the translator in this case (I 
+don't quite know what use it really might have) was tracking current 
+values, obviously after context cannot be known, so all rules used for 
+that should simply use the always match context for after context. I 
+feel this is very flexible and powerful once understood.
+> - translator.py, line 141: what is input class? What does this if... 
+> statement do here?
+Discussed in other email, no longer exists.
+>  - line 151: logging should go into the base class controlled by some 
+> settings. I think we do need a configuration system. You should look 
+> at docutils... and become addicted to aspect-oriented programming.
+Again dealt earlier, look at logging configuration.
+> - - line 164: don't understand why you need the rule set class 
+> alongside with rule class.
+RuleSet is unused, but is basically to provide a simple RuleSet 
+implementation that other RuleSet like classes might build on. Can 
+remove if really unneeded and unwanted.
+> - line 192: I have the feeling that you need the AddChar stuff because 
+> your rule concept is too narrow to use it for efficient char 
+> substitution. In this respect, my engine idea could be more 
+> straightforward as it encapsulates everything, even translators with 
+> hard-coded one-line algorithms rather than loadable rule tables. I 
+> guess the constructor of an engine would take only a settings 
+> argument. It has an apply method taking the input object and a context 
+> object. I would have to think more thoroughly about focus, befor and 
+> after context. My only point here is that engines would be suitable 
+> both for simple char substitution, control of air-condition systems of 
+> Beijing-based hotels and xml-based rule trees. But I must admit that 
+> your code arguably does a good job.
+I don't know if it exactly fits with what you mean, but I actually now 
+start to wonder whether my translator is what you mean by translation 
+engine. The only difference is that I feel a translator should be fully 
+self contained, IE. there should be no need for sending input through 
+more than one, and if there is it might be a special case and might be 
+best left to that particular application developer to do that in their 
+own code. This self contained thinking is why translators in my design 
+do character mappings (or may be if generalised preparation). These two 
+stages (preparation and translation should be enough for most cases.
+> I must stop here. I'm not sure if I've convinced you to conceptualize 
+> the interaction between base_class and the rules a bit differntly. And 
+> I'm not even sure if it's worth trying, even I would have written this 
+> thing in a different way, because my thinking is influenced by docutils.
+Yes background is different and I suppose whilst I am writing it in 
+python I am still keeping in mind, could I make a java implementation. 
+Also might it be best to split API into multiple levels/layers? IE. high 
+level which may be done through manager/config module and a low level 
+API which may be very much what YABT is now. The high level API may be 
+language specific to try and make the most of the language, but low 
+level API may be very language independent (partly so I don't get 
+confused between the two and if people use the low level API then they 
+know YABT for any language implementation.
+> Maybe I'll go on trying to convince you later this week.
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081216/f8c440b1/attachment.html>
+
+From mwhapples at aim.com  Tue Dec 16 13:34:54 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Tue, 16 Dec 2008 12:34:54 +0000
+Subject: [Yabt-devel] Further thoughts and explainations on my design
+ of	YABT
+In-Reply-To: <DKECKJNNEDEJAJDEPCMBGEEACIAA.fhaxbox66@googlemail.com>
+References: <DKECKJNNEDEJAJDEPCMBGEEACIAA.fhaxbox66@googlemail.com>
+Message-ID: <4947A06E.9030803@aim.com>
+
+Find comments below.
+
+On 15/12/08 22:52, Leo wrote:
+> Interesting article. Reminds me of the bridge pattern as described by the
+> Gang of Four.
+> As I remembered and from what I can find by doing a quick search online dependency injection and the bridge pattern do different things. It seems like the bridge pattern is to hide how a specific operation is actually done where as dependency injection is about how to choose what implementation should be used. Whilst I normally don't have good things to say about wikipedia, the example there does seem quite good (http://en.wikipedia.org/wiki/Bridge_pattern). The bridge pattern seems to fit with my loader concept (IE. all translators will want to load rules, but no translator needs to know how to actually load the rules).
+>    
+
+> I share your view that loading a file into a translator is a fairly specific
+> process: Whereas film databases are not designed specifically for a specific
+> application that retrieves films directed by a particular director, rule
+> tables will be written for a specific translator. In theory, a two-column
+> csv file could be used by a context-sensitive xml engine: the loader would
+> just create nodes on the fly... But this is academic I think. So I would
+> assume that yabt comes up with a number of translators accomodating most
+> needs. And table authors will choose their favorite one and write a table
+> for it. I would change my mind if you wanted to allow yabt to use
+> third-party tables written for another software, say, buxbury. But in this
+> case, I would assume a one-off conversion would do well. This is another
+> difference to a public film database that changes every day as new films
+> come to light.
+>    
+Again this question of is what you feel should be provided (translators 
+to do specific tasks) something which should be done right at the core 
+of YABT or should it be a higher level API building on top of the low 
+level API as I discussed in another email. I also argue that tables are 
+not tied to particular translators. The only tie is that a table for 
+translating text into another text string should only be used for a 
+translator which converts text to text (Braille being text as either 
+using ascii Braille or unicode Braille). It is possible for different 
+text to text translators to exist, YABT has Translator and 
+BufferedTranslator, but both can use the XML loader classes (either the 
+file XML loader or the String XML loder), I can't see the sense of YABT 
+forcing people to use the combinations I feel they need to use, hence 
+the dual level API idea.
+> As I said: I don't have strong views on loaders provided that in most cases
+> users don't need to bother for them.
+>
+> As a dispatcher (I mentioned this in my earlier e-mail), let me give a short
+> example:
+>
+> def __init__(self, location, sourcetype):
+>      loader = getattr(self, sourcetype + '_loader')
+>       self.rules = loader(location)
+>
+> This allows you to specify as many loader methods as you want such as
+> ftp_loader, xml_loader, plaintext_loader etc. The init method does
+> everything through the getattr trick. And innovative prople can easily
+> extend this in subclasses to use an sqlite_loader which is called by
+> something like mytranslator = translator('mytable', 'sqlite')
+>
+>
+>   As regards the base translator and the engines (rules), I guess there is a
+> greater need for decoupling. I would even decouple more than you as
+> described in my earlier e-mail.
+>    
+I am still unsure how to decouple safely more. Relying on a single 
+method and being provided with two pieces of data seems very loosely 
+coupled to me. May be I need a small working example.
+
+Michael Whapples
+>
+>
+>
+>
+>
+> -----Original Message-----
+> From: yabt-devel-bounces at lists.berlios.de
+> [mailto:yabt-devel-bounces at lists.berlios.de]On Behalf Of Michael
+> Whapples
+> Sent: Monday, December 15, 2008 10:35 PM
+> To: yabt-devel at lists.berlios.de
+> Subject: [Yabt-devel] Further thoughts and explainations on my design of
+> YABT
+>
+>
+> Hello,
+> I think I have now found some articles wich explain what I am trying to
+> do with YABT with my design.
+>
+> In previous messages I mentioned about spring and its configuration, yes
+> it would be wrong for YABT to provide that configuration framework, but
+> it should support being used within that framework (IE. support being
+> used by those applications). Spring is huge and may over complicate what
+> I am meaning, the part I am getting at is the inversion of control and
+> dependency injection stuff. I have had a look for some explainations of
+> it and found (http://wiki.python.org/moin/DependencyInjectionPattern).
+> That particular page is not so useful on its own but it has some good
+> links (Martin Fowler's article is good). I feel translators and rules
+> should be loosely coupled, translators and loaders should be loosely
+> couple but unfortunately loaders and rules may not be loosely coupled
+> (reason being that loader deals with a data source representing rules).
+> As dependency injection deals with plain old python objects (POPOs, I am
+> using this to reflect the java term POJO) then YABT doesn't need to
+> concern itself with anything of the controlling app (whether the
+> controlling app actually uses a dependency ijection framework or what
+> that framework is, or if the app just creates the objects as in yabt-trans).
+>
+> The configuration module I mentioned recently where all loaders and
+> translators could register would be optional and potentially would
+> provide a replacement to the dependency injection system. The
+> configuration module would be more suited for dynamic applications where
+> users may select the loaders and translators they want (eg. the
+> controlling app might call a getTranslatorList method/function and use
+> the information returned to display a list of translators and their
+> descriptions to the user for the user to select which they want to use
+> and then the app would get an instance by calling something like
+> createTranslatorByName).
+>
+> How does my structure sound now I have mentioned all this?
+>
+> Michael Whapples
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+
+
+From fhaxbox66 at googlemail.com  Wed Dec 17 07:46:12 2008
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Wed, 17 Dec 2008 07:46:12 +0100
+Subject: [Yabt-devel] Further thoughts and explainations on my design
+	of	YABT
+In-Reply-To: <4947A06E.9030803@aim.com>
+Message-ID: <DKECKJNNEDEJAJDEPCMBCEEFCIAA.fhaxbox66@googlemail.com>
+
+As I am running out of time pre Xmas, just some quick comments:
+
+On loaders:
+
+I now see there is merit in the loaders module (base class and
+implementations rather than just having methods).
+
+You rightly pointed out that one of our main differences lies in that I see
+base_translator more as a translator manager. So what I really think of is
+one layer on top of all components (translators, loaders, exceptions and
+maybe readers and writers for input and output in the future). This is due
+to my bias that comes from docutils whereas yours seems to stem from java
+and spring. I strongly feel that yabt would greatly benefit from having all
+or most of its base classes inherit from an even more abstract component
+class which handles the parsing of config files and component-specific
+config sections therein, overriding general settings by more specific ones
+etc. As much as I'd benefit from knowing more about spring, I anticipate it
+would give you pleasure to spend some time reading through
+
+* docutils.__init__.py defining the component class which deals with config
+and logging issues
+* docutils.core (where what you have called manager class (in docutils
+terms: publisher) is defined)
+* and maybe docutils.frontend for some other issues.
+
+You could even envisage to simply copy and paste the component class from
+docutils into yabt as it is so general and has, I think, a terrific
+configuration architecture. This would calm my concerns on forcing the
+caller to deal with loader objects when he just wants to instantiate a
+translator. This may also mitigate your regrets for not having Spring
+available.
+
+ On the long description in setup.py:
+
+I looked at the yabt page on the pypi. The description is not properly
+rendered. I guess you forgot the blank line before the bullet list.
+
+
+I see that the reply address is your private one rather than the list. So I
+change it manually.
+
+
+
+From fhaxbox66 at googlemail.com  Fri Dec 19 08:20:11 2008
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Fri, 19 Dec 2008 08:20:11 +0100
+Subject: [Yabt-devel] draft specification
+Message-ID: <DKECKJNNEDEJAJDEPCMBGEEKCIAA.fhaxbox66@googlemail.com>
+
+You wrote:
+
+The only difference is that I feel a translator should be fully self
+contained, IE. there should be no need for sending input through more than
+one, and if there is it might be a special case and might be best left to
+that particular application developer to do that in their own code. This
+self contained thinking is why translators in my design do character
+mappings (or may be if generalised preparation). These two stages
+(preparation and translation should be enough for most cases.
+
+
+Agreed. But the appearance of one self-contained translator could be
+achieved at translator level or at translator manager level. I guess you
+mean the former; I for one am still open to both. In any event, the design
+has to allow the following cases:
+
+- char substitution throughout the text, no matter how long, how many
+paragraphs, formfeed etc.
+
+- word substitution using, say, a two column table loaded from a csv file.
+This should be tried for individual words. And if substitution succeeds, the
+xml rules are not applied to that word because the explicit translation
+table is presumed to be more accurate or just faster than the rules.
+
+In my idea of an engine I tried to reflect the distinction through a
+split_into_chunks method. This implies that some rules may apply to the
+whole text whereas others apply only to individual words such that the text
+(sequence) needs to have been split up before. But all this would have to be
+refined.
+
+You wrote:
+I question this on the meaning of context. I am using context to mean what
+comes before the focus in the sequence to translate and what comes after the
+focus in the sequence to translate. At some point restrictions do need to be
+laid down, and I personally feel YABT at the most flexible is to translate
+sequences into other sequences (strings being a sequence of characters). I
+would argue that the example you gave is not context but rather what is
+being translated or state. Let me explain further:
+* If humidity, temperature and air pressure was only needed for the current
+then it might be a state. This could be complicated as these are continual
+variables, I would opt for next suggestion.
+* Humidity, temperature and air pressure may be part of the sequence being
+translated (eg. we may be translating a sequence of atmospheres, Atmosphere
+objects with temperature, humidity and pressure propertie, it may have
+others as wells). Ideally the sequences used should be sliceable (supporting
+the s[x:y] notation). Now focus and both contexts can use all three
+properties. If say the translator in this case (I don't quite know what use
+it really might have) was tracking current values, obviously after context
+cannot be known, so all rules used for that should simply use the always
+match context for after context. I feel this is very flexible and powerful
+once understood.
+
+
+  My example refers to an object describing an air-conditioning system with
+properties such as propeller speed, heating or cooling activity, permissible
+temperature interval or whatever. The purpose of a translator could be to
+transform the current properties into new ones taking into account the
+actual air properties (i.e. humidity, temperature, pressure etc.) according
+to certain rules. Context could be a sequence of atmosphere objects
+representing the change of air properties over time. Rules could implement a
+function defined on two variables (context and air-conditioning system)
+whereby each consists of several attributes. The translator (= function)
+returns an air condition system object. So I would describe a translator to
+be a function defined on (input type, context type), returning an object of
+the same type as input. Context and input can be arbitrary objects. OK, now
+I see that splitting is too specific for that, as air conditioning system
+objects cannot be split into chunks whereas sequences can. Well, splitting
+an air-conditioning system (ACS) could mean: extracting its temperature
+corridor (= a pair of two real numbers), and pass it on to a more specific
+subrule. But this would be at implementation level. Base_translator would
+not be concerned with specific input or context types. Of course, context
+and input can be objects of the same class (as you imply to be a reasonable
+restriction). I, in turn, tend to believe this is just a special case. In
+general, context and input can be of very different types. This reflects
+most real life situations. Only when translating such uniform things such as
+text, you have the privilege to consider left and right characters / words
+etc. which happen to be of the same type of what's to be translated.
+  As regards your understanding of context, I have the impression that your
+design mixes up the static context data (i.e. what's written right or left
+of the focus), and the translator function (i.e. how the output is
+calculated). A context that always matches means a function that does not
+depend on the context, i.e. it is invariant with regard to the value of
+context. I would assume this to be a property of certain subrules, whereas
+you consider it to be a property of certain context objhects. I find it
+difficult to follow this approach as I believe a rule should decide how to
+change the focus given the focus and the context, where as the context
+should be just a description of something outside the focus. A rule that
+happens to be context-invariant would consider just the focus and apply some
+function on it, leaving the context aside. So in my mind there is no such
+thing as a matching or unmatching context. There is only a function which,
+given an input type object and a context object, may return a new input type
+object or None. In the former case one may say: the rule matches, in the
+latter that it does not match.
+
+    You wrote:
+  So could we be hitting problems because YABT is now "a context sensitive
+string manipulation tool" and so the specific task (originally Braille
+translation) is not focusing what is really wanted? Whether this is right or
+wrong at the moment I am unsure, but working to actual usage examples
+probably would help focus things.
+
+  I suggest to work top-down, i.e. from the component class, through the
+translation manager (if you agree on that it is useful), via the
+base_translator down to implementations of base_translator, rules, file
+formats etc. Now I guess I am on the base translator level. And I must admit
+I have a bias for as much generality as possible (see above). Willie's
+advice would, I think, apply to the implementations: one for
+air-condition-systems, another for Braille text etc. But my bias toward
+generality merely derives from a market intellectual ambition rather than
+from my discontentment with existing air-conditioning systems.
+
+   You wrote:
+  Loaders: I am unsure whether this is done for users purposes or mine. It
+means that there may be a whole library of rule types and someone could
+develop a table which could make use of a combination of those rules never
+used together before. Whether anyone is going to do that I don't know, but
+it would be nice to be able to say to someone who asks for a particular
+translation system, yes it can be made easily by just creating a new loader
+and then just making that loader for them.
+
+  I now concur with the idea of different loader classes. That said, I still
+don't understand why new rule types would require new loaders... Loading an
+xml table with ElementTree is a one-liner for any rule tree. Clearly, the
+translator must provide a handler function for each rule type. But I fully
+see the necessity to have different loaders for sqlite, plain text, xml from
+file, xml from the internet etc. As regards my assertion on ElementTree, I
+may be underestimating what your xml loaders do. I assume they are that
+complicated because you are using xpat rather than ElementTree or even lxml.
+Further, I do not understand what loaders do with regard to states (see
+below).
+
+  You wrote:
+  The thought of getListStates is that a controlling app can find out what
+states exist and so allow the user to select the one they wish to use.
+Integers are meaningless in this case as why should the user know what those
+integers mean. I feel uncomfortable with totally unrestricted states, states
+need to follow some sort of standard (even if it is a State object API). The
+other reason for getting the known states is to alert the user they have
+requested an invalid state, why should YABT try and process something which
+simply cannot be translated (IE. no state exists for it)? States are causing
+me a certain difficulty, rules are what actually use state, but how can a
+translator find all states from rules? Currently states are registered in
+the translator by the loader, this means that the rules may not actually
+know anything about states but the loader can tell the translator to accept
+any of the states it lists. I suppose this separates states into two
+categories, those for rules, and those permitted as starting states.
+
+
+  For some reason I do not have any difficulty with states as I do not see
+why a translator - whatever that is - should know all states. Being told
+them by the loader is, from my perspective, unnecessary. A state - being
+implemented as a dictionary or, if you feel a need for hierarchical
+structures, a suitable recursive, simple class structure - is to my mind a
+means to store variables accessed by rules. Each xml file should contain a
+node called init_state or so, being a child of root. It should be processed
+at load time. The corresponding handler function should att the dictionary
+to the translator so any rule handler can access it. After initializing the
+state from the attributes of the init_state node, the init_state handler
+should override it with a corresponding config section from the translator's
+config file, finally with optional arguments passed to the constructor. Then
+the translator is in a well-defined state. Certain rule types will change
+some values within state. A state member could be used, eg., to marshall
+statistics on the input stream, store info on whether or not to use
+capitalization in the Braille output, define formats for date, time, grade 1
+or 2. It would have to be discussed if, alongside with state, there should
+be some sort of settings influencing the behavior of rules but which the
+rules cannot modify. Much of this is, I understand, already implemented in
+yabt, except for the config file. That said, I really do not see why the
+loader should build up the state, rather than a node handler for init_state
+called by some method that initializes the translator, maybe indeed the
+loader, but not through proprietary code within the loader. The
+init_state_handler would be reusable for all xml tables no matter what rule
+types they use. I wouldn't even see a problem in allowing rules to add new
+variables to state, if needed. But in most cases this won't be necessary.
+With suitable rule types you could specify a full-featured programming
+language.
+
+  To distinguish state from context, I would say that each state can be
+changed by certain rule types whereas context must be taken as it is.
+Further, the apply method which executes the translator on a particular
+input, must be given a new context, whereas the state is not necessarily
+modified upon each call of the translator.
+
+
+  On configuration
+
+  Maybe the component class from docutils is a good starting point. But
+ideally there would be a general config framework available both in Python
+and Java. I don't know if such exists. You could look at pyspring if you
+wish, or cfgparser that claims to be more convenient and powerful than
+configparser from the standard library.
+
+  I'll be travelling for the coming two weeks; internet access will be
+sparse, if at all. So just in case: merry Xmas and best wishes for the new
+year.
+
+  Leo
+
+  -----Original Message-----
+  From: Michael Whapples [mailto:mwhapples at aim.com]
+  Sent: Tuesday, December 16, 2008 12:59 PM
+  To: fhaxbox66 at googlemail.com; yabt-devel at lists.berlios.de
+  Subject: Re: [Yabt-devel] draft specification
+
+
+  Find comments below.Find my comments below.
+
+  On 15/12/08 21:52, Leo wrote:
+    This time I've changed the reply address manually, so it goes to the
+list.
+
+    I guess your very general rule concept any my engine concept refer
+indeed to very similar tasks. I'd love to have an afternoon or so to look
+more deeply into the sources. But now that I have a couple of minutes to
+write this down, please forgive my superficiality.
+
+    I don't insist on the name 'engine', even if I find your rule concept
+stretches a bit the natural meaning of 'rule'. But let's work on this basis.
+  May be rule is poorly named, but I felt it fitted as it determines whether
+a translation can occur and how it should occur. Different instances of
+these objects may determine if a translation can occur in different ways
+(even yielding different answers) and may say that the translation should be
+applied in a different way. To me a single component, of which there may be
+many, which decides on if and how to do something is a rule. Reflecting on
+this may be my rule is at a slightly different level in the process. I think
+this difference in assigning what is where is better shown else where, read
+on.
+
+
+    1. On the loader concept
+
+    I see your point to the extent that you want a given translator to be
+abel to use different loaders and vice versa. My only response to the first
+point would be a dispatcher mechanism either through an (optional) argument
+to __init__ , or according to the file name extension (eg. xml, csv etc.).
+The second type of reuse (one loader for different translators) would seem
+to me an academic exercise but I may be wrong. But even if there are
+practical needs to reuse a given loader for various translators, I would
+assume that (multiple) inheritance is the most obvious way to reuse an
+existing loader. I cannot currently think of a practical need to allow the
+user to write a new loader complying with a particular translator's loader
+API. But I have no strong views on this. My only concern is that the loader
+concept seems somewhat awkward as it requires two steps to load a rule
+table: create a loader object and then pass it to the translator of your
+choice. These two steps may be required as you suspect for the future. But
+today most users would probably wonder what this is all good for. Can you
+think of a more convenient way, say, through a wrapper, default values for
+arguments etc.? - I guess the __init__ methods of subclasses would be a good
+place. I want to instantiate most translators just by giviny passing a
+filename of my favorite rule table, or even less than that (look at PyHyphen
+where I can write: h_uk = hyphenator('en_UK'), and the filename is
+constracted through a simple join. Clearly, this would require a filename
+convention which I don't think is appropriate here because we won't have a
+subclass for braille translation, but for, say, translation trees featuring
+a certain range of rule types.
+  This raises a few questions:
+  * The problem that we have no specific translator for Braille, I remember
+Willie Walker in an Orca presentation saying that one piece of advice he was
+given that he feels was good is to not generalise unless you have enough
+cases to require you to generalise. So could we be hitting problems because
+YABT is now "a context sensitive string manipulation tool" and so the
+specific task (originally Braille translation) is not focusing what is
+really wanted? Whether this is right or wrong at the moment I am unsure, but
+working to actual usage examples probably would help focus things.
+  * Loaders: I am unsure whether this is done for users purposes or mine. It
+means that there may be a whole library of rule types and someone could
+develop a table which could make use of a combination of those rules never
+used together before. Whether anyone is going to do that I don't know, but
+it would be nice to be able to say to someone who asks for a particular
+translation system, yes it can be made easily by just creating a new loader
+and then just making that loader for them. The other reason I want the
+loader system is my own purpose. If at some point I wish to change the table
+format (as I feel the existing XML format needs to be) then I can leave the
+existing loader in place develop the new loader, test it out my self, then
+add a way users can opt to use it and then in one simple change of code make
+the new loader the default (and all I need to do is sit back and wait for
+all the emails describing all the problems caused by the sudden change).
+  * Creating a translator in one quick simple single liner, yes YABT doesn't
+do it currently, but does YABT need to change its design or does YABT just
+need another layer, eg. what I have referred to as a config module, but may
+be it would be better called a translator manager module, or may be just
+something else. I haven't really given this layer much thought, it may do
+more of what you call the dispatcher,  or may be it would just be a factory
+module (eg. createTranslator(translatorType, tableSource, tableType) (or
+something like that) which would return a translator class pre-loaded with
+rules from a loader registered for processing tableType).
+
+
+    On rules
+
+    It seems now we are closer than I'd thought yesterday.
+    This being said:
+    - I feel uncomfortable with that AddCharMapping staff in the base_class
+as char substitution is too specific. Further, as I wrote, char substitution
+should be an ordinary rule to be registered with the base class. So may I
+suggest you use a simple substitution rule fed either by a plain text file
+(as I suggested yesterday), or by a hard-coded dictionary or list of pairs.
+  May be AddCharMapping could be changed, it might be addPrepRule(Rule)
+which means that any rule can be added for the preparation stage but these
+should be simple although YABT won't restrict this.
+
+    - What do you mean by GetListOfStates? I believe you cannot always list
+all possible states as these may be unknown or indefinite. I know: a finite
+state michine works on a finite number of states... But I'm not comfortable
+with this restriction as I feel a state should be defined not by an integer,
+but by an object containing multiple settings. Also, the name 'state'
+suggests that it may only refer to some property of the translator itself.
+However, I think we agree that state can describe any property of anything
+in the universe. So I would suggest to replace it by 'settings'.But the
+structure of settings objects would have to be defined. I guess a settings
+object would be a simple empty container that could store all kinds of data
+including settings objects for different translators or even specific
+subrules.
+  The thought of getListStates is that a controlling app can find out what
+states exist and so allow the user to select the one they wish to use.
+Integers are meaningless in this case as why should the user know what those
+integers mean. I feel uncomfortable with totally unrestricted states, states
+need to follow some sort of standard (even if it is a State object API). The
+other reason for getting the known states is to alert the user they have
+requested an invalid state, why should YABT try and process something which
+simply cannot be translated (IE. no state exists for it)? States are causing
+me a certain difficulty, rules are what actually use state, but how can a
+translator find all states from rules? Currently states are registered in
+the translator by the loader, this means that the rules may not actually
+know anything about states but the loader can tell the translator to accept
+any of the states it lists. I suppose this separates states into two
+categories, those for rules, and those permitted as starting states.
+
+    - bf and afcontext: This seems to be too specific as well. So why not
+work with a context object which may then well be a pair of two strings each
+representing bf- and afcontext? Or it may be a triple of humidity,
+temperature and air pressure in Beijing if our translator works on
+air-conditioning systems rather than strings. That's the beauty of dynamic
+typing! Just learn to love this freedom, even if it may first seem
+frightening to a Java programmer!
+  I question this on the meaning of context. I am using context to mean what
+comes before the focus in the sequence to translate and what comes after the
+focus in the sequence to translate. At some point restrictions do need to be
+laid down, and I personally feel YABT at the most flexible is to translate
+sequences into other sequences (strings being a sequence of characters). I
+would argue that the example you gave is not context but rather what is
+being translated or state. Let me explain further:
+  * If humidity, temperature and air pressure was only needed for the
+current then it might be a state. This could be complicated as these are
+continual variables, I would opt for next suggestion.
+  * Humidity, temperature and air pressure may be part of the sequence being
+translated (eg. we may be translating a sequence of atmospheres, Atmosphere
+objects with temperature, humidity and pressure propertie, it may have
+others as wells). Ideally the sequences used should be sliceable (supporting
+the s[x:y] notation). Now focus and both contexts can use all three
+properties. If say the translator in this case (I don't quite know what use
+it really might have) was tracking current values, obviously after context
+cannot be known, so all rules used for that should simply use the always
+match context for after context. I feel this is very flexible and powerful
+once understood.
+
+    - translator.py, line 141: what is input class? What does this if...
+statement do here?
+  Discussed in other email, no longer exists.
+
+     - line 151: logging should go into the base class controlled by some
+settings. I think we do need a configuration system. You should look at
+docutils... and become addicted to aspect-oriented programming.
+  Again dealt earlier, look at logging configuration.
+
+    - - line 164: don't understand why you need the rule set class alongside
+with rule class.
+  RuleSet is unused, but is basically to provide a simple RuleSet
+implementation that other RuleSet like classes might build on. Can remove if
+really unneeded and unwanted.
+
+    - line 192: I have the feeling that you need the AddChar stuff because
+your rule concept is too narrow to use it for efficient char substitution.
+In this respect, my engine idea could be more straightforward as it
+encapsulates everything, even translators with hard-coded one-line
+algorithms rather than loadable rule tables. I guess the constructor of an
+engine would take only a settings argument. It has an apply method taking
+the input object and a context object. I would have to think more thoroughly
+about focus, befor and after context. My only point here is that engines
+would be suitable both for simple char substitution, control of
+air-condition systems of Beijing-based hotels and xml-based rule trees. But
+I must admit that your code arguably does a good job.
+  I don't know if it exactly fits with what you mean, but I actually now
+start to wonder whether my translator is what you mean by translation
+engine. The only difference is that I feel a translator should be fully self
+contained, IE. there should be no need for sending input through more than
+one, and if there is it might be a special case and might be best left to
+that particular application developer to do that in their own code. This
+self contained thinking is why translators in my design do character
+mappings (or may be if generalised preparation). These two stages
+(preparation and translation should be enough for most cases.
+
+
+    I must stop here. I'm not sure if I've convinced you to conceptualize
+the interaction between base_class and the rules a bit differntly. And I'm
+not even sure if it's worth trying, even I would have written this thing in
+a different way, because my thinking is influenced by docutils.
+  Yes background is different and I suppose whilst I am writing it in python
+I am still keeping in mind, could I make a java implementation. Also might
+it be best to split API into multiple levels/layers? IE. high level which
+may be done through manager/config module and a low level API which may be
+very much what YABT is now. The high level API may be language specific to
+try and make the most of the language, but low level API may be very
+language independent (partly so I don't get confused between the two and if
+people use the low level API then they know YABT for any language
+implementation.
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081219/8300af1f/attachment.html>
+
+From mwhapples at aim.com  Fri Dec 19 12:39:29 2008
+From: mwhapples at aim.com (Michael Whapples)
+Date: Fri, 19 Dec 2008 11:39:29 +0000
+Subject: [Yabt-devel] draft specification
+In-Reply-To: <DKECKJNNEDEJAJDEPCMBGEEKCIAA.fhaxbox66@googlemail.com>
+References: <DKECKJNNEDEJAJDEPCMBGEEKCIAA.fhaxbox66@googlemail.com>
+Message-ID: <494B87F1.1020606@aim.com>
+
+On 19/12/08 07:20, Leo wrote:
+>
+> You wrote:
+>
+> The only difference is that I feel a translator should be fully self 
+> contained, IE. there should be no need for sending input through more 
+> than one, and if there is it might be a special case and might be best 
+> left to that particular application developer to do that in their own 
+> code. This self contained thinking is why translators in my design do 
+> character mappings (or may be if generalised preparation). These two 
+> stages (preparation and translation should be enough for most cases.
+>
+> Agreed. But the appearance of one self-contained translator could be 
+> achieved at translator level or at translator manager level. I guess 
+> you mean the former; I for one am still open to both. In any event, 
+> the design has to allow the following cases:
+>
+Is this preparation? If so YABT allows it but may be it could be 
+generalised so that it isn't limited to chars.
+>
+> - char substitution throughout the text, no matter how long, how many 
+> paragraphs, formfeed etc.
+>
+> - word substitution using, say, a two column table loaded from a csv 
+> file. This should be tried for individual words. And if substitution 
+> succeeds, the xml rules are not applied to that word because the 
+> explicit translation table is presumed to be more accurate or just 
+> faster than the rules.
+Multiple loaders, may be I should create a word substitution loader and 
+rule system which can be applied. This might also highlight some of what 
+I feel the advantages of loaders are.
+> In my idea of an engine I tried to reflect the distinction through a 
+> split_into_chunks method. This implies that some rules may apply to 
+> the whole text whereas others apply only to individual words such that 
+> the text (sequence) needs to have been split up before. But all this 
+> would have to be refined.
+The current XML rule system deals with varying length focus (IE. some 
+apply to a focus of 2 letters, some to 5 letters, or some to simply 1 
+letter, or infact any number of letters (0 should never be done as if it 
+could be applied then we would get stuck), and none of these lengths 
+need apply to a specific type of chunk, it may be a word, it may be part 
+of a word, etc its all down to what I call the context as to what that 
+particular focus dcan be). BufferedTranslator is making arbitrary splits 
+where it is unlikely that any rule will ever run across the join, and 
+the reason for the splitting is to help with speed, try that really long 
+example I mentioned before and observe the difference in processing time 
+(NOTE: it may take some time, with psyco it takes approx 8 seconds on my 
+2.4GHz machine and without psyco it takes 40+ seconds on the same 
+machine when using the BufferedTranslator, expect much longer times when 
+using the standard Translator).
+> You wrote:
+> I question this on the meaning of context. I am using context to mean 
+> what comes before the focus in the sequence to translate and what 
+> comes after the focus in the sequence to translate. At some point 
+> restrictions do need to be laid down, and I personally feel YABT at 
+> the most flexible is to translate sequences into other sequences 
+> (strings being a sequence of characters). I would argue that the 
+> example you gave is not context but rather what is being translated or 
+> state. Let me explain further:
+> * If humidity, temperature and air pressure was only needed for the 
+> current then it might be a state. This could be complicated as these 
+> are continual variables, I would opt for next suggestion.
+> * Humidity, temperature and air pressure may be part of the sequence 
+> being translated (eg. we may be translating a sequence of atmospheres, 
+> Atmosphere objects with temperature, humidity and pressure propertie, 
+> it may have others as wells). Ideally the sequences used should be 
+> sliceable (supporting the s[x:y] notation). Now focus and both 
+> contexts can use all three properties. If say the translator in this 
+> case (I don't quite know what use it really might have) was tracking 
+> current values, obviously after context cannot be known, so all rules 
+> used for that should simply use the always match context for after 
+> context. I feel this is very flexible and powerful once understood.
+>> My example refers to an object describing an air-conditioning system 
+>> with properties such as propeller speed, heating or cooling activity, 
+>> permissible temperature interval or whatever. The purpose of a 
+>> translator could be to transform the current properties into new ones 
+>> taking into account the actual air properties (i.e. humidity, 
+>> temperature, pressure etc.) according to certain rules. Context could 
+>> be a sequence of atmosphere objects representing the change of air 
+>> properties over time. Rules could implement a function defined on two 
+>> variables (context and air-conditioning system) whereby each consists 
+>> of several attributes. The translator (= function) returns an air 
+>> condition system object. So I would describe a translator to be a 
+>> function defined on (input type, context type), returning an object 
+>> of the same type as input. Context and input can be arbitrary 
+>> objects. OK, now I see that splitting is too specific for that, as 
+>> air conditioning system objects cannot be split into chunks whereas 
+>> sequences can. Well, splitting an air-conditioning system (ACS) could 
+>> mean: extracting its temperature corridor (= a pair of two real 
+>> numbers), and pass it on to a more specific subrule. But this would 
+>> be at implementation level. Base_translator would not be concerned 
+>> with specific input or context types. Of course, context and input 
+>> can be objects of the same class (as you imply to be a reasonable 
+>> restriction). I, in turn, tend to believe this is just a special 
+>> case. In general, context and input can be of very different types. 
+>> This reflects most real life situations. Only when translating such 
+>> uniform things such as text, you have the privilege to consider left 
+>> and right characters / words etc. which happen to be of the same type 
+>> of what's to be translated.
+>> As regards your understanding of context, I have the impression that 
+>> your design mixes up the static context data (i.e. what's written 
+>> right or left of the focus), and the translator function (i.e. how 
+>> the output is calculated). A context that always matches means a 
+>> function that does not depend on the context, i.e. it is invariant 
+>> with regard to the value of context. I would assume this to be a 
+>> property of certain subrules, whereas you consider it to be a 
+>> property of certain context objhects. I find it difficult to follow 
+>> this approach as I believe a rule should decide how to change the 
+>> focus given the focus and the context, where as the context should be 
+>> just a description of something outside the focus. A rule that 
+>> happens to be context-invariant would consider just the focus and 
+>> apply some function on it, leaving the context aside. So in my mind 
+>> there is no such thing as a matching or unmatching context. There is 
+>> only a function which, given an input type object and a context 
+>> object, may return a new input type object or None. In the former 
+>> case one may say: the rule matches, in the latter that it does not 
+>> match.
+This bit is slightly deeper than I want at this particular time, I 
+really need to work through this. From what I am understanding, the 
+following may help:
+* I made context objects always present in rule objects initially as 
+rules were so specific and it seemed simpler to just have something 
+which always says it matches than to have something in the rule class to 
+not check in specific cases/instances.
+* Following on with this simplicity, I still argue that it is easier to 
+say this context is applicable all the time (regardless of what the 
+actual context is) than to have all the cases (eg. the before context 
+not being used but the after context being used, the after context not 
+being used but the before context being used, neither context being used 
+or both contexts being used). This for the current design of YABT would 
+add so many different rule types.
+* it didn't feel to unatural to say that a rule should always match the 
+context.
+
+As for use with other systems (the air conditioning one I will continue 
+with), I would see it may be passing in a list of atomspheres (or may be 
+a list of tuples containing atmospheres and systems properties), with 
+each value being a different time point. To focus on one particular 
+part, the rule may say something like:
+if temperature > desiredTemperature:
+   if previousTemperature <= temperature:
+     coolFurther() # this would hopefully set a property for cooling to 
+be greater
+   else:
+     # set the cooling to what it is because it is going towards the 
+desired temperature anyway
+
+In this case we are still dealing with a sequence, and context still 
+falls in the definition of the points/slices of a list adjacent to the 
+focus.
+>> You wrote:
+>> So could we be hitting problems because YABT is now "a context 
+>> sensitive string manipulation tool" and so the specific task 
+>> (originally Braille translation) is not focusing what is really 
+>> wanted? Whether this is right or wrong at the moment I am unsure, but 
+>> working to actual usage examples probably would help focus things.
+>> I suggest to work top-down, i.e. from the component class, through 
+>> the translation manager (if you agree on that it is useful), via the 
+>> base_translator down to implementations of base_translator, rules, 
+>> file formats etc. Now I guess I am on the base translator level. And 
+>> I must admit I have a bias for as much generality as possible (see 
+>> above). Willie's advice would, I think, apply to the implementations: 
+>> one for air-condition-systems, another for Braille text etc. But my 
+>> bias toward generality merely derives from a market intellectual 
+>> ambition rather than from my discontentment with existing 
+>> air-conditioning systems.
+I think what I am thinking of is without knowing what particular 
+implementations want, how can we ensure the interfaces have that 
+feature? What I am considering is, do we need to focus on the braille 
+and speech examples, where possible use more generalised terms (eg. 
+string means sequence of characters, there fore the interface deals with 
+sequences of objects).
+>>  You wrote:
+>> Loaders: I am unsure whether this is done for users purposes or mine. 
+>> It means that there may be a whole library of rule types and someone 
+>> could develop a table which could make use of a combination of those 
+>> rules never used together before. Whether anyone is going to do that 
+>> I don't know, but it would be nice to be able to say to someone who 
+>> asks for a particular translation system, yes it can be made easily 
+>> by just creating a new loader and then just making that loader for them.
+>> I now concur with the idea of different loader classes. That said, I 
+>> still don't understand why new rule types would require new 
+>> loaders... Loading an xml table with ElementTree is a one-liner for 
+>> any rule tree. Clearly, the translator must provide a handler 
+>> function for each rule type. But I fully see the necessity to have 
+>> different loaders for sqlite, plain text, xml from file, xml from the 
+>> internet etc. As regards my assertion on ElementTree, I may be 
+>> underestimating what your xml loaders do. I assume they are that 
+>> complicated because you are using xpat rather than ElementTree or 
+>> even lxml. Further, I do not understand what loaders do with regard 
+>> to states (see below).
+Currently there is not anyway to specify rule class types in XML, but it 
+might be possible in future (eg. I could have a ruledef element where 
+people could specify the classes they want and then use that rule type. 
+I still haven't had the time to read about elementtree, my main concern 
+being that Translators need a known interface to work and by using 
+something like elementtree would I be tying translators to elementtree? 
+Reading to be done...
+>>
+>> You wrote:
+>> The thought of getListStates is that a controlling app can find out 
+>> what states exist and so allow the user to select the one they wish 
+>> to use. Integers are meaningless in this case as why should the user 
+>> know what those integers mean. I feel uncomfortable with totally 
+>> unrestricted states, states need to follow some sort of standard 
+>> (even if it is a State object API). The other reason for getting the 
+>> known states is to alert the user they have requested an invalid 
+>> state, why should YABT try and process something which simply cannot 
+>> be translated (IE. no state exists for it)? States are causing me a 
+>> certain difficulty, rules are what actually use state, but how can a 
+>> translator find all states from rules? Currently states are 
+>> registered in the translator by the loader, this means that the rules 
+>> may not actually know anything about states but the loader can tell 
+>> the translator to accept any of the states it lists. I suppose this 
+>> separates states into two categories, those for rules, and those 
+>> permitted as starting states.
+>> For some reason I do not have any difficulty with states as I do not 
+>> see why a translator - whatever that is - should know all states. 
+>> Being told them by the loader is, from my perspective, unnecessary. A 
+>> state - being implemented as a dictionary or, if you feel a need for 
+>> hierarchical structures, a suitable recursive, simple class structure 
+>> - is to my mind a means to store variables accessed by rules. Each 
+>> xml file should contain a node called init_state or so, being a child 
+>> of root. It should be processed at load time. The corresponding 
+>> handler function should att the dictionary to the translator so any 
+>> rule handler can access it. After initializing the state from the 
+>> attributes of the init_state node, the init_state handler should 
+>> override it with a corresponding config section from the translator's 
+>> config file, finally with optional arguments passed to the 
+>> constructor. Then the translator is in a well-defined state. Certain 
+>> rule types will change some values within state. A state member could 
+>> be used, eg., to marshall statistics on the input stream, store info 
+>> on whether or not to use capitalization in the Braille output, define 
+>> formats for date, time, grade 1 or 2. It would have to be discussed 
+>> if, alongside with state, there should be some sort of settings 
+>> influencing the behavior of rules but which the rules cannot modify. 
+>> Much of this is, I understand, already implemented in yabt, except 
+>> for the config file. That said, I really do not see why the loader 
+>> should build up the state, rather than a node handler for init_state 
+>> called by some method that initializes the translator, maybe indeed 
+>> the loader, but not through proprietary code within the loader. The 
+>> init_state_handler would be reusable for all xml tables no matter 
+>> what rule types they use. I wouldn't even see a problem in allowing 
+>> rules to add new variables to state, if needed. But in most cases 
+>> this won't be necessary. With suitable rule types you could specify a 
+>> full-featured programming language.
+>> To distinguish state from context, I would say that each state can be 
+>> changed by certain rule types whereas context must be taken as it is. 
+>> Further, the apply method which executes the translator on a 
+>> particular input, must be given a new context, whereas the state is 
+>> not necessarily modified upon each call of the translator.
+I am out of time, so I didn't get to read that bit about states. My 
+problem is that rules don't know about translators or what translator 
+instance owns them (so logng as rules aren't dynamic then they may 
+actually be owned by more than one translator). On the other hand 
+translators know about rules, and loaders know about both the rules and 
+translator, so to achieve the short circuit of if no state can ever be 
+reached of that value why even bother trying to translate? May be rules 
+could throw exceptions about this. The other problem I have is allowing 
+controlling apps to display possible states to users (eg. if I altered 
+state to be strings or have some way of associating names to them which 
+might mean something to a user) a translator must be able to get at the 
+states to create this list.
+
+Really must go now, sorry I didn't get through this. I will be away over 
+the Christmas and new year, plenty of reading. I will be away over 
+Christmas and new year, and also coming up in the early new year should 
+be my SCJP exam, so may be I need to say I will have a short step back 
+from YABT.
+
+PS. again email length was too long for list.
+
+Michael Whapples
+>>
+>> On configuration
+>> Maybe the component class from docutils is a good starting point. But 
+>> ideally there would be a general config framework available both in 
+>> Python and Java. I don't know if such exists. You could look at 
+>> pyspring if you wish, or cfgparser that claims to be more convenient 
+>> and powerful than configparser from the standard library.
+>> I'll be travelling for the coming two weeks; internet access will be 
+>> sparse, if at all. So just in case: merry Xmas and best wishes for 
+>> the new year.
+>> Leo
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/yabt-devel/attachments/20081219/8f160bf3/attachment.html>
+

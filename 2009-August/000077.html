@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] YABT 2.1 development started
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2009-August/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20YABT%202.1%20development%20started&In-Reply-To=%3CJNEPIPKLMDDNHIAOHDNBOEBDCDAA.fhaxbox66%40googlemail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000076.html">
+   <LINK REL="Next"  HREF="000078.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] YABT 2.1 development started</H1>
+    <B>Leo</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20YABT%202.1%20development%20started&In-Reply-To=%3CJNEPIPKLMDDNHIAOHDNBOEBDCDAA.fhaxbox66%40googlemail.com%3E"
+       TITLE="[Yabt-devel] YABT 2.1 development started">fhaxbox66 at googlemail.com
+       </A><BR>
+    <I>Sun Aug  9 22:41:52 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000076.html">[Yabt-devel] YABT 2.1 development started
+</A></li>
+        <LI>Next message: <A HREF="000078.html">[Yabt-devel] YABT 2.1 development started
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#77">[ date ]</a>
+              <a href="thread.html#77">[ thread ]</a>
+              <a href="subject.html#77">[ subject ]</a>
+              <a href="author.html#77">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Some potentially superfluous remarks:
+
+1. The state should be settable at instantiation time so it functions as a
+default when calling the translator subsequently. For v3.x I would prefer
+not to allow to set states when calling the translator, because it is
+cleaner to separate these two tasks. Also, you should think about whether
+specifying the state through calling translate() is for one-off use or
+permanently such as when calling the set method. I would advocate one-off
+use which helps when writing a non-contractable name amidst a contracted
+text. . This feature might be worth retaining in v3.0. But offering two ways
+to do the same thing only confuses the reader.
+
+2. I don't quite understand what you mean by allowing objects of arbitrary
+types (which is good!) as states and then signing integers to these (which
+sounds somewhat strange). I would imagine the tables may refer to a specific
+state which entails comparisons etc. My hunch is that if table authors like
+non-integers as states at the expense of speed, so be it and vice versa. So
+why should you care about speed here? I don't think there is much to gain.
+Well, you will have good reasons... Have you looked at using the hash method
+in this context?
+
+3. While these small features are useful, the killing comes with 3.0 and
+custom node types / rules. I won't repeat myself here.
+
+Leo
+-----Ursprungliche Nachricht-----
+Von: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel-bounces at lists.berlios.de</A>
+[mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel-bounces at lists.berlios.de</A>]Im Auftrag von Michael
+Whapples
+Gesendet: Donnerstag, 6. August 2009 13:07
+An: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel at lists.berlios.de</A>
+Betreff: [Yabt-devel] YABT 2.1 development started
+
+
+Hello,
+I have decided to back away from some of the things being discussed for
+YABT 3.0 and decided to add some features which have been requested
+which could go in YABT 2.1.
+
+The main feature I have done at the moment is made it possible for users
+to use a setter for the state rather than have to specify it on the call
+to translate, although should you wish to still call translate with the
+state option you can, its now a keyword option.
+
+The aim of YABT 2.1 is to add features, but it should still allow
+applications designed for YABT 2.0 to work without any change (ideally)
+or very minimal change. However as features are being added, those
+making use of new features in YABT 2.1 will not be able to use YABT
+2.0.x, unless they specifically try and support it in another way.
+
+Another feature I would like to add is named states. Now I am referring
+to them as named states specifically as for performance reasons I don't
+want to lift the internal restriction of states being integers, instead
+an object will be accepted and then assigned an integer (or some other
+type should I feel it might be better with that) as an ID. Therefore the
+user of YABT will have the appearance of states being of any type they
+like, but internally YABT will be using state IDs. This won't break
+backwards compatibility as integers will still be accepted (may be used
+as the ID or may be assigned its own ID).
+
+Adding cursor positioning and position information would be nice, but I
+am not quite so sure how it might be done without breaking backwards
+compatibility.
+
+Any other thoughts of features which could be added?
+
+Michael Whapples
+_______________________________________________
+Yabt-devel mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000076.html">[Yabt-devel] YABT 2.1 development started
+</A></li>
+	<LI>Next message: <A HREF="000078.html">[Yabt-devel] YABT 2.1 development started
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#77">[ date ]</a>
+              <a href="thread.html#77">[ thread ]</a>
+              <a href="subject.html#77">[ subject ]</a>
+              <a href="author.html#77">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

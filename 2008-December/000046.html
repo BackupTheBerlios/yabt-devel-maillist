@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] YABT reading from STDIN
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-December/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20YABT%20reading%20from%20STDIN&In-Reply-To=%3C49456F1F.6080006%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000045.html">
+   <LINK REL="Next"  HREF="000047.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] YABT reading from STDIN</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20YABT%20reading%20from%20STDIN&In-Reply-To=%3C49456F1F.6080006%40aim.com%3E"
+       TITLE="[Yabt-devel] YABT reading from STDIN">mwhapples at aim.com
+       </A><BR>
+    <I>Sun Dec 14 21:39:59 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000045.html">[Yabt-devel] YABT reading from STDIN
+</A></li>
+        <LI>Next message: <A HREF="000047.html">[Yabt-devel] YABT-2.0b2Update1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#46">[ date ]</a>
+              <a href="thread.html#46">[ thread ]</a>
+              <a href="subject.html#46">[ subject ]</a>
+              <a href="author.html#46">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I was just considering what other apps seem to do and that ideally 
+fitting with what other apps do makes it more natural to users. As an 
+example look at python (although accepting from STDIN or interactive is 
+different there), espeak, liblouis's translate app and cat (these last 
+three examples being better) all read line by line. Reading line by line 
+doesn't seem correct for YABT and I don't believe (to be confirmed 
+though) by file would not affect piping.
+
+Michael Whapples
+
+On 14/12/08 19:50, Leo wrote:
+&gt;<i> I don't see a reason for doing it line-by-line. In practice, piping will be
+</I>&gt;<i> the only meaningful use for stdin.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> -----Ursprungliche Nachricht-----
+</I>&gt;<i> Von: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel-bounces at lists.berlios.de</A>
+</I>&gt;<i> [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel-bounces at lists.berlios.de</A>]Im Auftrag von Michael
+</I>&gt;<i> Whapples
+</I>&gt;<i> Gesendet: Sonntag, 14. Dezember 2008 19:17
+</I>&gt;<i> An: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> Betreff: [Yabt-devel] YABT reading from STDIN
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Hello,
+</I>&gt;<i> I have just started looking at getting YABT_translate to accept input
+</I>&gt;<i> from STDIN, but I have hit a question I am unsure of the answer.
+</I>&gt;<i>
+</I>&gt;<i> It would seem natural that when reading from STDIN it should process
+</I>&gt;<i> line by line. When doing this it would mean each line is contextless
+</I>&gt;<i> (IE. it is not affected by the cotents of the line either side of it. I
+</I>&gt;<i> could do it that input is accepted via STDIN until the end of file
+</I>&gt;<i> sequence is reached (control+d on unix, control+\-&lt;enter&gt;  on windows
+</I>&gt;<i> (the way you would exit an interactive python session)) and only at this
+</I>&gt;<i> point the input will be translated.
+</I>&gt;<i>
+</I>&gt;<i> So the question is should it do it line by line but contextless lines or
+</I>&gt;<i> by file (as that is what the end of file sequence would be doing even
+</I>&gt;<i> though STDIN is not a file)?
+</I>&gt;<i>
+</I>&gt;<i> I don't really want to go with another option to specify line by line or
+</I>&gt;<i> by file as YABT_translate is a demonstration application and should not
+</I>&gt;<i> be too complicated. On what I know I would opt for by file but if a good
+</I>&gt;<i> reason can be found for line by line then I will consider it.
+</I>&gt;<i>
+</I>&gt;<i> Michael Whapples
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Yabt-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Yabt-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;<i>    
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000045.html">[Yabt-devel] YABT reading from STDIN
+</A></li>
+	<LI>Next message: <A HREF="000047.html">[Yabt-devel] YABT-2.0b2Update1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#46">[ date ]</a>
+              <a href="thread.html#46">[ thread ]</a>
+              <a href="subject.html#46">[ subject ]</a>
+              <a href="author.html#46">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

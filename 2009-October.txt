@@ -1,0 +1,380 @@
+From mwhapples at aim.com  Tue Oct 13 18:54:43 2009
+From: mwhapples at aim.com (Michael Whapples)
+Date: Tue, 13 Oct 2009 17:54:43 +0100
+Subject: [Yabt-devel] Future of YABT, where is it going
+Message-ID: <4AD4B0D3.6050700@aim.com>
+
+Hello,
+I firstly have to say that YABT has been pushed to the back for some 
+time and really deserves some more attention. There are a few things I 
+want to discuss.
+
+One of the reasons why YABT has been ignored is that there seems to be a 
+bit of promise from liblouis/liblouisxml on the British maths Braille 
+support. YABT was created because I felt at the time there was no 
+suitable Braille translator for BrlTex to use to produce British maths 
+Braille. I had looked at liblouis to see whether I could do anything but 
+I have to say I never really got into it (never really got to understand 
+it and was unsure whether it really could do what I wanted) so it seemed 
+easier to create my own translator and YABT came into existence. As 
+liblouis/liblouisxml now offers the British maths Braille support some 
+of the motivation has gone (I am still to assess how suitable 
+liblouis/liblouisxml really are). However I do feel there are certain 
+design features of YABT which make it better than liblouis (eg. separate 
+rule classes, a way to specify a function to call on no rule being 
+found, etc). As some of this might be hard to add to liblouis there may 
+still be good reasons to keep YABT under development. Any views?
+
+Another thing is that I have come across distribute which in its 0.6.x 
+branch intends to be a replacement for setuptools. Now one feature 
+distribute offers is python3 support, so I have had the chance to try 
+YABT on python3 and there seems to be no issue (at least in the core 
+code). I feel python3 support would be something good to offer, its 
+almost tempting (particularly with the low number of dependencies YABT 
+has) to switch to having python3 as the primary development version of 
+python and just keep python2 support for as long as possible. However in 
+the past there has been question of whether I should rid YABT of that 
+setuptools dependency, well after coming across distribute and what I 
+found on the distutils-sig mailing list in the last couple of days I 
+have reached the conclusion that YABT must rid itself of that 
+setuptools/distribute dependency as quick as possible. What might be 
+affected by this decision:
+
+* Running of tests, at present setuptools provides the test command to 
+run tests, YABT will need to provide its own.
+* Automatic script generation, is this really such a loss? In future I 
+will just have to use the script stuff in distutils.
+* YABT won't be in an egg, translation tables will be just in the 
+package tree, this probably means adjusting some code (eg. in the scripts).
+* YABT will finally be dependency free, it will only need python and the 
+standard python packages.
+
+Any alterations I have missed? Again any views on dropping the 
+dependency on setuptools?
+
+I feel YABT hasn't had the attention from me, so may be time for a 
+project structure alteration. This would start with finding a more 
+relaxed license, may be the artistic 2.0 license, may be an MPL type 
+license (eg. EPL). Part of the reason I want to relax the license is 
+that I would like other developers to feel they can contribute and if 
+suitable people come forward I would consider adding them to the YABT 
+project. Essentially I would like YABT to become a bit more open and 
+community driven. Something I would hope that would come out of that 
+would be a greater user base, as hopefully development would be faster 
+and there could be better ideas for what YABT can do. Any views, 
+particularly related to licensing, I want to choose a license which will 
+best suit everyone's needs not just mine.
+
+Michael Whapples
+
+
+From fhaxbox66 at googlemail.com  Tue Oct 13 23:26:42 2009
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Tue, 13 Oct 2009 23:26:42 +0200
+Subject: [Yabt-devel] Future of YABT, where is it going
+In-Reply-To: <4AD4B0D3.6050700@aim.com>
+Message-ID: <JNEPIPKLMDDNHIAOHDNBEENACDAA.fhaxbox66@googlemail.com>
+
+Hello,
+
+1. Is there a reason to develop yabt while there is liblouis?
+
+Yes, there are many, even if I don't know if they are compelling:
+- YABT is pure Python, liblouis difficult-to-compile C staff (at least on
+Windows there are problems. OK, they have a win32 dll for download, but it
+is still somdwhat difficult to get going unless you obtain the Python
+bindings from NVDA). OK, not very compelling for win32 users, nor for Unix
+as they can always compile C.
+
+- YABT's architecture, once finalized for 3.0 is by magnitudes more flexible
+and powerful than that of liblouis. I should reiterate that yabt should have
+support for liblouis tables to offset its first-mover advantage. Once you
+have all liblouis tables on board, the user base will quickly grow.
+
+- yabt is written in an easy-to-learn scripting language rather than tedious
+C. I have the impression that this is the reason why liblouis is not
+community-driven. Only the tables are. But here I may be wrong.
+
+2. Setup tools / distributed
+
+There is also virtualenv. But frankly I would subscribe to the idea of
+droping setuptools. I guess distutils has its own test command. And if not,
+just call the scripts in the test subdir. If yabt itself has no
+dependencies, anyone who has setuptools installed can get yabt using
+easy_install. That's enough of convenience I think. And even if yabt had
+dependencies such as lxml, it would suffice to have an application that uses
+setuptools and gets yabt and lxml upon installation.
+
+3. Develop YABT on P3k?
+
+Yes, good idea. You can backport it to 2.x on an as-needed basis once you
+are comfortable with the architecture.
+
+4. License
+
+Don't know. I find it obscene though that people must pay for most assistive
+software such as Duxbury. I tend to use the GPL as I am too lazy to look for
+something else. But the idea of publishing always the sources does appeal to
+me.
+
+Leo
+
+-----Ursprungliche Nachricht-----
+Von: yabt-devel-bounces at lists.berlios.de
+[mailto:yabt-devel-bounces at lists.berlios.de]Im Auftrag von Michael
+Whapples
+Gesendet: Dienstag, 13. Oktober 2009 18:55
+An: yabt-devel at lists.berlios.de
+Betreff: [Yabt-devel] Future of YABT, where is it going
+
+
+Hello,
+I firstly have to say that YABT has been pushed to the back for some
+time and really deserves some more attention. There are a few things I
+want to discuss.
+
+One of the reasons why YABT has been ignored is that there seems to be a
+bit of promise from liblouis/liblouisxml on the British maths Braille
+support. YABT was created because I felt at the time there was no
+suitable Braille translator for BrlTex to use to produce British maths
+Braille. I had looked at liblouis to see whether I could do anything but
+I have to say I never really got into it (never really got to understand
+it and was unsure whether it really could do what I wanted) so it seemed
+easier to create my own translator and YABT came into existence. As
+liblouis/liblouisxml now offers the British maths Braille support some
+of the motivation has gone (I am still to assess how suitable
+liblouis/liblouisxml really are). However I do feel there are certain
+design features of YABT which make it better than liblouis (eg. separate
+rule classes, a way to specify a function to call on no rule being
+found, etc). As some of this might be hard to add to liblouis there may
+still be good reasons to keep YABT under development. Any views?
+
+Another thing is that I have come across distribute which in its 0.6.x
+branch intends to be a replacement for setuptools. Now one feature
+distribute offers is python3 support, so I have had the chance to try
+YABT on python3 and there seems to be no issue (at least in the core
+code). I feel python3 support would be something good to offer, its
+almost tempting (particularly with the low number of dependencies YABT
+has) to switch to having python3 as the primary development version of
+python and just keep python2 support for as long as possible. However in
+the past there has been question of whether I should rid YABT of that
+setuptools dependency, well after coming across distribute and what I
+found on the distutils-sig mailing list in the last couple of days I
+have reached the conclusion that YABT must rid itself of that
+setuptools/distribute dependency as quick as possible. What might be
+affected by this decision:
+
+* Running of tests, at present setuptools provides the test command to
+run tests, YABT will need to provide its own.
+* Automatic script generation, is this really such a loss? In future I
+will just have to use the script stuff in distutils.
+* YABT won't be in an egg, translation tables will be just in the
+package tree, this probably means adjusting some code (eg. in the scripts).
+* YABT will finally be dependency free, it will only need python and the
+standard python packages.
+
+Any alterations I have missed? Again any views on dropping the
+dependency on setuptools?
+
+I feel YABT hasn't had the attention from me, so may be time for a
+project structure alteration. This would start with finding a more
+relaxed license, may be the artistic 2.0 license, may be an MPL type
+license (eg. EPL). Part of the reason I want to relax the license is
+that I would like other developers to feel they can contribute and if
+suitable people come forward I would consider adding them to the YABT
+project. Essentially I would like YABT to become a bit more open and
+community driven. Something I would hope that would come out of that
+would be a greater user base, as hopefully development would be faster
+and there could be better ideas for what YABT can do. Any views,
+particularly related to licensing, I want to choose a license which will
+best suit everyone's needs not just mine.
+
+Michael Whapples
+_______________________________________________
+Yabt-devel mailing list
+Yabt-devel at lists.berlios.de
+https://lists.berlios.de/mailman/listinfo/yabt-devel
+
+
+
+From mwhapples at aim.com  Wed Oct 14 00:35:11 2009
+From: mwhapples at aim.com (Michael Whapples)
+Date: Tue, 13 Oct 2009 23:35:11 +0100
+Subject: [Yabt-devel] Future of YABT, where is it going
+In-Reply-To: <JNEPIPKLMDDNHIAOHDNBEENACDAA.fhaxbox66@googlemail.com>
+References: <JNEPIPKLMDDNHIAOHDNBEENACDAA.fhaxbox66@googlemail.com>
+Message-ID: <4AD5009F.2020809@aim.com>
+
+Good sounds like my thoughts make sense to more than just me. I feel 
+point one is only really going to make sense if those big changes which 
+should happen do happen, as YABT currently stands it doesn't have a huge 
+advantage over liblouis.
+
+Regarding setuptools then it should be a fairly easy task to create a 
+distutils test command, there unfortunately isn't one but in the past I 
+have written scripts to run tests so it should purely be linking 
+distutils to the code to execute a test. This is probably a high 
+priority as dropping setuptools support almost depends on this (yes 
+could drop the support and then do this but it would leave a temporary 
+gap in the feature.
+
+Py3k being the starting point for YABT 3.0 seems a bold step but I think 
+this might be a good way. Hopefully with correct coding style supporting 
+both shouldn't be an issue as YABT won't depend on anything else and so 
+won't be forced by other packages to the versions of python it supports.
+
+Finally on license, essentially I want to have it that YABT code should 
+stay opensource, but one thing I don't want to do is restrict people to 
+what license they can release their programs under just because they use 
+YABT. As an example the GPL has a requirement that anything that links 
+to it should give users all the right of the GPL, and as I understand it 
+that this must then continue all the way down the chain (IE. so anything 
+which uses a package which uses YABT would also need to give users the 
+GPL rights, and then if something uses this again that needs to give the 
+users the same rights). This as I understand it even applies to when a 
+package does an import (that is meant to be as good as linking), that 
+seems just wrong. The artistic 2.0 license seems to be a fairly easy to 
+read license and does mainly what I want. The MPL/EPL and such like also 
+seem to do what I want but seem to give slightly different rights (I 
+think, they aren't so simple in their language, that they allow people 
+to modify the package and any new files they add to the package can be 
+closed source) so I think a bit more free to users further down the 
+chain, they may not protect YABT quite so well. I think that the 
+artistic license is GPL compatible but I am not so sure about MPL and 
+EPL, so the artistic license would be better to let YABT mix with 
+software written by those who feel they must use the GPL.
+
+I will leave it there before I start on my rant of why not use the GPL 
+and why its so bad and possibly not as free as its supporters suggest, 
+the above probably gives you a good idea what I would be thinking of anyway.
+
+Michael Whapples
+On 13/10/09 22:26, Leo wrote:
+> Hello,
+>
+> 1. Is there a reason to develop yabt while there is liblouis?
+>
+> Yes, there are many, even if I don't know if they are compelling:
+> - YABT is pure Python, liblouis difficult-to-compile C staff (at least on
+> Windows there are problems. OK, they have a win32 dll for download, but it
+> is still somdwhat difficult to get going unless you obtain the Python
+> bindings from NVDA). OK, not very compelling for win32 users, nor for Unix
+> as they can always compile C.
+>
+> - YABT's architecture, once finalized for 3.0 is by magnitudes more flexible
+> and powerful than that of liblouis. I should reiterate that yabt should have
+> support for liblouis tables to offset its first-mover advantage. Once you
+> have all liblouis tables on board, the user base will quickly grow.
+>
+> - yabt is written in an easy-to-learn scripting language rather than tedious
+> C. I have the impression that this is the reason why liblouis is not
+> community-driven. Only the tables are. But here I may be wrong.
+>
+> 2. Setup tools / distributed
+>
+> There is also virtualenv. But frankly I would subscribe to the idea of
+> droping setuptools. I guess distutils has its own test command. And if not,
+> just call the scripts in the test subdir. If yabt itself has no
+> dependencies, anyone who has setuptools installed can get yabt using
+> easy_install. That's enough of convenience I think. And even if yabt had
+> dependencies such as lxml, it would suffice to have an application that uses
+> setuptools and gets yabt and lxml upon installation.
+>
+> 3. Develop YABT on P3k?
+>
+> Yes, good idea. You can backport it to 2.x on an as-needed basis once you
+> are comfortable with the architecture.
+>
+> 4. License
+>
+> Don't know. I find it obscene though that people must pay for most assistive
+> software such as Duxbury. I tend to use the GPL as I am too lazy to look for
+> something else. But the idea of publishing always the sources does appeal to
+> me.
+>
+> Leo
+>
+> -----Ursprungliche Nachricht-----
+> Von: yabt-devel-bounces at lists.berlios.de
+> [mailto:yabt-devel-bounces at lists.berlios.de]Im Auftrag von Michael
+> Whapples
+> Gesendet: Dienstag, 13. Oktober 2009 18:55
+> An: yabt-devel at lists.berlios.de
+> Betreff: [Yabt-devel] Future of YABT, where is it going
+>
+>
+> Hello,
+> I firstly have to say that YABT has been pushed to the back for some
+> time and really deserves some more attention. There are a few things I
+> want to discuss.
+>
+> One of the reasons why YABT has been ignored is that there seems to be a
+> bit of promise from liblouis/liblouisxml on the British maths Braille
+> support. YABT was created because I felt at the time there was no
+> suitable Braille translator for BrlTex to use to produce British maths
+> Braille. I had looked at liblouis to see whether I could do anything but
+> I have to say I never really got into it (never really got to understand
+> it and was unsure whether it really could do what I wanted) so it seemed
+> easier to create my own translator and YABT came into existence. As
+> liblouis/liblouisxml now offers the British maths Braille support some
+> of the motivation has gone (I am still to assess how suitable
+> liblouis/liblouisxml really are). However I do feel there are certain
+> design features of YABT which make it better than liblouis (eg. separate
+> rule classes, a way to specify a function to call on no rule being
+> found, etc). As some of this might be hard to add to liblouis there may
+> still be good reasons to keep YABT under development. Any views?
+>
+> Another thing is that I have come across distribute which in its 0.6.x
+> branch intends to be a replacement for setuptools. Now one feature
+> distribute offers is python3 support, so I have had the chance to try
+> YABT on python3 and there seems to be no issue (at least in the core
+> code). I feel python3 support would be something good to offer, its
+> almost tempting (particularly with the low number of dependencies YABT
+> has) to switch to having python3 as the primary development version of
+> python and just keep python2 support for as long as possible. However in
+> the past there has been question of whether I should rid YABT of that
+> setuptools dependency, well after coming across distribute and what I
+> found on the distutils-sig mailing list in the last couple of days I
+> have reached the conclusion that YABT must rid itself of that
+> setuptools/distribute dependency as quick as possible. What might be
+> affected by this decision:
+>
+> * Running of tests, at present setuptools provides the test command to
+> run tests, YABT will need to provide its own.
+> * Automatic script generation, is this really such a loss? In future I
+> will just have to use the script stuff in distutils.
+> * YABT won't be in an egg, translation tables will be just in the
+> package tree, this probably means adjusting some code (eg. in the scripts).
+> * YABT will finally be dependency free, it will only need python and the
+> standard python packages.
+>
+> Any alterations I have missed? Again any views on dropping the
+> dependency on setuptools?
+>
+> I feel YABT hasn't had the attention from me, so may be time for a
+> project structure alteration. This would start with finding a more
+> relaxed license, may be the artistic 2.0 license, may be an MPL type
+> license (eg. EPL). Part of the reason I want to relax the license is
+> that I would like other developers to feel they can contribute and if
+> suitable people come forward I would consider adding them to the YABT
+> project. Essentially I would like YABT to become a bit more open and
+> community driven. Something I would hope that would come out of that
+> would be a greater user base, as hopefully development would be faster
+> and there could be better ideas for what YABT can do. Any views,
+> particularly related to licensing, I want to choose a license which will
+> best suit everyone's needs not just mine.
+>
+> Michael Whapples
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+
+
+

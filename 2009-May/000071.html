@@ -1,0 +1,170 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] Work for YABT 3.0
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Work%20for%20YABT%203.0&In-Reply-To=%3C4A1AE436.9030207%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000070.html">
+   <LINK REL="Next"  HREF="000072.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] Work for YABT 3.0</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Work%20for%20YABT%203.0&In-Reply-To=%3C4A1AE436.9030207%40aim.com%3E"
+       TITLE="[Yabt-devel] Work for YABT 3.0">mwhapples at aim.com
+       </A><BR>
+    <I>Mon May 25 20:32:22 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000070.html">[Yabt-devel] Work for YABT 3.0
+</A></li>
+        <LI>Next message: <A HREF="000072.html">[Yabt-devel] YABT 3.0 translation algorithm and some matters	relating to implementation
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#71">[ date ]</a>
+              <a href="thread.html#71">[ thread ]</a>
+              <a href="subject.html#71">[ subject ]</a>
+              <a href="author.html#71">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>My reasoning on wanting the ABC functionality is that its a good way to 
+write down the API and try and ensure that anyone wanting to make an 
+alternative implementation will follow the API. Possibly what I really 
+want is interfaces but python has ABCs which are close enough. Also may 
+be there is a greater need and greater benefits in Java to having 
+interfaces and abstract classes. While I won't be doing too much type 
+checking, it does help in python for duck typing as its something which 
+may contain no implementation details which all classes implementing a 
+certain API can inherit from (in the python 2.6 what's new section it 
+gives examples of file like objects, iterable objects, etc, they need 
+not have a common implementation super type, just a type to say they 
+provide that method, which should developers absolutely need to check 
+the type they can check for).
+
+As I said how rules will actually work (as in how they will consider 
+whether to be applied or not) has not yet been decided and I will look 
+into all that has been said. I may just make some very basic example 
+rules (eg. word substitution initially to confirm that the API works).
+
+Michael Whapples
+On 25/05/09 19:02, Leo wrote:
+&gt;<i> On abc: don't know what this should be good for. Maybe I don't see merit in
+</I>&gt;<i> this because I don't know Java. My feeling is Java programming should be
+</I>&gt;<i> restricted by government for it tends to cause obsessions. Well, there may
+</I>&gt;<i> be an esthetic aspect I do not currently see. - Seriously: How about
+</I>&gt;<i> Pythonic duck typing or, if you are really really fond of type-checking:
+</I>&gt;<i> function annotations? Other than that: isinstance(), bases() etc. do a good
+</I>&gt;<i> job, I think. I personally do not understand abc anyway. But feel free to go
+</I>&gt;<i> for it.
+</I>&gt;<i>
+</I>&gt;<i> Nice, your api ideas.
+</I>&gt;<i>
+</I>&gt;<i> My main concern, as you know, is an extensible set of node types. I would
+</I>&gt;<i> really really suggest to have a look at ElementTree or, even better, lxml,
+</I>&gt;<i> the latter, of course, creating a dependency.
+</I>&gt;<i>
+</I>&gt;<i> I don't know why 2.5 or earlier should be supported. When it is ready, 2.5
+</I>&gt;<i> will be long ago. P3.0 support would seem imparative.
+</I>&gt;<i>
+</I>&gt;<i> Leo
+</I>&gt;<i>
+</I>&gt;<i> -----Ursprungliche Nachricht-----
+</I>&gt;<i> Von: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel-bounces at lists.berlios.de</A>
+</I>&gt;<i> [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel-bounces at lists.berlios.de</A>]Im Auftrag von Michael
+</I>&gt;<i> Whapples
+</I>&gt;<i> Gesendet: Montag, 25. Mai 2009 18:22
+</I>&gt;<i> An: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> Betreff: [Yabt-devel] Work for YABT 3.0
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Hello,
+</I>&gt;<i> I am going to start on YABT 3.0 (I really need to just spend some time
+</I>&gt;<i> on YABT so I get back into the flow of working on it, I think). Before I
+</I>&gt;<i> do, I have a couple of questions (I feel now is best to ask as there
+</I>&gt;<i> could be some major changes in YABT and so other changes may be more
+</I>&gt;<i> possible):
+</I>&gt;<i>
+</I>&gt;<i> * I really want to set some interfaces/abstract classes for those who
+</I>&gt;<i> may want to create alternatives. May be this comes from my java side,
+</I>&gt;<i> but python's abstract base classes added in python 2.6 should give me
+</I>&gt;<i> what I want. How much call is there for the various python versions? I
+</I>&gt;<i> am particularly interested in whether there is any need for support
+</I>&gt;<i> before python 2.6.
+</I>&gt;<i> * Linked with the first point, how important is low dependency on other
+</I>&gt;<i> python packages? I ideally want to keep YABT as self contained as
+</I>&gt;<i> possible to maintain the ability to have YABT supported on as many
+</I>&gt;<i> platforms as possible and also to make it easier to switch to python 3.0
+</I>&gt;<i> (may be even have python 3.0 support in YABT 3.0 from the beginning).
+</I>&gt;<i> How ever I don't intend to do this at the expense of having to re-event
+</I>&gt;<i> the wheel, so should an external package work well or be important I
+</I>&gt;<i> will depend on it.
+</I>&gt;<i> * I plan to rework some of how YABT does its translation (IE. how the
+</I>&gt;<i> rules actually work and so different translation tables will be needed).
+</I>&gt;<i> I will look back over some of the ideas. I hope it will be better, but I
+</I>&gt;<i> can't say exactly at the moment how it will look.
+</I>&gt;<i> * I intend a high level API, again no fixed plan yet, but ideally for an
+</I>&gt;<i> application using YABT it should be something like:
+</I>&gt;<i>   &gt;&gt;&gt;  YABT.listTranslators()
+</I>&gt;<i>     [{&quot;input&quot;: &quot;text&quot;, &quot;output&quot;: &quot;Braille UK&quot;, &quot;description&quot;: &quot;Text to UK
+</I>&gt;<i> Braille&quot;}, {&quot;input&quot;: &quot;text&quot;, &quot;output&quot;: &quot;Speech UK&quot;, &quot;description&quot;: &quot;Text
+</I>&gt;<i> to UK speech&quot;}]
+</I>&gt;<i>   &gt;&gt;&gt;  translator = YABT.getTranslator(input=&quot;text&quot;, output=&quot;Braille UK&quot;)
+</I>&gt;<i>   &gt;&gt;&gt;  translator.listStates()
+</I>&gt;<i>     [&quot;Grade1&quot;, &quot;Grade2&quot;, &quot;Computer Braille&quot;]
+</I>&gt;<i>   &gt;&gt;&gt;  translator.translate(&quot;Hello world&quot;, &quot;Grade2&quot;, &quot; &quot;, &quot; &quot;)
+</I>&gt;<i>     &quot;,HELLO _W&quot;
+</I>&gt;<i>   &gt;&gt;&gt;
+</I>&gt;<i>
+</I>&gt;<i> (actual final running may differ as this raises questions in my mind,
+</I>&gt;<i> eg. looks like the above would do auto scanning of tables to suggest
+</I>&gt;<i> what translations can occur, how might one add an extra table, what if
+</I>&gt;<i> two translators equally meet a getTranslator call criteria, etc). The
+</I>&gt;<i> lower level API should still be available (fairly close to YABT 2.0 but
+</I>&gt;<i> there will certainly be some alterations).
+</I>&gt;<i>
+</I>&gt;<i> Any extra comments/changes you would like to make/see?
+</I>&gt;<i>
+</I>&gt;<i> Michael Whapples
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Yabt-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Yabt-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;<i>    
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000070.html">[Yabt-devel] Work for YABT 3.0
+</A></li>
+	<LI>Next message: <A HREF="000072.html">[Yabt-devel] YABT 3.0 translation algorithm and some matters	relating to implementation
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#71">[ date ]</a>
+              <a href="thread.html#71">[ thread ]</a>
+              <a href="subject.html#71">[ subject ]</a>
+              <a href="author.html#71">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

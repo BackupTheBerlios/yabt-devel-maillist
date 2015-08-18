@@ -1,0 +1,448 @@
+From fhaxbox66 at googlemail.com  Sun Apr 19 15:41:04 2009
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Sun, 19 Apr 2009 15:41:04 +0200
+Subject: [Yabt-devel] Transcribo now public
+Message-ID: <JNEPIPKLMDDNHIAOHDNBKECBCCAA.fhaxbox66@googlemail.com>
+
+Hi,
+
+I've been working on a plain text renderer for reStructuredText and possibly
+other input formats. The project is now online at
+http://transcribo.berlios.de/. I have just pushed the first snapshop to the
+Mercurial repository at http://hg.berlios.de/repos/transcribo/.
+
+While the bridge to Docutils, i.e. the rst2txt package doesn't do anything
+yet, the renderer does. There is a unittest that renders a lengthy nested
+enumeration of paragraphs, and the result looks somewhat promising.
+
+Most notably, the renderer supports YABT!
+
+Enjoy!
+
+Leo
+
+
+
+From mwhapples at aim.com  Sun Apr 19 17:51:34 2009
+From: mwhapples at aim.com (Michael Whapples)
+Date: Sun, 19 Apr 2009 15:51:34 +0000
+Subject: [Yabt-devel] Transcribo now public
+In-Reply-To: <JNEPIPKLMDDNHIAOHDNBKECBCCAA.fhaxbox66@googlemail.com>
+References: <JNEPIPKLMDDNHIAOHDNBKECBCCAA.fhaxbox66@googlemail.com>
+Message-ID: <49EB4886.2000505@aim.com>
+
+I've not yet looked at the page, but it sounds interesting.
+
+I have to be honest I keep looking at other stuff than YABT, but I 
+really should push myself back to YABT as there is so much that should 
+be done to it (IE. completely reworking the rule system to be more user 
+friendly for creating tables, etc). The big other distraction is I 
+recently bought a mini-box m300 case with the built in LCD display 
+(http://www.mini-box.com/M300-LCD-Enclosure?sc=8&category=87) for making 
+a media PC to connect to my HiFi system. My plan is to make it a fully 
+self voicing media PC and I am using python to program it. Although it 
+may be distracting from YABT (probably the fact I have that hardware 
+lying around not doing anything if I don't work on the media PC), it is 
+having the good result of getting me into some of the pythonic ways 
+again. Certainly no java for this mediabox. OK, as good as that mediabox 
+might become (I mean functionality, I don't think I could give it much 
+for physical appearance), YABT really could do with more attention.
+
+Michael Whapples
+On 19/04/09 13:41, Leo wrote:
+> Hi,
+>
+> I've been working on a plain text renderer for reStructuredText and possibly
+> other input formats. The project is now online at
+> http://transcribo.berlios.de/. I have just pushed the first snapshop to the
+> Mercurial repository at http://hg.berlios.de/repos/transcribo/.
+>
+> While the bridge to Docutils, i.e. the rst2txt package doesn't do anything
+> yet, the renderer does. There is a unittest that renders a lengthy nested
+> enumeration of paragraphs, and the result looks somewhat promising.
+>
+> Most notably, the renderer supports YABT!
+>
+> Enjoy!
+>
+> Leo
+>
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+
+
+
+From fhaxbox66 at googlemail.com  Sun Apr 26 10:38:19 2009
+From: fhaxbox66 at googlemail.com (Leo)
+Date: Sun, 26 Apr 2009 10:38:19 +0200
+Subject: [Yabt-devel] WG: Announcing rst2txt project - a plain text renderer
+	for docutils
+Message-ID: <JNEPIPKLMDDNHIAOHDNBKEDBCCAA.fhaxbox66@googlemail.com>
+
+fyi
+
+-----Urspr?ngliche Nachricht-----
+Von: Leo [mailto:fhaxbox66 at googlemail.com]
+Gesendet: Sonntag, 26. April 2009 10:28
+An: docutils-users at lists.sourceforge.net
+Betreff: Announcing rst2txt project - a plain text renderer for docutils
+
+
+Hi all,
+
+a few months ago I had posted a request on this list regarding plain
+text rendering of rst. Thank you again for some helpful hints.
+However, I found that existing unix tools to render plain text would
+not satisfy my needs. So I wrote an abstract, frame-based renderer and
+a still rudimentary docutils writer for it. I've called the whole
+thing "Transcribo" as the docutils writer is just one conceivable
+input source for the renderer. Other formats would appear useful as
+well, but I thought I'd start with rst and I don't know if I'll ever
+go for something else.
+
+The output of rst2txt is customizable through styles. All this is very
+much pre-alpha, even if the demo scripts show that nested lists and
+enumerations can be rendered properly.
+
+A special feature of the renderer is its support for arbitrary content
+types including dedicated translators. I hope that this feature will
+be controllable through rst directives at some point. But I am unsure
+if I'll ever get there due to other commitments.
+
+See a more detailed description including all the links below. Any
+feedback and help is warmly welcomed.
+
+Regards
+
+Leo
+
+Transcribo - a plain text rendering library written in Python
+=================================================================
+
+Project home: http://transcribo.berlios.de/
+
+Mercurial repository: http://hg.berlios.de/repos/transcribo/
+
+Mailing-List: transcribo-dev at berlios.de
+
+Version: 0.1 (experimental)
+
+Author: Dr. Leo <dr-leo at users.berlios.de>
+
+License: GPL (http://www.opensource.org/licenses/gpl-license.html)
+
+(c) 2009 Dr. leo
+
+
+
+
+1. Introduction
+=================
+
+Transcribo is a pure Python library to render input from various
+sources as plain unicode text. It currently
+consists of two subpackages:
+
+1.1 rst2txt
+--------------
+
+In combination with the renderer, this will be a Writer component for
+Docutils (http://docutils.sourceforge.net/).
+Once finished, it will allow to render
+reStructuredText files as plain text. At the same time it demonstrates
+how the renderer (see below) can be
+used. rst2txt roughly maps the nodes of the Docutils doctree to Frame
+instances that form a fram tree. However, the frame tree
+has a somewhat different structure than the docutils doc tree as frames do
+not
+necessarily reflect the document structure. E.g., sections are not
+rendered as parent frames of the section content,
+but at the same level.
+
+The rst2txt package is heavily under construction. Currently, the following
+node types are supported:
+
+document, title, section, paragraph, text, bullet_list,
+enumerated_list, list_item
+
+
+1.2 The renderer
+-------------------------
+
+The renderer is the core of Transcribo. It is premised on an almost
+complete abstraction of layout and content.
+
+*   The key concept to achieve simple yet
+    powerful layout capabilities is the Frame class. Each Frame
+instance represents a
+    rectangular area within the final output. Its position and size
+are determined dynamically
+    relative to other frames during the rendering process. Frames can be
+nested.
+    The RootFrame instance controls the rendering process and assembles the
+line
+    snippets rendered by each frame to form complete text lines. This allows
+    things like multiple columns, nested enumerations etc. In future
+versions,
+    the RootFrame will also control pagination features.
+
+*   Content: Leafs of the tree of Frame instances store the actual
+content within a
+    content.ContentManager instance which, in turn, may store various
+content elements such as
+    text, mathematical expressions, MusicXML etc. Currently, only
+GenericText is supported.
+    More precisely, each leaf Frame must have a ContentManager
+instance which controls the
+    rendering of the content it contains. Each content element is
+rendered separately.
+    A special feature is the possibility to attach a translator instance to
+each
+    content object as well as to the ContentManager. This feature is
+required,
+    in particular, for Braille translation. The ContentManager is also
+responsible
+    for wrapping and hyphenating the content, if required.
+
+All aforementioned features are highly configurable through
+dictionaries passed to the
+constructors.
+
+
+2. the Frame API
+======================
+
+(to be completed; meanwhile please see the documented sources and the
+test.py script)
+
+
+3. The ContentManager API
+==============================
+
+(to be completed; meanwhile please see the documented sources and the
+test.py script)
+
+
+
+4. Testing
+==============
+
+The test subdirectory contains two test scripts that should work out of the
+box:
+
+* test.py: demonstrates the renderer API by rendering a nested enumeration.
+* rst2txt.py is a command line tool. A demo text file shows some of
+the features of the rst2txt writer.
+
+
+
+5. Contributing
+==================
+
+Development is in an early stage. Any help is very much appreciated.
+Feel free to join the mailing
+list, check out the Mercurial repository and start coding,
+
+
+
+From mwhapples at aim.com  Mon Apr 27 10:25:57 2009
+From: mwhapples at aim.com (Michael Whapples)
+Date: Mon, 27 Apr 2009 08:25:57 +0000
+Subject: [Yabt-devel] WG: Announcing rst2txt project - a plain text
+ renderer for docutils
+In-Reply-To: <JNEPIPKLMDDNHIAOHDNBKEDBCCAA.fhaxbox66@googlemail.com>
+References: <JNEPIPKLMDDNHIAOHDNBKEDBCCAA.fhaxbox66@googlemail.com>
+Message-ID: <49F56C15.6080205@aim.com>
+
+OK, sounds good. How easy might it be to create a renderer for another 
+system to use it? IE. could it be a general document output system and 
+various renderers can use it? Potentially could I use it for LaTeX 
+processing from plasTeX while it still could support use from 
+RST/docutils. You might be able to see where my thoughts are going, 
+something which can create reliable Braille (or other format if need be, 
+Braille is just my interest) which can be use from various document 
+processing frameworks.
+
+I again have been sitting on YABT, the last commit was some time ago and 
+at that point I was thinking unless any problems were found with it I 
+would make it YABT 2.0. Let's tie me to a timescale, unless anyone finds 
+any show stopper before Thursday 12:00 BST I will make YABT 2.0 final 
+before the weekend.
+
+Michael Whapples
+On 26/04/09 08:38, Leo wrote:
+> fyi
+>
+> -----Urspr?ngliche Nachricht-----
+> Von: Leo [mailto:fhaxbox66 at googlemail.com]
+> Gesendet: Sonntag, 26. April 2009 10:28
+> An: docutils-users at lists.sourceforge.net
+> Betreff: Announcing rst2txt project - a plain text renderer for docutils
+>
+>
+> Hi all,
+>
+> a few months ago I had posted a request on this list regarding plain
+> text rendering of rst. Thank you again for some helpful hints.
+> However, I found that existing unix tools to render plain text would
+> not satisfy my needs. So I wrote an abstract, frame-based renderer and
+> a still rudimentary docutils writer for it. I've called the whole
+> thing "Transcribo" as the docutils writer is just one conceivable
+> input source for the renderer. Other formats would appear useful as
+> well, but I thought I'd start with rst and I don't know if I'll ever
+> go for something else.
+>
+> The output of rst2txt is customizable through styles. All this is very
+> much pre-alpha, even if the demo scripts show that nested lists and
+> enumerations can be rendered properly.
+>
+> A special feature of the renderer is its support for arbitrary content
+> types including dedicated translators. I hope that this feature will
+> be controllable through rst directives at some point. But I am unsure
+> if I'll ever get there due to other commitments.
+>
+> See a more detailed description including all the links below. Any
+> feedback and help is warmly welcomed.
+>
+> Regards
+>
+> Leo
+>
+> Transcribo - a plain text rendering library written in Python
+> =================================================================
+>
+> Project home: http://transcribo.berlios.de/
+>
+> Mercurial repository: http://hg.berlios.de/repos/transcribo/
+>
+> Mailing-List: transcribo-dev at berlios.de
+>
+> Version: 0.1 (experimental)
+>
+> Author: Dr. Leo<dr-leo at users.berlios.de>
+>
+> License: GPL (http://www.opensource.org/licenses/gpl-license.html)
+>
+> (c) 2009 Dr. leo
+>
+>
+>
+>
+> 1. Introduction
+> =================
+>
+> Transcribo is a pure Python library to render input from various
+> sources as plain unicode text. It currently
+> consists of two subpackages:
+>
+> 1.1 rst2txt
+> --------------
+>
+> In combination with the renderer, this will be a Writer component for
+> Docutils (http://docutils.sourceforge.net/).
+> Once finished, it will allow to render
+> reStructuredText files as plain text. At the same time it demonstrates
+> how the renderer (see below) can be
+> used. rst2txt roughly maps the nodes of the Docutils doctree to Frame
+> instances that form a fram tree. However, the frame tree
+> has a somewhat different structure than the docutils doc tree as frames do
+> not
+> necessarily reflect the document structure. E.g., sections are not
+> rendered as parent frames of the section content,
+> but at the same level.
+>
+> The rst2txt package is heavily under construction. Currently, the following
+> node types are supported:
+>
+> document, title, section, paragraph, text, bullet_list,
+> enumerated_list, list_item
+>
+>
+> 1.2 The renderer
+> -------------------------
+>
+> The renderer is the core of Transcribo. It is premised on an almost
+> complete abstraction of layout and content.
+>
+> *   The key concept to achieve simple yet
+>      powerful layout capabilities is the Frame class. Each Frame
+> instance represents a
+>      rectangular area within the final output. Its position and size
+> are determined dynamically
+>      relative to other frames during the rendering process. Frames can be
+> nested.
+>      The RootFrame instance controls the rendering process and assembles the
+> line
+>      snippets rendered by each frame to form complete text lines. This allows
+>      things like multiple columns, nested enumerations etc. In future
+> versions,
+>      the RootFrame will also control pagination features.
+>
+> *   Content: Leafs of the tree of Frame instances store the actual
+> content within a
+>      content.ContentManager instance which, in turn, may store various
+> content elements such as
+>      text, mathematical expressions, MusicXML etc. Currently, only
+> GenericText is supported.
+>      More precisely, each leaf Frame must have a ContentManager
+> instance which controls the
+>      rendering of the content it contains. Each content element is
+> rendered separately.
+>      A special feature is the possibility to attach a translator instance to
+> each
+>      content object as well as to the ContentManager. This feature is
+> required,
+>      in particular, for Braille translation. The ContentManager is also
+> responsible
+>      for wrapping and hyphenating the content, if required.
+>
+> All aforementioned features are highly configurable through
+> dictionaries passed to the
+> constructors.
+>
+>
+> 2. the Frame API
+> ======================
+>
+> (to be completed; meanwhile please see the documented sources and the
+> test.py script)
+>
+>
+> 3. The ContentManager API
+> ==============================
+>
+> (to be completed; meanwhile please see the documented sources and the
+> test.py script)
+>
+>
+>
+> 4. Testing
+> ==============
+>
+> The test subdirectory contains two test scripts that should work out of the
+> box:
+>
+> * test.py: demonstrates the renderer API by rendering a nested enumeration.
+> * rst2txt.py is a command line tool. A demo text file shows some of
+> the features of the rst2txt writer.
+>
+>
+>
+> 5. Contributing
+> ==================
+>
+> Development is in an early stage. Any help is very much appreciated.
+> Feel free to join the mailing
+> list, check out the Mercurial repository and start coding,
+>
+> _______________________________________________
+> Yabt-devel mailing list
+> Yabt-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/yabt-devel
+>    
+
+
+

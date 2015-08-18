@@ -1,0 +1,188 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] Development process for yabt
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-November/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Development%20process%20for%20yabt&In-Reply-To=%3C90326f110811270842r102f9c33kcbb84c49713f996e%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000001.html">
+   <LINK REL="Next"  HREF="000002.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] Development process for yabt</H1>
+    <B>Leo</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Development%20process%20for%20yabt&In-Reply-To=%3C90326f110811270842r102f9c33kcbb84c49713f996e%40mail.gmail.com%3E"
+       TITLE="[Yabt-devel] Development process for yabt">fhaxbox66 at googlemail.com
+       </A><BR>
+    <I>Thu Nov 27 17:42:16 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000001.html">[Yabt-devel] Development process for yabt
+</A></li>
+        <LI>Next message: <A HREF="000002.html">[Yabt-devel] Corrected list reply
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#8">[ date ]</a>
+              <a href="thread.html#8">[ thread ]</a>
+              <a href="subject.html#8">[ subject ]</a>
+              <a href="author.html#8">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On state:
+
+I am still in favor of having a settings member attribute in the
+core.translator base_class. settings should be a dictiohnary, not an
+int like state in version 1.0. Some settings may modify the behavior
+of the translator such as which ruletable to load, how to encode the
+output or whatever (these are just dummy examples). More importantly,
+settings could contain a number of variables specific to the subclass
+and rule table. So application developers should write extensions to
+core.translator. These extensions add handler methods corresponding to
+the rule types in the xml table. In other words: the authors of
+xmltables need to be aware of the available rule handlers and the
+settings related thereto. Your state concept is really worth
+generalizing in the described way. So translators could count word
+frequencies etc. The xml table could function much like a programming
+language. This is what drove me to think about awt and how far we
+should go with these xml tables.
+
+On spring
+
+The homepage looks interesting. Too complicated for me though. And I
+think spring is unnecessary for such a tiny though smart project. Too
+much overhead to be paid for the elegance gained.
+
+On calling handler methods:
+
+Although I am not too deeply into the anatomy of python objects on the
+heap, I understand that while calling a particular method in a huge
+class hierarchy can be expensive as the interpeter has to run through
+a long chain of references plus dictionary look-ups etc.
+
+However, I understand that all these costs can be avoided by using a
+dictionary that maps node tags (= rule types) to handler methods. No
+reference chain is there, as the reference to the method is itself
+contained in the dictionary. So mydict[mykey] is the method object!
+You see my point?
+
+How to populate this dispatcher dict?
+
+Well, I think core.translator could provide a populate_handler_dict
+method by inspecting the list of attributes. We could agree on a
+naming convention: each attribute named _RH_XYZ could be a handler
+method for the node of type XYZ. You see my point? Then you have a
+dict self.handlers. If the iterator finds a node with tag XYZ, it can
+call the handler through self.handlers[XYZ.tag] or something. Each
+handler takes the complete node and works on its attributes and on the
+contents of self.settings.
+
+What should core.translator export?
+- settings
+- handlers (just the dict as described)
+- an apply method taking a string and a settings dict overriding any
+existing settings
+- a split_into_chunks method to be called by apply and overridden bn
+by subclasses
+- a poplulate_handlers method (see above)
+- maybe some more, but no rules, as not each implementation will need
+rules. Think of the simplest  case of a CSV file being a list of
+(input, output) pairs where translation amounts to a blunt binary
+search...
+
+
+What should implementations do?
+- add handler_methods, if needed
+- load rule tables in whatsoever format
+- override a method called by apply to process a chunk
+- walk over the nodes and call the handler methods using the handlers
+dict initially populated
+- and much much more
+
+ That's my initial view on architecture. Happy to discuss.
+
+
+
+On 26/11/2008, Michael Whapples &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">mwhapples at aim.com</A>&gt; wrote:
+&gt;<i> On 25/11/08 23:52, Leo wrote:
+</I>&gt;&gt;<i> Looks good, in particular the license quesion. That said, a design
+</I>&gt;&gt;<i> specification will have to serve our goals, not those of others.
+</I>&gt;<i>
+</I>&gt;<i> Yes except I don't want the license to make YABT so restricted that
+</I>&gt;<i> nobody can use it.
+</I>&gt;&gt;<i> But the hardest part has yet to be written. Do you intend to give it a
+</I>&gt;&gt;<i> first go?
+</I>&gt;&gt;<i> One comment on the state attribute in yabt-1.0: It could be
+</I>&gt;&gt;<i> generalized by passing to the translation classe's constructor a
+</I>&gt;&gt;<i> 'settings' dictionary for storing arbitrary key - value pairs.
+</I>&gt;<i>
+</I>&gt;<i> I feel minimal should be passed in to the constructor. May be this is to
+</I>&gt;<i> do with some of my java knowledge, and the spring framework and how its
+</I>&gt;<i> configuration works.
+</I>&gt;<i>
+</I>&gt;<i> As for state itself, this is something which I feel is fairly core. For
+</I>&gt;<i> Braille translation YABT uses it for Braille grade, and this may vary
+</I>&gt;<i> between calls. Why not use separate translators for different grades? I
+</I>&gt;<i> believe smoother joins can be done if a single translator can move from
+</I>&gt;<i> one to the other as it knows about both grades and so can deal with the
+</I>&gt;<i> context around a grade change. Another use for the state could be in
+</I>&gt;<i> preparation of text for a speech synthesiser, it could denote
+</I>&gt;<i> punctuation level, abreviation level, etc. In fact for speech
+</I>&gt;<i> preparation more than just state might be wanted, or state may be a
+</I>&gt;<i> tuple in that case (mixed feelings here, may be the statically typed
+</I>&gt;<i> language side of me is going, NO! how could you have state being two
+</I>&gt;<i> different types?). State if not needed by a particular translation
+</I>&gt;<i> system need not actually be used, the variable can just be left floating
+</I>&gt;<i> about.
+</I>&gt;<i>
+</I>&gt;<i> Looking at this state issue further it seems possibly very problematic.
+</I>&gt;<i> State I believe does belong to the translator (IE. I want to translate
+</I>&gt;<i> in this state) but rules need to access state. If state can be different
+</I>&gt;<i> types (or other properties are set dynamically) how does any particular
+</I>&gt;<i> rule type know what it should find (IE. how to stop things just falling
+</I>&gt;<i> apart?).
+</I>&gt;<i>
+</I>&gt;<i> I also have noticed something I really should get the list to reply to
+</I>&gt;<i> the list by default.
+</I>&gt;<i>
+</I>&gt;<i> MIchael Whapples
+</I>&gt;<i>
+</I>&gt;&gt;<i> d
+</I>&gt;&gt;<i> ------------------------------------------------------------------------
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Yabt-devel mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000001.html">[Yabt-devel] Development process for yabt
+</A></li>
+	<LI>Next message: <A HREF="000002.html">[Yabt-devel] Corrected list reply
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#8">[ date ]</a>
+              <a href="thread.html#8">[ thread ]</a>
+              <a href="subject.html#8">[ subject ]</a>
+              <a href="author.html#8">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

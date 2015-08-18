@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] draft specification
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-December/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20draft%20specification&In-Reply-To=%3C4946DA41.40608%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000050.html">
+   <LINK REL="Next"  HREF="000053.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] draft specification</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20draft%20specification&In-Reply-To=%3C4946DA41.40608%40aim.com%3E"
+       TITLE="[Yabt-devel] draft specification">mwhapples at aim.com
+       </A><BR>
+    <I>Mon Dec 15 23:29:21 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000050.html">[Yabt-devel] draft specification
+</A></li>
+        <LI>Next message: <A HREF="000053.html">[Yabt-devel] draft specification
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#51">[ date ]</a>
+              <a href="thread.html#51">[ thread ]</a>
+              <a href="subject.html#51">[ subject ]</a>
+              <a href="author.html#51">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+I won't try and answer all of it now, I don't know if you had a chance 
+of reading through those pages I referred to in another mail regarding 
+dependency injection. Anyway I need to sit down properly and read and 
+fully understand what you have said below.
+
+I will make a couple quick comments:
+* translators.py: line 141: Well done you found the code I missed 
+removing when I did the external rules stuff. Simply ignore _Rule inner 
+class, I have removed it in the last commit. The input class idea still 
+exists though, an input class is a group of states, this saves having to 
+list all states again and again, you can just say rule applies in any 
+state in particular input class.
+* Logging: this is actually one of the parts where I say configuration 
+module needed, NO! The python logger has its own configuration system, 
+and the YABT logger can be done through that (either by code or a config 
+file), just configure the loggers of names beginning with YABT (eg. 
+YABT.translators, etc, I really should have a list and document the list).
+* AspectJ was something I never got round to in java and aspect 
+orientated programming in python I haven't really got round to either.
+
+I will try and get to the rest soon.
+
+Please note this mail was originally too big for the default maximum 
+size in the list configuration, I can raise it if necessary but ideally 
+we should try and trim messages (I am as bad as anyone on that, so I 
+can't point fingers). As I am bad enough on forgetting to trim messages 
+I did allow it, and probably will continue so long as the message is on 
+topic.
+
+Michael Whapples
+
+On 15/12/08 21:52, Leo wrote:
+&gt;<i> This time I've changed the reply address manually, so it goes to the list.
+</I>&gt;<i> I guess your very general rule concept any my engine concept refer 
+</I>&gt;<i> indeed to very similar tasks. I'd love to have an afternoon or so to 
+</I>&gt;<i> look more deeply into the sources. But now that I have a couple of 
+</I>&gt;<i> minutes to write this down, please forgive my superficiality.
+</I>&gt;<i> I don't insist on the name 'engine', even if I find your rule concept 
+</I>&gt;<i> stretches a bit the natural meaning of 'rule'. But let's work on this 
+</I>&gt;<i> basis.
+</I>&gt;<i> 1. On the loader concept
+</I>&gt;<i> I see your point to the extent that you want a given translator to be 
+</I>&gt;<i> abel to use different loaders and vice versa. My only response to the 
+</I>&gt;<i> first point would be a dispatcher mechanism either through an 
+</I>&gt;<i> (optional) argument to __init__ , or according to the file name 
+</I>&gt;<i> extension (eg. xml, csv etc.). The second type of reuse (one loader 
+</I>&gt;<i> for different translators) would seem to me an academic exercise but I 
+</I>&gt;<i> may be wrong. But even if there are practical needs to reuse a given 
+</I>&gt;<i> loader for various translators, I would assume that (multiple) 
+</I>&gt;<i> inheritance is the most obvious way to reuse an existing loader. I 
+</I>&gt;<i> cannot currently think of a practical need to allow the user to write 
+</I>&gt;<i> a new loader complying with a particular translator's loader API. But 
+</I>&gt;<i> I have no strong views on this. My only concern is that the loader 
+</I>&gt;<i> concept seems somewhat awkward as it requires two steps to load a rule 
+</I>&gt;<i> table: create a loader object and then pass it to the translator of 
+</I>&gt;<i> your choice. These two steps may be required as you suspect for the 
+</I>&gt;<i> future. But today most users would probably wonder what this is all 
+</I>&gt;<i> good for. Can you think of a more convenient way, say, through 
+</I>&gt;<i> a wrapper, default values for arguments etc.? - I guess the __init__ 
+</I>&gt;<i> methods of subclasses would be a good place. I want to instantiate 
+</I>&gt;<i> most translators just by giviny passing a filename of my favorite rule 
+</I>&gt;<i> table, or even less than that (look at PyHyphen where I can write: 
+</I>&gt;<i> h_uk = hyphenator('en_UK'), and the filename is constracted through a 
+</I>&gt;<i> simple join. Clearly, this would require a filename convention which I 
+</I>&gt;<i> don't think is appropriate here because we won't have a subclass for 
+</I>&gt;<i> braille translation, but for, say, translation trees featuring a 
+</I>&gt;<i> certain range of rule types.
+</I>&gt;<i> On rules
+</I>&gt;<i> It seems now we are closer than I'd thought yesterday.
+</I>&gt;<i> This being said:
+</I>&gt;<i> - I feel uncomfortable with that AddCharMapping staff in the 
+</I>&gt;<i> base_class as char substitution is too specific. Further, as I wrote, 
+</I>&gt;<i> char substitution should be an ordinary rule to be registered with the 
+</I>&gt;<i> base class. So may I suggest you use a simple substitution rule fed 
+</I>&gt;<i> either by a plain text file (as I suggested yesterday), or by a 
+</I>&gt;<i> hard-coded dictionary or list of pairs.
+</I>&gt;<i> - What do you mean by GetListOfStates? I believe you cannot always 
+</I>&gt;<i> list all possible states as these may be unknown or indefinite. I 
+</I>&gt;<i> know: a finite state michine works on a finite number of states... But 
+</I>&gt;<i> I'm not comfortable with this restriction as I feel a state should be 
+</I>&gt;<i> defined not by an integer, but by an object containing multiple 
+</I>&gt;<i> settings. Also, the name 'state' suggests that it may only refer to 
+</I>&gt;<i> some property of the translator itself. However, I think we agree that 
+</I>&gt;<i> state can describe any property of anything in the universe. So I 
+</I>&gt;<i> would suggest to replace it by 'settings'.But the structure of 
+</I>&gt;<i> settings objects would have to be defined. I guess a settings object 
+</I>&gt;<i> would be a simple empty container that could store all kinds of data 
+</I>&gt;<i> including settings objects for different translators or even specific 
+</I>&gt;<i> subrules.
+</I>&gt;<i> - bf and afcontext: This seems to be too specific as well. So why not 
+</I>&gt;<i> work with a context object which may then well be a pair of two 
+</I>&gt;<i> strings each representing bf- and afcontext? Or it may be a triple of 
+</I>&gt;<i> humidity, temperature and air pressure in Beijing if our translator 
+</I>&gt;<i> works on air-conditioning systems rather than strings. That's the 
+</I>&gt;<i> beauty of dynamic typing! Just learn to love this freedom, even if it 
+</I>&gt;<i> may first seem frightening to a Java programmer!
+</I>&gt;<i> - translator.py, line 141: what is input class? What does this if... 
+</I>&gt;<i> statement do here?
+</I>&gt;<i>  - line 151: logging should go into the base class controlled by some 
+</I>&gt;<i> settings. I think we do need a configuration system. You should look 
+</I>&gt;<i> at docutils... and become addicted to aspect-oriented programming.
+</I>&gt;<i> - - line 164: don't understand why you need the rule set class 
+</I>&gt;<i> alongside with rule class.
+</I>&gt;<i> - line 192: I have the feeling that you need the AddChar stuff because 
+</I>&gt;<i> your rule concept is too narrow to use it for efficient char 
+</I>&gt;<i> substitution. In this respect, my engine idea could be more 
+</I>&gt;<i> straightforward as it encapsulates everything, even translators with 
+</I>&gt;<i> hard-coded one-line algorithms rather than loadable rule tables. I 
+</I>&gt;<i> guess the constructor of an engine would take only a settings 
+</I>&gt;<i> argument. It has an apply method taking the input object and a context 
+</I>&gt;<i> object. I would have to think more thoroughly about focus, befor and 
+</I>&gt;<i> after context. My only point here is that engines would be suitable 
+</I>&gt;<i> both for simple char substitution, control of air-condition systems of 
+</I>&gt;<i> Beijing-based hotels and xml-based rule trees. But I must admit that 
+</I>&gt;<i> your code arguably does a good job.
+</I>&gt;<i> I must stop here. I'm not sure if I've convinced you to conceptualize 
+</I>&gt;<i> the interaction between base_class and the rules a bit differntly. And 
+</I>&gt;<i> I'm not even sure if it's worth trying, even I would have written this 
+</I>&gt;<i> thing in a different way, because my thinking is influenced by docutils.
+</I>&gt;<i> Maybe I'll go on trying to convince you later this week.
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/yabt-devel/attachments/20081215/af895cf0/attachment.html">https://lists.berlios.de/pipermail/yabt-devel/attachments/20081215/af895cf0/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000050.html">[Yabt-devel] draft specification
+</A></li>
+	<LI>Next message: <A HREF="000053.html">[Yabt-devel] draft specification
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#51">[ date ]</a>
+              <a href="thread.html#51">[ thread ]</a>
+              <a href="subject.html#51">[ subject ]</a>
+              <a href="author.html#51">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

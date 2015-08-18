@@ -1,0 +1,229 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] YABT 3.0 translation algorithm and some	mattersrelating to implementation
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20YABT%203.0%20translation%20algorithm%20and%20some%0A%09mattersrelating%20to%20implementation&In-Reply-To=%3CJNEPIPKLMDDNHIAOHDNBMEIECCAA.fhaxbox66%40googlemail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000072.html">
+   <LINK REL="Next"  HREF="000074.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] YABT 3.0 translation algorithm and some	mattersrelating to implementation</H1>
+    <B>Leo</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20YABT%203.0%20translation%20algorithm%20and%20some%0A%09mattersrelating%20to%20implementation&In-Reply-To=%3CJNEPIPKLMDDNHIAOHDNBMEIECCAA.fhaxbox66%40googlemail.com%3E"
+       TITLE="[Yabt-devel] YABT 3.0 translation algorithm and some	mattersrelating to implementation">fhaxbox66 at googlemail.com
+       </A><BR>
+    <I>Sun May 31 23:01:53 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000072.html">[Yabt-devel] YABT 3.0 translation algorithm and some matters	relating to implementation
+</A></li>
+        <LI>Next message: <A HREF="000074.html">[Yabt-devel] YABT 3.0 translation algorithm and some	mattersrelating to implementation
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#73">[ date ]</a>
+              <a href="thread.html#73">[ thread ]</a>
+              <a href="subject.html#73">[ subject ]</a>
+              <a href="author.html#73">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+please mention the J-word never again here. Well, there might be one remote
+reason for me to look at J at some point: Android. But for now I count on
+Jython, if at all necessary.
+
+A few weeks ago I had a quick look at liblouis. The svn repo does contain
+Python bindings using ctypes. So you've wasted your time on that JNA stuff.
+;-)
+
+On capitals: no strong views. Leaving performance issues aside, there is no
+need for anything. Each rule's handler method could analyze the string as
+needed, e.g. by lowering it before any maching business. Talking about
+optimization, the flags proposal does make sense, maybe using a bytes object
+where each byte represents a character and some bits have a meaning, so you
+can use boolean operators. I would also put the original into the object;
+this is cheap. Performance-wise it might be a good idea to allow cheap tests
+whethere a word just starts with a capital letter such as Britain or
+contains only non-capitals or is completely capitalized such as USA.
+Mixtures such as McDonald are more exotic though. So a single int describing
+the whole word as cap, non-cap or fully-cap or undef would be nice.
+
+Algorithm: I think the second one is a bit easier to digest. Clearly you can
+also handle things like &quot;to be&quot;, &quot;for the&quot; etc. Just allow spaces,
+punctuation etc. By the way, in German there are thinks like the following:
+&quot;ich&quot; becomes &quot;#&quot;. But &quot;ich,&quot; becomes &quot;i4,&quot; because &quot;#,&quot; would be
+misinterpreted as &quot;1.&quot;
+
+But this is to be handled by exception nodes drawing on the context, or a
+handler method implements the rule and the exception rather than adding a
+dedicated exception node.
+
+A question might be whether you pass the focus as substrings extracted from
+a long text as slices, or just its indices.
+
+ Leo
+
+ [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel-bounces at lists.berlios.de</A>]Im Auftrag von Michael Whapples
+Gesendet: Sonntag, 31. Mai 2009 19:20
+An: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel at lists.berlios.de</A>
+Betreff: [Yabt-devel] YABT 3.0 translation algorithm and some
+mattersrelating to implementation
+
+
+  Hello,
+  Before getting down to business I will just say again the java development
+tried to distract me so I'm going to attend to YABT before it does. I
+suppose we can just hope for Sun to set up a JA (java annonymous) in my
+area, until that happens I may just need to occasionally feed the java
+habbit. At the moment I have come across JNA (java native access) which is
+like python's ctypes for java, although I feel more comfortable with JNA. I
+have started making liblouis java bindings using it (liblouis was a fairly
+simple but not trivial library to start with, I intend to possibly change my
+media PC to use java for the programming language).
+
+  Anyway down to business with YABT. I have started looking at changing YABT
+for 3.0, first thing is to remove that addCharacterMap method from the
+translator class and anything to do with it. This though raises the question
+of how to neatly deal with capitalisation (which is the reason for making
+the change). My proposals are:
+
+  * Use a custom object to represent the translation text. This object would
+have the string in lowercase and a list/array of flags (possibly as
+characters) representing the capitalisation of the character in that
+position in the string (eg. flags may say capital, lowercase, either case/no
+case, etc). Rules would use this object for matching. Flags may not need to
+be limited to just capitalisation information, so this has scope for future
+expansion. However it may be fiddly for surrounding matching (eg. with
+regular expressions) as the string part is case insensitive and the case may
+be wanted, it would require additional manual checking of the case.
+  * Alternatively to the above (possibly my preferred) is for the
+translation text object to contain two copies of the text, one in lowercase
+(eg. created by the lowercase function of python) and another string being
+the original (so containing all the capitals, etc). This is simpler for
+checking as the rule uses whichever string it wants to.
+
+  Neither of the above will fully achieve what I want, adding the rules to
+ensure capital signs are inserted where needed may require many rules to get
+every situation, therefore I propose a zero length focus rule type. These
+zero length rules would be checked first and should one match then it may
+insert into the output but focus position will not be moved on in the
+translation text, and then the standard rules are checked. This will avoid
+me having to make the translator do something specific around capitals, only
+rules need to be defined (what I mean is that liblouis requires a capsign
+and such like to be defined in its tables but this is awfully Braille
+specific as to when it should be used, YABT would allow the rule to say when
+it should be used).
+
+  I had a brief look back through my email and found a message where you
+described a way possibly to do translation (infact two suggestions of
+algorithms), this message is below. Out of the two I can imagine the second
+better (I can almost imagine the code or at least the general code
+structure). One question I have with this second algorithm is how does it
+determine order of exceptions should we have more than one exception of the
+same focus (eg. if focus is &quot;sh&quot; and we may have exception saying &quot;sh&quot;
+followed by &quot;ead&quot; should be output as &quot;sh&quot; and &quot;sh&quot; followed by anything
+else should be &quot;%&quot; (sh sign) (example may not actually come to be if table
+was designed right but it gives the idea)). Would this be expected to be
+order specific as very few will be in such a situation and the ordering
+problem was to do with the huge number of rules needing the correct order in
+the current YABT table system?
+
+  The first one my questions are things like:
+
+  * How do you determine what is the longest focus to start with?
+  * If previous question answer is that it should be until the end of a
+word, how do we deal with spaces, multi-word contractions (eg. &quot;in to the&quot;),
+etc.
+
+  Michael Whapples
+
+  -------- Original Message -------- Subject:  [Yabt-devel] Translation
+algorithm and tree structure
+        Date:  Sat, 29 Nov 2008 13:30:12 +0100
+        From:  Leo &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">fhaxbox66 at googlemail.com</A>&gt;
+        Reply-To:  <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">fhaxbox66 at googlemail.com</A>, <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel at lists.berlios.de</A>
+        To:  Yabt-Devel &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel at lists.berlios.de</A>&gt;
+
+
+
+  My earlier proposal not published on this list was as follows:
+
+  At the first level of the tree there are only rules checking for the
+length of the original (i.e. substring to be translated by a single
+contraction). So there are likely nor more than 5 to 10 nodes. On the second
+level I suggested rules checking for the beginning or the end of the word to
+single out contractions that may apply under such circumstances. But as most
+contractions can occur anywhere, this wouldn't reduce the problem very much.
+For the third level I suggested to check in alphabetical order if the
+substring matches any of the originals in the nodes. If so, the contraction
+may be used unless some excemption contained in the subtree of that
+contraction applies.
+
+  Today, an alternative algorithm came to my mind and I want to quickly
+expose the idea so it is retained:
+
+  We sort all contractions alphabetically using the original (eg: &quot;that&quot; or
+&quot;sh&quot;). We arrange them in the tree as follows: At the first level (i.e.
+root's children) each node corresponds to the first character of the
+originals. So there are around 26 nodes. The contraction for &quot;always&quot; will
+occur in the first node, &quot;but and because in the second and so forth. At
+level 2 we distinguish according to the second char of the original. Here,
+we are likely to have much less nodes as, e.g. there are no contractions
+whose original starts with &quot;aa&quot; or &quot;jk&quot;. The depth of the tree is equal to
+the length of the longest original. Walking through the input string char by
+char will guide us to the longest contraction which might apply. The subtree
+of that contraction may then contain exemptions such as with &quot;gateshead&quot;. If
+an exemption applies, there may still be a shorter contraction encountered
+on our way up to here. So we'll have to backtrack and check if that one
+applies.
+
+  At a given level, each node must be checked until the char matches. This
+may take long if the current letter is &quot;z&quot;. To speed up things, one may
+consider binary search in cases where there are many nodes. Another option
+is to assemble the chars in each node to a string functioning as an index to
+the nodes of each level. The index string for level 1 is likely to contain
+the entire alphabet. At level 2, most strings will have much less
+characters. Choosing the right node comes down to searching the position
+where the character occurs in the index string.
+
+  I don't know if this algorithm is smarter than the previous one. Its
+downside might be that it disregards the context until a specific
+contraction is singled out. In most cases, however, the described iterative
+matching may yield good approximations.
+
+  We may reconsider both alternatives when discussing which node types to
+implement.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/yabt-devel/attachments/20090531/90050239/attachment.html">https://lists.berlios.de/pipermail/yabt-devel/attachments/20090531/90050239/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000072.html">[Yabt-devel] YABT 3.0 translation algorithm and some matters	relating to implementation
+</A></li>
+	<LI>Next message: <A HREF="000074.html">[Yabt-devel] YABT 3.0 translation algorithm and some	mattersrelating to implementation
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#73">[ date ]</a>
+              <a href="thread.html#73">[ thread ]</a>
+              <a href="subject.html#73">[ subject ]</a>
+              <a href="author.html#73">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

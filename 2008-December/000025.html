@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] How to make the python interpreter when called from	the shell,	write traceback info to an arbitrary file instead of stderr?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-December/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20How%20to%20make%20the%20python%20interpreter%20when%20called%20from%0A%09the%20shell%2C%0A%09write%20traceback%20info%20to%20an%20arbitrary%20file%20instead%20of%20stderr%3F&In-Reply-To=%3CDKECKJNNEDEJAJDEPCMBMEANCIAA.fhaxbox66%40googlemail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000024.html">
+   <LINK REL="Next"  HREF="000026.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] How to make the python interpreter when called from	the shell,	write traceback info to an arbitrary file instead of stderr?</H1>
+    <B>Leo</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20How%20to%20make%20the%20python%20interpreter%20when%20called%20from%0A%09the%20shell%2C%0A%09write%20traceback%20info%20to%20an%20arbitrary%20file%20instead%20of%20stderr%3F&In-Reply-To=%3CDKECKJNNEDEJAJDEPCMBMEANCIAA.fhaxbox66%40googlemail.com%3E"
+       TITLE="[Yabt-devel] How to make the python interpreter when called from	the shell,	write traceback info to an arbitrary file instead of stderr?">fhaxbox66 at googlemail.com
+       </A><BR>
+    <I>Mon Dec  1 21:06:21 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000024.html">[Yabt-devel] I believe version problem resolved
+</A></li>
+        <LI>Next message: <A HREF="000026.html">[Yabt-devel] How to make the python interpreter when called from the shell, write traceback info to an arbitrary file instead of stderr?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#25">[ date ]</a>
+              <a href="thread.html#25">[ thread ]</a>
+              <a href="subject.html#25">[ subject ]</a>
+              <a href="author.html#25">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Congratulations for the versioning issue.
+
+OK. The question in the subject is off topic. But I count on your tolerance.
+Any quick idea?
+
+
+-----Ursprungliche Nachricht-----
+Von: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel-bounces at lists.berlios.de</A>
+[mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel-bounces at lists.berlios.de</A>]Im Auftrag von Michael
+Whapples
+Gesendet: Montag, 1. Dezember 2008 17:10
+An: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel at lists.berlios.de</A>
+Betreff: [Yabt-devel] I believe version problem resolved
+
+
+Hello,
+I believe I have come up with a satisfactory solution to denote
+development versions. It has been uploaded to the BerliOS mercurial
+repository and is used in setup.py. I now just await someone to break
+it, otherwise I think this is completed.
+
+The module itself is version.py and usage is:
+ &gt;&gt;&gt; import version
+ &gt;&gt;&gt; version.getVersion(base_version_string)
+
+Where base_version_string is a string showing the base version number
+(eg. 2.0b2 means the release version of 2.0b2 and inserting a .dev at
+the end of the string means development version eg. 2.1.dev).
+
+I look forward to any comments, and may be pushing out YABT-2.0b2.
+
+Michael Whapples
+_______________________________________________
+Yabt-devel mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000024.html">[Yabt-devel] I believe version problem resolved
+</A></li>
+	<LI>Next message: <A HREF="000026.html">[Yabt-devel] How to make the python interpreter when called from the shell, write traceback info to an arbitrary file instead of stderr?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#25">[ date ]</a>
+              <a href="thread.html#25">[ thread ]</a>
+              <a href="subject.html#25">[ subject ]</a>
+              <a href="author.html#25">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

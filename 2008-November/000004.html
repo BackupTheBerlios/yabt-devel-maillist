@@ -1,0 +1,194 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] Corrected list reply
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-November/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Corrected%20list%20reply&In-Reply-To=%3C492D5B6A.9090508%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000003.html">
+   <LINK REL="Next"  HREF="000005.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] Corrected list reply</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Corrected%20list%20reply&In-Reply-To=%3C492D5B6A.9090508%40aim.com%3E"
+       TITLE="[Yabt-devel] Corrected list reply">mwhapples at aim.com
+       </A><BR>
+    <I>Wed Nov 26 15:21:30 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000003.html">[Yabt-devel] Corrected list reply
+</A></li>
+        <LI>Next message: <A HREF="000005.html">[Yabt-devel] Corrected list reply
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4">[ date ]</a>
+              <a href="thread.html#4">[ thread ]</a>
+              <a href="subject.html#4">[ subject ]</a>
+              <a href="author.html#4">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>OK, I will discuss the speech use first, as it is the easier one to discuss.
+
+Yes what you said is valid, it could do translation to phonems, but what 
+I had imagined was that it could handle things like punctuation level, 
+abreviations (eg. Dr. being doctor, Mr being Mister, etc being etcetera, 
+etc)). That was just my thought but if it would be better as text to 
+phonem then that could be the goal or even another goal, that's how 
+flexible I want YABT to be.
+
+That was too easy, I have another question first, how version numbers 
+are to be done? Previously I was using the SVN revision number to define 
+development versions, but setuptools can't get mercurial revision 
+numbers. I have for the time set it to use date rather than revision 
+number. This is good except it wouldn't show any difference between two 
+development versions on the same day if multiple commits were made. A 
+possible answer is hgversion which can work out the version number 
+according to repository information (base version eg. 2.0b2 would be 
+worked out from the previous tag in the repository (or PKG_INFO if in 
+source distribution rather than repository). The only problem with this 
+is if YABT splits into YABT.cor and YABT.braille and both are in one 
+repository then both would need same base number (IE. one is updated and 
+released both recieve version number move). May be we could use 
+hgversion but customise it so that base version needs to be specified. I 
+am possibly tempted by the date option as this is repository independent 
+(IE. version numbering will not change should YABT move to another 
+version control system).
+
+Now for the difficult stuff. Before saying what YABT.core should offer, 
+is this separation definitely going to be a good idea?
+
+I can very much imagine what YABT.core would be in java, mainly 
+interfaces, a few translator classes, some common rule types and 
+probably a configuration module for retrieving the translator class and 
+loading the rules via the correct loader. May be configuration could be 
+provided through a configuration file like the spring framework. Its not 
+quite so clear in python as interfaces don't actually exist, may be 
+using python 2.6's abstract base classes instead. The only concern I 
+have with python 2.6 is that psyco is not yet compiled for python 2.6 on 
+windows (where pre-compiled packages are most important). This is why I 
+have persisted with using python 2.5.
+
+I get the feeling that a loader depends heavily on the rule 
+implementations, but I feel that the translator classes should only need 
+to know it is a rule. The concept is that the translator knows how to 
+ask the rule/rule set to check whether it has a match, but the 
+translator should not know how the rule has done that match. An existing 
+expample is the current YABT Braille rules check group and state all in 
+one go by looking it up in a dictionary (group and state are tuples in 
+the keys of the dictionary). An alternative way to implement this is to 
+have a rule set which checks group, and that rule set contains rule sets 
+which check state (IE. 2 layers of checking). For this case it seems 
+that the dictionary look up in one step is quicker. This dictionary look 
+up system may not work for all cases, eg. if you had a tree structure 
+which could contain varying length routes along branches (IE. to reach 
+some rules you may only do 1 check, but for others you may do 5 checks). 
+This is why I don't want to use ElementTree as the interface, and would 
+rather have something like the current rule interface with its isMatch 
+method. If there is to be an ElementTree implementation isMatch may just 
+use the handlers on the nodes (unfortunately in python this may have a 
+performance impact as calling methods can cost time, unlike java which 
+knows the method actually exists so doesn't have to check for the 
+method). May be ElementTree could lower the loader dependence on 
+particular rule implementations, but I feel it would restrict how YABT 
+could be used for developing alternative algorithms, hence ElementTree 
+should be only one implementation.
+
+Michael Whapples
+
+On 26/11/08 10:48, Stefan Pankoke wrote:
+&gt;<i> OK. On the core and underlying translator subclasses (implementations)
+</I>&gt;<i> don't know a good word for it:
+</I>&gt;<i>
+</I>&gt;<i> I don't know where you stand, i.e. if you have any concrete picture of
+</I>&gt;<i> what the core should do. So I share my ideas at the risk of
+</I>&gt;<i> duplication of work.
+</I>&gt;<i>
+</I>&gt;<i> I would anticipate that the core is to be seen as a layer between the
+</I>&gt;<i> overarching app such as rst2brl, and the concrete implementation of
+</I>&gt;<i> the translator (I guess we will have an implementation for xml-based
+</I>&gt;<i> translation, another for json, yet another for CSV files, maybe
+</I>&gt;<i> another one for an awk-based translator or whatever).
+</I>&gt;<i>
+</I>&gt;<i> So what should the core export to the overarching app?
+</I>&gt;<i>
+</I>&gt;<i> I think just a translator class which expects the caller to specify
+</I>&gt;<i> which implementation to use, and optionally some settings overriding
+</I>&gt;<i> the implementation's defaults, should be enough. The settings dict
+</I>&gt;<i> could have general settings applicable to all implementations, and
+</I>&gt;<i> some implementation-specific ones, i.e. the core will be unaware of
+</I>&gt;<i> these. The core should, however, manage default settings, overriding,
+</I>&gt;<i> handling of config files etc. Maybe the core could also provide
+</I>&gt;<i> information to the app on the available implementations, xml files
+</I>&gt;<i> etc. The settings could contain info on the xml file to use, the
+</I>&gt;<i> translation grade etc.
+</I>&gt;<i>
+</I>&gt;<i> The core.translator should then export a method to actually call the translator.
+</I>&gt;<i>
+</I>&gt;<i> What should such an apply method require in terms of arguments? I
+</I>&gt;<i> guess at least an optional settings dictionary and a unicode string,
+</I>&gt;<i> possibly a sequence of settings and strings in arbitrary order.
+</I>&gt;<i>
+</I>&gt;<i> Further to my previous e-mail: rule types (i.e. nodes) could check for
+</I>&gt;<i> specific settings and even modify them through handler methods
+</I>&gt;<i> accessing the settings dict.
+</I>&gt;<i>
+</I>&gt;<i> By the way: another example of translation (maybe you meant this)
+</I>&gt;<i> would be: translation of a text into phonems for speech output (rather
+</I>&gt;<i> than just preparing the text itself for speech output as done by orca
+</I>&gt;<i> etc. when processing html pages...)
+</I>&gt;<i>
+</I>&gt;<i> Happy to discuss.
+</I>&gt;<i>
+</I>&gt;<i> On 26/11/2008, Michael Whapples&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">mwhapples at aim.com</A>&gt;  wrote:
+</I>&gt;<i>    
+</I>&gt;&gt;<i> Hello,
+</I>&gt;&gt;<i> Quick note to say I have just altered the setting for the reply to in
+</I>&gt;&gt;<i> the list admin panel. Hopefully now just doing reply will get it to the
+</I>&gt;&gt;<i> list.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Michael Whapples
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Yabt-devel mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>      
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Yabt-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;<i>    
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/yabt-devel/attachments/20081126/370c25af/attachment.html">https://lists.berlios.de/pipermail/yabt-devel/attachments/20081126/370c25af/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000003.html">[Yabt-devel] Corrected list reply
+</A></li>
+	<LI>Next message: <A HREF="000005.html">[Yabt-devel] Corrected list reply
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#4">[ date ]</a>
+              <a href="thread.html#4">[ thread ]</a>
+              <a href="subject.html#4">[ subject ]</a>
+              <a href="author.html#4">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

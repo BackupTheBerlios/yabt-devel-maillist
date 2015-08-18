@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] Task for creating versioning number scheme created
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-November/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Task%20for%20creating%20versioning%20number%20scheme%20created&In-Reply-To=%3C49309392.5010709%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000021.html">
+   <LINK REL="Next"  HREF="000020.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] Task for creating versioning number scheme created</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Task%20for%20creating%20versioning%20number%20scheme%20created&In-Reply-To=%3C49309392.5010709%40aim.com%3E"
+       TITLE="[Yabt-devel] Task for creating versioning number scheme created">mwhapples at aim.com
+       </A><BR>
+    <I>Sat Nov 29 01:57:54 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000021.html">[Yabt-devel] YABT-2.0b2
+</A></li>
+        <LI>Next message: <A HREF="000020.html">[Yabt-devel] Task for creating versioning number scheme created
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#19">[ date ]</a>
+              <a href="thread.html#19">[ thread ]</a>
+              <a href="subject.html#19">[ subject ]</a>
+              <a href="author.html#19">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+I feel this really needs to be sorted so I created a task in the task 
+manager to explain what needs to be done.
+
+The task is #4271 in YABT's task manager and is planned to be solved by 
+next Friday (although sooner would be better). Ideally the development 
+versions I feel should go like this:
+Repository commits are pre-release versions. The reason for this way 
+round is that should I find a bug with a previous version I can insert a 
+bug fix intermediate release (eg. if someone finds a problem with 
+YABT-2.0.0 but I have started development on YABT-2.0.1 then I can 
+create YABT-2.0.0update1 which would come before any development version 
+of YABT-2.0.1). If I were using post version development numbers then 
+how could I do this safely as in the previous example I would be working 
+on YABT-2.0.0rXX. Possibly it could be done if I studied in detail the 
+setuptools version rules (eg. if alphabetic order matters then may be I 
+could use patch instead of update in the version as p comes before r, 
+but this is working very close to the limit and a careless mistake could 
+find it failing). The only occasion I might want post release 
+development versions is for a maintainance branch.
+
+The reason all this comes up is I rather like the way hgversion works to 
+figure out all the version info from the repository (inspecting tags, 
+and if no repository is found then it assumes it must be a source 
+distribution in which case it uses PKG-info (or what ever the package 
+data file is which is included in source distributions)). Due to all 
+this figuring it out from the repository it obviously can't do 
+pre-release revision numbering as no tag exists for the up coming 
+release, so it just uses post-release revisions. If the patch rather 
+than update scheme would work then hgversion looks like a good system to 
+go with as it already exists. If I were to create a modified version of 
+hgversion to fit what I really would want then it probably would not 
+work everything out, but at least would be as good as the setuptools 
+support for SVN revision numbering. Also by not relying on tags it means 
+that should a tag wish to be created for a non-version reason then it 
+won't mess up the version numbering.
+
+Any thoughts?
+
+Also I have realised what was making me so certain there was a 
+connection between berlios and sourceforge, berlios uses some of the 
+sourceforge project management tools.
+
+Michael Whapples
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000021.html">[Yabt-devel] YABT-2.0b2
+</A></li>
+	<LI>Next message: <A HREF="000020.html">[Yabt-devel] Task for creating versioning number scheme created
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#19">[ date ]</a>
+              <a href="thread.html#19">[ thread ]</a>
+              <a href="subject.html#19">[ subject ]</a>
+              <a href="author.html#19">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,198 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] draft specification
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-December/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20draft%20specification&In-Reply-To=%3C4943EA32.1050602%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000042.html">
+   <LINK REL="Next"  HREF="000044.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] draft specification</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20draft%20specification&In-Reply-To=%3C4943EA32.1050602%40aim.com%3E"
+       TITLE="[Yabt-devel] draft specification">mwhapples at aim.com
+       </A><BR>
+    <I>Sat Dec 13 18:00:34 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000042.html">[Yabt-devel] draft specification
+</A></li>
+        <LI>Next message: <A HREF="000044.html">[Yabt-devel] YABT reading from STDIN
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#43">[ date ]</a>
+              <a href="thread.html#43">[ thread ]</a>
+              <a href="subject.html#43">[ subject ]</a>
+              <a href="author.html#43">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+Time to get to the really interesting stuff, in some ways I am not over 
+bothered about the scripts interface, it primarily was a demonstration 
+app, the internals must be right as that can affect both the script and 
+useage through the API.
+
+I had a read of what you had written, my view is mixed. I think we have 
+come at it from quite different angles. I tried to put in my comments 
+(in two stages &lt;MW&gt; indicates initial thoughts and &lt;MW2&gt; indicates 
+thoughts after leaving it and trying to leave some of my java views behind).
+
+I have also decided, as the approaches were so different, it might be 
+worth me expressing what I am thinking (the difference is so great I 
+couldn't edit in my own thoughts for the design). I have written it in 
+the body of this email.
+
+Ideally before saying technically what methods/properties classes should 
+have, let's consider what it should actually do/provide.
+
+1. Translator
+
+A translator should:
+* translate some input into an output format.
+* translation should be performed according to a collection of rules.
+* a translator should be able to be configured to use particular rules 
+(eg. rules for text to British Braille)
+* to minimise the rules required simple substitutions may be performed 
+before the main translation process.
+* translation should permit smooth switching between different sub-codes 
+of the main code (IE. British literary Braille and British maths Braille 
+are sub-codes of British Braille. This could be taken further, Braille 
+is a code, British Braille and German Braille are sub-codes). The 
+definition of smooth switching is where specific things should be done 
+at joins, then they should actually be done without the app using YABT 
+to know of this code specific join detail (eg. in British Braille 
+typically an in line equation should be followed by a dot 6 if the next 
+character is punctuation, the controlling app should not know that 
+British Braille would require this dot 6 in this case).
+* the context of the translation should be specified (IE. does this 
+translation belong next to the end of a page or does it have a maths 
+equation after it, etc).
+
+2. Rules
+
+A rule should:
+* Match if the current position meets certain criteria specified in the rule
+* May contain other rules which it can check (IE. it can be a filter 
+rule to lower the checks to be done). In this case it should report the 
+match as the sub-rule which matches.
+* As a rule knows how it should match, it should perform all checks to 
+confirm if it is a match (IE. it should decide from all position 
+information whether it matches and disregard/ignore any information not 
+required by itself).
+
+3. Loader
+
+It is imagined that it would be useful to have tables stored on a 
+storage device (eg. hard disk, USB memory stick, etc), so something 
+needs to read this data and manipulate the translator to contain the 
+correct rules (it would be too much to expect application developers to 
+do all this themselves and by having common code for this could 
+standardise the table formats whilst allowing developers flexibility to 
+use their own if they so desire).
+
+A loader should:
+* load rules into a translator according to data in a data source.
+* data source should be able to be specified by the controlling app
+* loaders should be reuseable (IE. both specifying a different data 
+source once used and also to load data into more than one translator).
+
+4. Configuration module
+
+I am uncertain whether this is needed or not, but here is my views of 
+what it could provide if it were to be included.
+
+* allow loaders and translators to register with it and provide user 
+friendly names
+* allow an application to enquire registered loaders and translators and 
+obtain user friendly details
+* allow selection of loader and translator (eg. as a factory, particular 
+type could be specified by name returning a relevant instance)
+
+
+I know none of that is implementation specific, but I feel it may be 
+best to take this extra step back. If all of the above were to be done, 
+then all YABT currently lacks is the configuration module and possibly 
+it could do with better manipulation of rules in a translator (I could 
+do with expanding on what I mean by configuration of rules). If I have 
+to go to classes (I want to get specification at this level cleared up 
+first) I would say:
+* Different loaders deal with different input source types
+* different translators deal with different translation types (eg. text 
+to Braille, XML to speech, etc).
+
+Comments welcome.
+
+Michael Whapples
+
+
+On 12/12/08 21:17, Leo wrote:
+&gt;<i>
+</I>&gt;<i> What do you think in terms of future design (core, base_translator, 
+</I>&gt;<i> standard implementations etc.)? I'll read through the modules and hope 
+</I>&gt;<i> to understand the bulk. But this may take some time. That said, I 
+</I>&gt;<i> would assume it could be smarter to write down some fairly general 
+</I>&gt;<i> specification of the base_class (to do it top-down), without too much 
+</I>&gt;<i> looking at YABT. I say this because I personally feel I'd like more 
+</I>&gt;<i> clarity on the design. You come from somewhere else, of course, as you 
+</I>&gt;<i> know yabt by heart. This gives you a great advantage in terms of 
+</I>&gt;<i> clarity on technical issues. But in an ideal world we would probably 
+</I>&gt;<i> sit down on a hill, relax, draft what we believe would be an ideal 
+</I>&gt;<i> architecture and find out afterwards what's already there. Then we 
+</I>&gt;<i> would either take yabt as it is, because we believe it is ideal, take 
+</I>&gt;<i> it and make some changes, or rewrite it from scratch, because we have 
+</I>&gt;<i> found it not ideal at all. The second alternative seems most likely. 
+</I>&gt;<i> You may find this approach annoying as you seem to know what an ideal 
+</I>&gt;<i> translator would do. In my World though, there is little knowledge on 
+</I>&gt;<i> YABT and much room for creativity. At the risk of wasting everybody's 
+</I>&gt;<i> time (in case yabt is ideal), but in the hope that yabt's architecture 
+</I>&gt;<i> leaves some room for enhancement, I attach a first and incomplete 
+</I>&gt;<i> draft specification to be continued or dropped.
+</I>&gt;<i>
+</I>&gt;<i> Happy to discuss.
+</I>&gt;<i>
+</I>&gt;<i> ------------------------------------------------------------------------
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Yabt-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;<i>    
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/yabt-devel/attachments/20081213/f5688ba4/attachment.html">https://lists.berlios.de/pipermail/yabt-devel/attachments/20081213/f5688ba4/attachment.html</A>&gt;
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: yabt draft specification 081212.txt
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/yabt-devel/attachments/20081213/f5688ba4/attachment.txt">https://lists.berlios.de/pipermail/yabt-devel/attachments/20081213/f5688ba4/attachment.txt</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000042.html">[Yabt-devel] draft specification
+</A></li>
+	<LI>Next message: <A HREF="000044.html">[Yabt-devel] YABT reading from STDIN
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#43">[ date ]</a>
+              <a href="thread.html#43">[ thread ]</a>
+              <a href="subject.html#43">[ subject ]</a>
+              <a href="author.html#43">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,183 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] Further thoughts and explainations on my design of	YABT
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-December/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Further%20thoughts%20and%20explainations%20on%20my%20design%0A%20of%09YABT&In-Reply-To=%3C4947A06E.9030803%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000052.html">
+   <LINK REL="Next"  HREF="000055.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] Further thoughts and explainations on my design of	YABT</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Further%20thoughts%20and%20explainations%20on%20my%20design%0A%20of%09YABT&In-Reply-To=%3C4947A06E.9030803%40aim.com%3E"
+       TITLE="[Yabt-devel] Further thoughts and explainations on my design of	YABT">mwhapples at aim.com
+       </A><BR>
+    <I>Tue Dec 16 13:34:54 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000052.html">[Yabt-devel] Further thoughts and explainations on my design of	YABT
+</A></li>
+        <LI>Next message: <A HREF="000055.html">[Yabt-devel] Further thoughts and explainations on my design	of	YABT
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#54">[ date ]</a>
+              <a href="thread.html#54">[ thread ]</a>
+              <a href="subject.html#54">[ subject ]</a>
+              <a href="author.html#54">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Find comments below.
+
+On 15/12/08 22:52, Leo wrote:
+&gt;<i> Interesting article. Reminds me of the bridge pattern as described by the
+</I>&gt;<i> Gang of Four.
+</I>&gt;<i> As I remembered and from what I can find by doing a quick search online dependency injection and the bridge pattern do different things. It seems like the bridge pattern is to hide how a specific operation is actually done where as dependency injection is about how to choose what implementation should be used. Whilst I normally don't have good things to say about wikipedia, the example there does seem quite good (<A HREF="http://en.wikipedia.org/wiki/Bridge_pattern">http://en.wikipedia.org/wiki/Bridge_pattern</A>). The bridge pattern seems to fit with my loader concept (IE. all translators will want to load rules, but no translator needs to know how to actually load the rules).
+</I>&gt;<i>    
+</I>
+&gt;<i> I share your view that loading a file into a translator is a fairly specific
+</I>&gt;<i> process: Whereas film databases are not designed specifically for a specific
+</I>&gt;<i> application that retrieves films directed by a particular director, rule
+</I>&gt;<i> tables will be written for a specific translator. In theory, a two-column
+</I>&gt;<i> csv file could be used by a context-sensitive xml engine: the loader would
+</I>&gt;<i> just create nodes on the fly... But this is academic I think. So I would
+</I>&gt;<i> assume that yabt comes up with a number of translators accomodating most
+</I>&gt;<i> needs. And table authors will choose their favorite one and write a table
+</I>&gt;<i> for it. I would change my mind if you wanted to allow yabt to use
+</I>&gt;<i> third-party tables written for another software, say, buxbury. But in this
+</I>&gt;<i> case, I would assume a one-off conversion would do well. This is another
+</I>&gt;<i> difference to a public film database that changes every day as new films
+</I>&gt;<i> come to light.
+</I>&gt;<i>    
+</I>Again this question of is what you feel should be provided (translators 
+to do specific tasks) something which should be done right at the core 
+of YABT or should it be a higher level API building on top of the low 
+level API as I discussed in another email. I also argue that tables are 
+not tied to particular translators. The only tie is that a table for 
+translating text into another text string should only be used for a 
+translator which converts text to text (Braille being text as either 
+using ascii Braille or unicode Braille). It is possible for different 
+text to text translators to exist, YABT has Translator and 
+BufferedTranslator, but both can use the XML loader classes (either the 
+file XML loader or the String XML loder), I can't see the sense of YABT 
+forcing people to use the combinations I feel they need to use, hence 
+the dual level API idea.
+&gt;<i> As I said: I don't have strong views on loaders provided that in most cases
+</I>&gt;<i> users don't need to bother for them.
+</I>&gt;<i>
+</I>&gt;<i> As a dispatcher (I mentioned this in my earlier e-mail), let me give a short
+</I>&gt;<i> example:
+</I>&gt;<i>
+</I>&gt;<i> def __init__(self, location, sourcetype):
+</I>&gt;<i>      loader = getattr(self, sourcetype + '_loader')
+</I>&gt;<i>       self.rules = loader(location)
+</I>&gt;<i>
+</I>&gt;<i> This allows you to specify as many loader methods as you want such as
+</I>&gt;<i> ftp_loader, xml_loader, plaintext_loader etc. The init method does
+</I>&gt;<i> everything through the getattr trick. And innovative prople can easily
+</I>&gt;<i> extend this in subclasses to use an sqlite_loader which is called by
+</I>&gt;<i> something like mytranslator = translator('mytable', 'sqlite')
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>   As regards the base translator and the engines (rules), I guess there is a
+</I>&gt;<i> greater need for decoupling. I would even decouple more than you as
+</I>&gt;<i> described in my earlier e-mail.
+</I>&gt;<i>    
+</I>I am still unsure how to decouple safely more. Relying on a single 
+method and being provided with two pieces of data seems very loosely 
+coupled to me. May be I need a small working example.
+
+Michael Whapples
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> -----Original Message-----
+</I>&gt;<i> From: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel-bounces at lists.berlios.de</A>
+</I>&gt;<i> [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel-bounces at lists.berlios.de</A>]On Behalf Of Michael
+</I>&gt;<i> Whapples
+</I>&gt;<i> Sent: Monday, December 15, 2008 10:35 PM
+</I>&gt;<i> To: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> Subject: [Yabt-devel] Further thoughts and explainations on my design of
+</I>&gt;<i> YABT
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Hello,
+</I>&gt;<i> I think I have now found some articles wich explain what I am trying to
+</I>&gt;<i> do with YABT with my design.
+</I>&gt;<i>
+</I>&gt;<i> In previous messages I mentioned about spring and its configuration, yes
+</I>&gt;<i> it would be wrong for YABT to provide that configuration framework, but
+</I>&gt;<i> it should support being used within that framework (IE. support being
+</I>&gt;<i> used by those applications). Spring is huge and may over complicate what
+</I>&gt;<i> I am meaning, the part I am getting at is the inversion of control and
+</I>&gt;<i> dependency injection stuff. I have had a look for some explainations of
+</I>&gt;<i> it and found (<A HREF="http://wiki.python.org/moin/DependencyInjectionPattern">http://wiki.python.org/moin/DependencyInjectionPattern</A>).
+</I>&gt;<i> That particular page is not so useful on its own but it has some good
+</I>&gt;<i> links (Martin Fowler's article is good). I feel translators and rules
+</I>&gt;<i> should be loosely coupled, translators and loaders should be loosely
+</I>&gt;<i> couple but unfortunately loaders and rules may not be loosely coupled
+</I>&gt;<i> (reason being that loader deals with a data source representing rules).
+</I>&gt;<i> As dependency injection deals with plain old python objects (POPOs, I am
+</I>&gt;<i> using this to reflect the java term POJO) then YABT doesn't need to
+</I>&gt;<i> concern itself with anything of the controlling app (whether the
+</I>&gt;<i> controlling app actually uses a dependency ijection framework or what
+</I>&gt;<i> that framework is, or if the app just creates the objects as in yabt-trans).
+</I>&gt;<i>
+</I>&gt;<i> The configuration module I mentioned recently where all loaders and
+</I>&gt;<i> translators could register would be optional and potentially would
+</I>&gt;<i> provide a replacement to the dependency injection system. The
+</I>&gt;<i> configuration module would be more suited for dynamic applications where
+</I>&gt;<i> users may select the loaders and translators they want (eg. the
+</I>&gt;<i> controlling app might call a getTranslatorList method/function and use
+</I>&gt;<i> the information returned to display a list of translators and their
+</I>&gt;<i> descriptions to the user for the user to select which they want to use
+</I>&gt;<i> and then the app would get an instance by calling something like
+</I>&gt;<i> createTranslatorByName).
+</I>&gt;<i>
+</I>&gt;<i> How does my structure sound now I have mentioned all this?
+</I>&gt;<i>
+</I>&gt;<i> Michael Whapples
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Yabt-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Yabt-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;<i>    
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000052.html">[Yabt-devel] Further thoughts and explainations on my design of	YABT
+</A></li>
+	<LI>Next message: <A HREF="000055.html">[Yabt-devel] Further thoughts and explainations on my design	of	YABT
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#54">[ date ]</a>
+              <a href="thread.html#54">[ thread ]</a>
+              <a href="subject.html#54">[ subject ]</a>
+              <a href="author.html#54">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

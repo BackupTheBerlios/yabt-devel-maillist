@@ -1,0 +1,246 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] WG: Announcing rst2txt project - a plain text renderer for docutils
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20WG%3A%20Announcing%20rst2txt%20project%20-%20a%20plain%20text%0A%20renderer%20for%20docutils&In-Reply-To=%3C49F56C15.6080205%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000066.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] WG: Announcing rst2txt project - a plain text renderer for docutils</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20WG%3A%20Announcing%20rst2txt%20project%20-%20a%20plain%20text%0A%20renderer%20for%20docutils&In-Reply-To=%3C49F56C15.6080205%40aim.com%3E"
+       TITLE="[Yabt-devel] WG: Announcing rst2txt project - a plain text renderer for docutils">mwhapples at aim.com
+       </A><BR>
+    <I>Mon Apr 27 10:25:57 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000066.html">[Yabt-devel] WG: Announcing rst2txt project - a plain text renderer	for docutils
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#67">[ date ]</a>
+              <a href="thread.html#67">[ thread ]</a>
+              <a href="subject.html#67">[ subject ]</a>
+              <a href="author.html#67">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>OK, sounds good. How easy might it be to create a renderer for another 
+system to use it? IE. could it be a general document output system and 
+various renderers can use it? Potentially could I use it for LaTeX 
+processing from plasTeX while it still could support use from 
+RST/docutils. You might be able to see where my thoughts are going, 
+something which can create reliable Braille (or other format if need be, 
+Braille is just my interest) which can be use from various document 
+processing frameworks.
+
+I again have been sitting on YABT, the last commit was some time ago and 
+at that point I was thinking unless any problems were found with it I 
+would make it YABT 2.0. Let's tie me to a timescale, unless anyone finds 
+any show stopper before Thursday 12:00 BST I will make YABT 2.0 final 
+before the weekend.
+
+Michael Whapples
+On 26/04/09 08:38, Leo wrote:
+&gt;<i> fyi
+</I>&gt;<i>
+</I>&gt;<i> -----Urspr&#252;ngliche Nachricht-----
+</I>&gt;<i> Von: Leo [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">fhaxbox66 at googlemail.com</A>]
+</I>&gt;<i> Gesendet: Sonntag, 26. April 2009 10:28
+</I>&gt;<i> An: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">docutils-users at lists.sourceforge.net</A>
+</I>&gt;<i> Betreff: Announcing rst2txt project - a plain text renderer for docutils
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Hi all,
+</I>&gt;<i>
+</I>&gt;<i> a few months ago I had posted a request on this list regarding plain
+</I>&gt;<i> text rendering of rst. Thank you again for some helpful hints.
+</I>&gt;<i> However, I found that existing unix tools to render plain text would
+</I>&gt;<i> not satisfy my needs. So I wrote an abstract, frame-based renderer and
+</I>&gt;<i> a still rudimentary docutils writer for it. I've called the whole
+</I>&gt;<i> thing &quot;Transcribo&quot; as the docutils writer is just one conceivable
+</I>&gt;<i> input source for the renderer. Other formats would appear useful as
+</I>&gt;<i> well, but I thought I'd start with rst and I don't know if I'll ever
+</I>&gt;<i> go for something else.
+</I>&gt;<i>
+</I>&gt;<i> The output of rst2txt is customizable through styles. All this is very
+</I>&gt;<i> much pre-alpha, even if the demo scripts show that nested lists and
+</I>&gt;<i> enumerations can be rendered properly.
+</I>&gt;<i>
+</I>&gt;<i> A special feature of the renderer is its support for arbitrary content
+</I>&gt;<i> types including dedicated translators. I hope that this feature will
+</I>&gt;<i> be controllable through rst directives at some point. But I am unsure
+</I>&gt;<i> if I'll ever get there due to other commitments.
+</I>&gt;<i>
+</I>&gt;<i> See a more detailed description including all the links below. Any
+</I>&gt;<i> feedback and help is warmly welcomed.
+</I>&gt;<i>
+</I>&gt;<i> Regards
+</I>&gt;<i>
+</I>&gt;<i> Leo
+</I>&gt;<i>
+</I>&gt;<i> Transcribo - a plain text rendering library written in Python
+</I>&gt;<i> =================================================================
+</I>&gt;<i>
+</I>&gt;<i> Project home: <A HREF="http://transcribo.berlios.de/">http://transcribo.berlios.de/</A>
+</I>&gt;<i>
+</I>&gt;<i> Mercurial repository: <A HREF="http://hg.berlios.de/repos/transcribo/">http://hg.berlios.de/repos/transcribo/</A>
+</I>&gt;<i>
+</I>&gt;<i> Mailing-List: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">transcribo-dev at berlios.de</A>
+</I>&gt;<i>
+</I>&gt;<i> Version: 0.1 (experimental)
+</I>&gt;<i>
+</I>&gt;<i> Author: Dr. Leo&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">dr-leo at users.berlios.de</A>&gt;
+</I>&gt;<i>
+</I>&gt;<i> License: GPL (<A HREF="http://www.opensource.org/licenses/gpl-license.html">http://www.opensource.org/licenses/gpl-license.html</A>)
+</I>&gt;<i>
+</I>&gt;<i> (c) 2009 Dr. leo
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 1. Introduction
+</I>&gt;<i> =================
+</I>&gt;<i>
+</I>&gt;<i> Transcribo is a pure Python library to render input from various
+</I>&gt;<i> sources as plain unicode text. It currently
+</I>&gt;<i> consists of two subpackages:
+</I>&gt;<i>
+</I>&gt;<i> 1.1 rst2txt
+</I>&gt;<i> --------------
+</I>&gt;<i>
+</I>&gt;<i> In combination with the renderer, this will be a Writer component for
+</I>&gt;<i> Docutils (<A HREF="http://docutils.sourceforge.net/">http://docutils.sourceforge.net/</A>).
+</I>&gt;<i> Once finished, it will allow to render
+</I>&gt;<i> reStructuredText files as plain text. At the same time it demonstrates
+</I>&gt;<i> how the renderer (see below) can be
+</I>&gt;<i> used. rst2txt roughly maps the nodes of the Docutils doctree to Frame
+</I>&gt;<i> instances that form a fram tree. However, the frame tree
+</I>&gt;<i> has a somewhat different structure than the docutils doc tree as frames do
+</I>&gt;<i> not
+</I>&gt;<i> necessarily reflect the document structure. E.g., sections are not
+</I>&gt;<i> rendered as parent frames of the section content,
+</I>&gt;<i> but at the same level.
+</I>&gt;<i>
+</I>&gt;<i> The rst2txt package is heavily under construction. Currently, the following
+</I>&gt;<i> node types are supported:
+</I>&gt;<i>
+</I>&gt;<i> document, title, section, paragraph, text, bullet_list,
+</I>&gt;<i> enumerated_list, list_item
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 1.2 The renderer
+</I>&gt;<i> -------------------------
+</I>&gt;<i>
+</I>&gt;<i> The renderer is the core of Transcribo. It is premised on an almost
+</I>&gt;<i> complete abstraction of layout and content.
+</I>&gt;<i>
+</I>&gt;<i> *   The key concept to achieve simple yet
+</I>&gt;<i>      powerful layout capabilities is the Frame class. Each Frame
+</I>&gt;<i> instance represents a
+</I>&gt;<i>      rectangular area within the final output. Its position and size
+</I>&gt;<i> are determined dynamically
+</I>&gt;<i>      relative to other frames during the rendering process. Frames can be
+</I>&gt;<i> nested.
+</I>&gt;<i>      The RootFrame instance controls the rendering process and assembles the
+</I>&gt;<i> line
+</I>&gt;<i>      snippets rendered by each frame to form complete text lines. This allows
+</I>&gt;<i>      things like multiple columns, nested enumerations etc. In future
+</I>&gt;<i> versions,
+</I>&gt;<i>      the RootFrame will also control pagination features.
+</I>&gt;<i>
+</I>&gt;<i> *   Content: Leafs of the tree of Frame instances store the actual
+</I>&gt;<i> content within a
+</I>&gt;<i>      content.ContentManager instance which, in turn, may store various
+</I>&gt;<i> content elements such as
+</I>&gt;<i>      text, mathematical expressions, MusicXML etc. Currently, only
+</I>&gt;<i> GenericText is supported.
+</I>&gt;<i>      More precisely, each leaf Frame must have a ContentManager
+</I>&gt;<i> instance which controls the
+</I>&gt;<i>      rendering of the content it contains. Each content element is
+</I>&gt;<i> rendered separately.
+</I>&gt;<i>      A special feature is the possibility to attach a translator instance to
+</I>&gt;<i> each
+</I>&gt;<i>      content object as well as to the ContentManager. This feature is
+</I>&gt;<i> required,
+</I>&gt;<i>      in particular, for Braille translation. The ContentManager is also
+</I>&gt;<i> responsible
+</I>&gt;<i>      for wrapping and hyphenating the content, if required.
+</I>&gt;<i>
+</I>&gt;<i> All aforementioned features are highly configurable through
+</I>&gt;<i> dictionaries passed to the
+</I>&gt;<i> constructors.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 2. the Frame API
+</I>&gt;<i> ======================
+</I>&gt;<i>
+</I>&gt;<i> (to be completed; meanwhile please see the documented sources and the
+</I>&gt;<i> test.py script)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 3. The ContentManager API
+</I>&gt;<i> ==============================
+</I>&gt;<i>
+</I>&gt;<i> (to be completed; meanwhile please see the documented sources and the
+</I>&gt;<i> test.py script)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 4. Testing
+</I>&gt;<i> ==============
+</I>&gt;<i>
+</I>&gt;<i> The test subdirectory contains two test scripts that should work out of the
+</I>&gt;<i> box:
+</I>&gt;<i>
+</I>&gt;<i> * test.py: demonstrates the renderer API by rendering a nested enumeration.
+</I>&gt;<i> * rst2txt.py is a command line tool. A demo text file shows some of
+</I>&gt;<i> the features of the rst2txt writer.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 5. Contributing
+</I>&gt;<i> ==================
+</I>&gt;<i>
+</I>&gt;<i> Development is in an early stage. Any help is very much appreciated.
+</I>&gt;<i> Feel free to join the mailing
+</I>&gt;<i> list, check out the Mercurial repository and start coding,
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Yabt-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;<i>    
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000066.html">[Yabt-devel] WG: Announcing rst2txt project - a plain text renderer	for docutils
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#67">[ date ]</a>
+              <a href="thread.html#67">[ thread ]</a>
+              <a href="subject.html#67">[ subject ]</a>
+              <a href="author.html#67">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

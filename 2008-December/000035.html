@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] Comments on YABT_translate-script and README
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-December/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Comments%20on%20YABT_translate-script%20and%20README&In-Reply-To=%3C493FD70C.6050706%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000034.html">
+   <LINK REL="Next"  HREF="000036.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] Comments on YABT_translate-script and README</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Comments%20on%20YABT_translate-script%20and%20README&In-Reply-To=%3C493FD70C.6050706%40aim.com%3E"
+       TITLE="[Yabt-devel] Comments on YABT_translate-script and README">mwhapples at aim.com
+       </A><BR>
+    <I>Wed Dec 10 15:49:48 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000034.html">[Yabt-devel] Comments on YABT_translate-script and README
+</A></li>
+        <LI>Next message: <A HREF="000036.html">[Yabt-devel] Comments on YABT_translate-script and README
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#35">[ date ]</a>
+              <a href="thread.html#35">[ thread ]</a>
+              <a href="subject.html#35">[ subject ]</a>
+              <a href="author.html#35">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+I have made some comments in amongst yours.
+
+On 09/12/08 22:02, Leo wrote:
+&gt;<i> I've only now looked at the script and I like it.
+</I>&gt;<i> That said, you could
+</I>&gt;<i> - make sure that the .exe version displays its correct file name 
+</I>&gt;<i> (rather than the name of the .py script) in the help strings. Should 
+</I>&gt;<i> be easy by using argv rather than hard-coding the file name
+</I>)
+I am using the optparse module in python and as I remember I used the 
+string substitution stuff provided by that for the name. May be its not 
+working as I would have hoped/expected. I will see to this.
+&gt;<i> - allow the specification of an output file; redirection is not the 
+</I>&gt;<i> most obvious way.
+</I>I can add this easily. For a unix user redirection is well known and 
+very flexible but as I am targeting as many platforms as possible then I 
+could imagine its not so well known on Windows.
+
+&gt;<i> - add info on default values to the help text
+</I>I will take a look at this, I can't remember what I meant to do on this. 
+Hopefully optparse will help.
+&gt;<i> --version prints 2.0. Is this intended?
+</I>Yes, but maybe confusing, should I include a version variable inside the 
+package? May be I could get the information from setuptools (this is 
+where I feel I should naturally get it from as packages using this can 
+specify the version to use) but I don't remember seeing that in the 
+setuptools docs.
+&gt;<i> On README
+</I>&gt;<i> You could copy some lines from the long_description in setup.py to 
+</I>&gt;<i> avoid a too Braille-centric appearance
+</I>Ideally I would have some sort of common source so that the two are kept 
+in sync but I can imagine that getting complex and distracting so may be 
+just copy and paste will work better.
+
+&gt;<i> .
+</I>&gt;<i> But these are very minor comments that should not prevent you from 
+</I>&gt;<i> pushing 2.0b2 out immediately.
+</I>Unfortunately as far as the comments go, too late I pushed it out 
+yesterday. If any of these are felt to be critical then I can make 
+YABT-2.0b2.1 or YABT-2.0b2Update1 to indicate it essentially is 
+YABT-2.0b2 with corrections (this is why I wanted pre version 
+development numbering rather than post release numbering on mercurial 
+commits).
+
+Michael Whapples
+
+&gt;<i> ------------------------------------------------------------------------
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Yabt-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;<i>    
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/yabt-devel/attachments/20081210/3b8cdb5c/attachment.html">https://lists.berlios.de/pipermail/yabt-devel/attachments/20081210/3b8cdb5c/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000034.html">[Yabt-devel] Comments on YABT_translate-script and README
+</A></li>
+	<LI>Next message: <A HREF="000036.html">[Yabt-devel] Comments on YABT_translate-script and README
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#35">[ date ]</a>
+              <a href="thread.html#35">[ thread ]</a>
+              <a href="subject.html#35">[ subject ]</a>
+              <a href="author.html#35">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

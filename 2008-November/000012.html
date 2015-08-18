@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] YABT-2.0b2
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-November/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20YABT-2.0b2&In-Reply-To=%3C492FF115.9090504%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000014.html">
+   <LINK REL="Next"  HREF="000015.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] YABT-2.0b2</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20YABT-2.0b2&In-Reply-To=%3C492FF115.9090504%40aim.com%3E"
+       TITLE="[Yabt-devel] YABT-2.0b2">mwhapples at aim.com
+       </A><BR>
+    <I>Fri Nov 28 14:24:37 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000014.html">[Yabt-devel] YABT versioning and distribution
+</A></li>
+        <LI>Next message: <A HREF="000015.html">[Yabt-devel] YABT-2.0b2
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#12">[ date ]</a>
+              <a href="thread.html#12">[ thread ]</a>
+              <a href="subject.html#12">[ subject ]</a>
+              <a href="author.html#12">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+I really want to get YABT-2.0b2 pushed out. It shouldn't change much 
+from what it is. It really is a marker point in development.
+
+Particular points up for discussion/action:
+* That XML format... I feel it could be improved so much. particular 
+points for alteration are:
+input class - Should this be an element? I feel this could become an 
+attribute of rule. Also should I remove the limit of input class being 
+just an int? Initial reason was done in YABT-1.0 for performance, but we 
+now are doing less state checks so performance impact should be less now.
+final state - The same questions as input class.
+Context types - should the context type name become an attribute of the 
+context elements (bfcontext and afcontext)? This then removes the 2 
+character limit for type names, and names could be more meaningful, eg. 
+always instead of ^a.
+
+As for the question of supporting control characters like form feed, my 
+mind is not settled on that. Whilst things like form feed should really 
+be the responsibility of applications, what about lazy text translation 
+systems such as YABT_translate command? Also more importantly, I feel 
+that context strings should support these control characters, as whilst 
+the controlling app may handle the actual form feed, it possibly would 
+want to tell YABT this translation happens at the end of a page. Whether 
+the braille code (or other translation) actually has any differentce 
+should not be of any concern to the application.
+
+My feeling is that the XML change should happen, whether before or after 
+YABT-2.0b2 I don't mind.
+
+Michael Whapples
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000014.html">[Yabt-devel] YABT versioning and distribution
+</A></li>
+	<LI>Next message: <A HREF="000015.html">[Yabt-devel] YABT-2.0b2
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#12">[ date ]</a>
+              <a href="thread.html#12">[ thread ]</a>
+              <a href="subject.html#12">[ subject ]</a>
+              <a href="author.html#12">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

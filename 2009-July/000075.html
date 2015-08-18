@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] Unicode Braille table added
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2009-July/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Unicode%20Braille%20table%20added&In-Reply-To=%3C4A7309C2.102%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] Unicode Braille table added</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Unicode%20Braille%20table%20added&In-Reply-To=%3C4A7309C2.102%40aim.com%3E"
+       TITLE="[Yabt-devel] Unicode Braille table added">mwhapples at aim.com
+       </A><BR>
+    <I>Fri Jul 31 17:12:02 CEST 2009</I>
+    <P><UL>
+        
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#75">[ date ]</a>
+              <a href="thread.html#75">[ thread ]</a>
+              <a href="subject.html#75">[ subject ]</a>
+              <a href="author.html#75">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+I am pleased to announce the addition of a translation table which will 
+produce the dot patterns according to the unicode Braille character set 
+(IE. those characters in the range \u2800 to \u28ff). This table should 
+be exactly the same as the britishtobrl.xml file except for the output 
+being unicode Braille. This table can now be found in the mercurial 
+repository. I would recommend installing YABT from the mercurial 
+repository as well as it has some slight alterations in the yabt-trans 
+command which helps use the new table, although the table will work with 
+older versions of YABT. The reason I recommend updating to the version 
+in mercurial is that it adds an encoding option (either -e or 
+--encoding) to the yabt-trans command so that it can output unicode, 
+older versions will just use python's default encoding and so might 
+cause unicode errors.
+
+So why use unicode Braille?
+
+* Unicode Braille characters actually represent dot patterns and 
+anything which uses unicode Braille will always have the correct dot 
+pattern for the character. This contrasts to standards like ascii 
+Braille (sometimes known as North American Braille computer code) which 
+requires the correct table to be used to achieve the correct dot 
+pattern. Essentially unicode Braille does what unicode is meant to, 
+remove all the reliance on correct encodings being used.
+* Software like brltty and libbraille can use unicode Braille, so taking 
+all the advantages of the first point.
+* Unicode Braille can be used to display dot patterns in a visual form 
+on screen. Please ensure that when doing this you have a suitable font 
+installed on your system (eg. the dejavu font which can be got from 
+<A HREF="http://dejavu.sf.net">http://dejavu.sf.net</A>).
+* possibly other reasons I am unaware of...
+
+When might you not want unicode Braille?
+While I feel there are very good reasons for using unicode Braille, 
+there may be times it is not appropriate to use it, so I have left the 
+standard britishtobrl.xml file. Below are some reasons why you might 
+want ascii Braille instead of unicode Braille.
+
+* Some devices and software may not support unicode Braille directly (I 
+don't know much about which devices will or will not support it, I know 
+that my ALVA Braille display used through brltty or libbraille will 
+support unicode Braille, but I couldn't say about Braille displays used 
+through other software and I won't even guess about embossers).
+* If you don't have a suitable font then unicode Braille won't make much 
+sense and so unusable. Ascii Braille only uses ascii characters and so 
+doesn't need special fonts and as some people are familiar with ascii 
+Braille they can read the plain ascii text used for ascii Braille (even 
+though it may not be as natural as they would like).
+
+If you do decide to try out this new table then please provide feedback 
+as this table was produced using a small automated tool and so might not 
+work quite as I expected. Also if others have developed other tables and 
+would like access to this tool, I can add it to the YABT mercurial 
+repository (I haven't at the moment as it was a quick knocked together 
+program and doesn't perform much in the way of error checks.
+
+Michael Whapples
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#75">[ date ]</a>
+              <a href="thread.html#75">[ thread ]</a>
+              <a href="subject.html#75">[ subject ]</a>
+              <a href="author.html#75">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,239 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] YABT-2.0b2
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-November/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20YABT-2.0b2&In-Reply-To=%3CDKECKJNNEDEJAJDEPCMBEEPNCHAA.fhaxbox66%40googlemail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000018.html">
+   <LINK REL="Next"  HREF="000019.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] YABT-2.0b2</H1>
+    <B>Leo</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20YABT-2.0b2&In-Reply-To=%3CDKECKJNNEDEJAJDEPCMBEEPNCHAA.fhaxbox66%40googlemail.com%3E"
+       TITLE="[Yabt-devel] YABT-2.0b2">fhaxbox66 at googlemail.com
+       </A><BR>
+    <I>Sat Nov 29 13:00:58 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000018.html">[Yabt-devel] YABT-2.0b2
+</A></li>
+        <LI>Next message: <A HREF="000019.html">[Yabt-devel] Task for creating versioning number scheme created
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#21">[ date ]</a>
+              <a href="thread.html#21">[ thread ]</a>
+              <a href="subject.html#21">[ subject ]</a>
+              <a href="author.html#21">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>So the issue is trickier than I had thought.
+
+Currently I hope that ElementTree (should we use it at all) will deal with
+control characters at load time, at least as from Python 2.6. I further hope
+that the element attributes exported by ElementTree come with normal control
+characters that don't require special treatment. Should ElementTree deceive
+me in this respect, I would still prefer to work with special attributes
+within the same node rather than having special nodes for control
+characters. But in the latter case I wouldn't have strong views anymore
+except we agreed that each node should contain a rule.
+
+
+  -----Ursprungliche Nachricht-----
+  Von: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel-bounces at lists.berlios.de</A>
+[mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel-bounces at lists.berlios.de</A>]Im Auftrag von Michael Whapples
+  Gesendet: Freitag, 28. November 2008 23:14
+  An: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel at lists.berlios.de</A>
+  Betreff: Re: [Yabt-devel] YABT-2.0b2
+
+
+  Hello,
+  To confirm the problem of the form feed character I tried inserting the
+character into an XML file (authoring by hand) using the notation &amp;#x0c;
+which is the XML way of representing characters by number but this still
+fails when parsing (I was fairly sure of this, but I wanted to check).
+
+  by using the \uXXXX notation we would need to handle this in YABT's
+loader, as the python string representation when loaded would naturally be
+u'\\u000c'. I couldn't actually say without trying, but I would imagine
+doing this parsing would be slower as all strings would need checking where
+as the &lt;char&gt; element code is only run when the parser finds a &lt;char&gt;
+element. Other than the fact that it might feel more natural to a table
+author as the \uXXXX notation is used elsewhere I don't quite understand how
+you mean it would make things smoother (the string comparisons, etc). It is
+the job of the loader to get around these format specific issues, the
+current working is that the loader upon encountering a &lt;char&gt; element
+replaces it with a python string of that value (admittedly confusingly ord
+should be decimal rather than hex, I probably should correct that).
+
+  I think this really should be left until post YABT-2.0b2 before
+adding/correcting.
+
+  Michael Whapples
+
+  On 28/11/08 20:02, Leo wrote:
+Unless newer Python versions do not support newer xml specifications,
+I'm already convinced that form feed (and probably other chars) are
+forbidden in xml files.
+
+However, apart from an esthetic aspect (= better reflecting the limits
+of the xml specification in the tree structure) I do not currently see
+any advantage of your choice over the unicode-like notation. The
+latter would probably yield faster execution as less nodes have to be
+processed. The tables become smaller, the code also is smaller as you
+don't need to handle the special nodes that are only there to store
+meta info on form feed etc. The usual python code that handles context
+strings by comparing them with the relevant xml attributes could be
+used because the unicode notation would be consistent across the board
+such that string comparisons etc. would work smoothly.
+
+I wonder if there is something I have overlooked. If not, I would
+probably vote for the \uxxx notation in future versions. Another
+advantage of the latter would be that authoring tables would probably
+be less painful.
+
+Happy to discuss.
+
+On 28/11/2008, Michael Whapples &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">mwhapples at aim.com</A>&gt; wrote:
+  The only possible changes I would want to make to YABT-2.0b2 excluding
+XML stuff is descriptions for YABT in the setup file. Currently it is
+very Braille specific eg. YABT (Yet another braille translator) is the
+short description and the long description is equally bBraille
+orientated only hinting at other uses.
+
+If I was to permit XML changes (keeping backward compatability) would be
+to add an include statement, but I don't know at this moment how much
+work it might take to really implement it. As time is unknown, I would
+give it the thumbs down for YABT-2.0b2.
+
+I am fairly certain on the XML limitation. I asked someone I know about
+it, I did a google search and for the version of XML the python parsers
+support it just won't take it. It isn't UTF8 characters which are the
+problem, its these control characters in ASCII (eg. form feed, there are
+others but this is one I really know about) and some other unicode
+characters not used much. This is a limitation of the XML version used,
+it is fixed by other XML versions (I mean by XML versions the actual XML
+specification as defined at the top of documents eg.
+&lt;?xml version=&quot;1.0&quot; ?&gt;
+not the languages implementation of parsers). The only fixes I could
+find suggested online were to use a child element as I have, use the
+newer version of XML (except python doesn't support this) or create some
+internal mark up (eg. the python \uXXXX notation in unicode strings). I
+opted for the child element as this then fitted with XML notation. If
+you need convincing about this lack of support, try creating XML using
+the DOM packages (eg. minidom) and then use the toxml method to create
+the XML string and then parse that, it will fail if you inserted a form
+feed when creating a #text node in forming the original DOM.
+
+Michael Whapples
+
+On 28/11/08 16:26, Leo wrote:
+    I think it's a good idea to release 2.0b2 as soon as possible if only
+to open up our minds for the big bang that the new architecture will
+mean. So I tend to making only the urgent changes, leave the xml
+structure as it is stable.
+
+On 3.0 or 2.1: you are right: everything will depend on how much the
+API will change. And on that I have no clou either. So let's cross
+that bridge...
+
+On form feed: you are right: context strings should be able to contain
+anything including form feed. But even if xml does not allow to have
+these characters in attributes, there should be better workarounds
+then children. I could think of escape chars in strings, or certain
+flags. I think it is really really worthwhile doublechecking if xml
+really doesn't allow any utf8 char. json does!
+
+   Please release 2.0b2 asap so we get ready for the big bang and make
+yabt quickly the most compelling tool in its field...
+
+By the way: Have you received any feedback from yabt users, if any? I
+am optimistic you will have a lot once yabt works with end user apps.
+
+It may be useful to look at a tool to convert openoffice docs into
+braille. there is a package on the pypi making available the xml
+structure of oo docs to Python... You see my point?
+
+On 28/11/2008, Michael Whapples&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">mwhapples at aim.com</A>&gt;  wrote:
+
+      Hello,
+I really want to get YABT-2.0b2 pushed out. It shouldn't change much
+from what it is. It really is a marker point in development.
+
+Particular points up for discussion/action:
+* That XML format... I feel it could be improved so much. particular
+points for alteration are:
+input class - Should this be an element? I feel this could become an
+attribute of rule. Also should I remove the limit of input class being
+just an int? Initial reason was done in YABT-1.0 for performance, but we
+now are doing less state checks so performance impact should be less now.
+final state - The same questions as input class.
+Context types - should the context type name become an attribute of the
+context elements (bfcontext and afcontext)? This then removes the 2
+character limit for type names, and names could be more meaningful, eg.
+always instead of ^a.
+
+As for the question of supporting control characters like form feed, my
+mind is not settled on that. Whilst things like form feed should really
+be the responsibility of applications, what about lazy text translation
+systems such as YABT_translate command? Also more importantly, I feel
+that context strings should support these control characters, as whilst
+the controlling app may handle the actual form feed, it possibly would
+want to tell YABT this translation happens at the end of a page. Whether
+the braille code (or other translation) actually has any differentce
+should not be of any concern to the application.
+
+My feeling is that the XML change should happen, whether before or after
+YABT-2.0b2 I don't mind.
+
+Michael Whapples
+_______________________________________________
+Yabt-devel mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+
+
+        _______________________________________________
+Yabt-devel mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+
+      _______________________________________________
+Yabt-devel mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/yabt-devel/attachments/20081129/f5ddc118/attachment.html">https://lists.berlios.de/pipermail/yabt-devel/attachments/20081129/f5ddc118/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000018.html">[Yabt-devel] YABT-2.0b2
+</A></li>
+	<LI>Next message: <A HREF="000019.html">[Yabt-devel] Task for creating versioning number scheme created
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#21">[ date ]</a>
+              <a href="thread.html#21">[ thread ]</a>
+              <a href="subject.html#21">[ subject ]</a>
+              <a href="author.html#21">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

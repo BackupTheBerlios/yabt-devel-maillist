@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] Further thoughts and explainations on my design of YABT
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-December/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Further%20thoughts%20and%20explainations%20on%20my%20design%20of%20YABT&In-Reply-To=%3C4946CD7D.1020705%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000047.html">
+   <LINK REL="Next"  HREF="000052.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] Further thoughts and explainations on my design of YABT</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Further%20thoughts%20and%20explainations%20on%20my%20design%20of%20YABT&In-Reply-To=%3C4946CD7D.1020705%40aim.com%3E"
+       TITLE="[Yabt-devel] Further thoughts and explainations on my design of YABT">mwhapples at aim.com
+       </A><BR>
+    <I>Mon Dec 15 22:34:53 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000047.html">[Yabt-devel] YABT-2.0b2Update1
+</A></li>
+        <LI>Next message: <A HREF="000052.html">[Yabt-devel] Further thoughts and explainations on my design of	YABT
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#48">[ date ]</a>
+              <a href="thread.html#48">[ thread ]</a>
+              <a href="subject.html#48">[ subject ]</a>
+              <a href="author.html#48">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+I think I have now found some articles wich explain what I am trying to 
+do with YABT with my design.
+
+In previous messages I mentioned about spring and its configuration, yes 
+it would be wrong for YABT to provide that configuration framework, but 
+it should support being used within that framework (IE. support being 
+used by those applications). Spring is huge and may over complicate what 
+I am meaning, the part I am getting at is the inversion of control and 
+dependency injection stuff. I have had a look for some explainations of 
+it and found (<A HREF="http://wiki.python.org/moin/DependencyInjectionPattern">http://wiki.python.org/moin/DependencyInjectionPattern</A>). 
+That particular page is not so useful on its own but it has some good 
+links (Martin Fowler's article is good). I feel translators and rules 
+should be loosely coupled, translators and loaders should be loosely 
+couple but unfortunately loaders and rules may not be loosely coupled 
+(reason being that loader deals with a data source representing rules). 
+As dependency injection deals with plain old python objects (POPOs, I am 
+using this to reflect the java term POJO) then YABT doesn't need to 
+concern itself with anything of the controlling app (whether the 
+controlling app actually uses a dependency ijection framework or what 
+that framework is, or if the app just creates the objects as in yabt-trans).
+
+The configuration module I mentioned recently where all loaders and 
+translators could register would be optional and potentially would 
+provide a replacement to the dependency injection system. The 
+configuration module would be more suited for dynamic applications where 
+users may select the loaders and translators they want (eg. the 
+controlling app might call a getTranslatorList method/function and use 
+the information returned to display a list of translators and their 
+descriptions to the user for the user to select which they want to use 
+and then the app would get an instance by calling something like 
+createTranslatorByName).
+
+How does my structure sound now I have mentioned all this?
+
+Michael Whapples
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000047.html">[Yabt-devel] YABT-2.0b2Update1
+</A></li>
+	<LI>Next message: <A HREF="000052.html">[Yabt-devel] Further thoughts and explainations on my design of	YABT
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#48">[ date ]</a>
+              <a href="thread.html#48">[ thread ]</a>
+              <a href="subject.html#48">[ subject ]</a>
+              <a href="author.html#48">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

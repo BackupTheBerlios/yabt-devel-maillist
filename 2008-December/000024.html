@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] I believe version problem resolved
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-December/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20I%20believe%20version%20problem%20resolved&In-Reply-To=%3C49340C65.2030405%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000025.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] I believe version problem resolved</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20I%20believe%20version%20problem%20resolved&In-Reply-To=%3C49340C65.2030405%40aim.com%3E"
+       TITLE="[Yabt-devel] I believe version problem resolved">mwhapples at aim.com
+       </A><BR>
+    <I>Mon Dec  1 17:10:13 CET 2008</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000025.html">[Yabt-devel] How to make the python interpreter when called from	the shell,	write traceback info to an arbitrary file instead of stderr?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#24">[ date ]</a>
+              <a href="thread.html#24">[ thread ]</a>
+              <a href="subject.html#24">[ subject ]</a>
+              <a href="author.html#24">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+I believe I have come up with a satisfactory solution to denote 
+development versions. It has been uploaded to the BerliOS mercurial 
+repository and is used in setup.py. I now just await someone to break 
+it, otherwise I think this is completed.
+
+The module itself is version.py and usage is:
+ &gt;&gt;&gt; import version
+ &gt;&gt;&gt; version.getVersion(base_version_string)
+
+Where base_version_string is a string showing the base version number 
+(eg. 2.0b2 means the release version of 2.0b2 and inserting a .dev at 
+the end of the string means development version eg. 2.1.dev).
+
+I look forward to any comments, and may be pushing out YABT-2.0b2.
+
+Michael Whapples
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000025.html">[Yabt-devel] How to make the python interpreter when called from	the shell,	write traceback info to an arbitrary file instead of stderr?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#24">[ date ]</a>
+              <a href="thread.html#24">[ thread ]</a>
+              <a href="subject.html#24">[ subject ]</a>
+              <a href="author.html#24">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

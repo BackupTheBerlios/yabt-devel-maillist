@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] Quick comments on version.py
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-December/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Quick%20comments%20on%20version.py&In-Reply-To=%3C4936F9AD.70809%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000027.html">
+   <LINK REL="Next"  HREF="000029.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] Quick comments on version.py</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Quick%20comments%20on%20version.py&In-Reply-To=%3C4936F9AD.70809%40aim.com%3E"
+       TITLE="[Yabt-devel] Quick comments on version.py">mwhapples at aim.com
+       </A><BR>
+    <I>Wed Dec  3 22:27:09 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000027.html">[Yabt-devel] Quick comments on version.py
+</A></li>
+        <LI>Next message: <A HREF="000029.html">[Yabt-devel] push for YABT-2.0b2
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#28">[ date ]</a>
+              <a href="thread.html#28">[ thread ]</a>
+              <a href="subject.html#28">[ subject ]</a>
+              <a href="author.html#28">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Good it sounds like it is working as expected. If you pass a release 
+number (eg. 3.0 or 0.9 or even a beta release 2.0b2) the revision and 
+changeset details are not appended as it seems to be a release. If you 
+append .dev to the end of the version number you pass getVersion then it 
+realises you are dealing with a development version so appends the 
+revision and changeset details. Call me lazy but this means that when I 
+am ready to push out YABT-2.0b2 all I need to do is remove the .dev and 
+create the distribution packages. When I move on to the next versions 
+development (eg. YABT-2.0b3) then all that is required is to remove the 
+2 after the b and type 3.dev.
+
+Admittedly the version numbers are long when dealing with a development 
+, snapshot, so the intention is that those will be released minimally, 
+only if there is an absolute requirement, and they may not make it to pypi.
+
+I am about to mark the task as complete (hopefully done this evening).
+
+Michael Whapples
+
+On 03/12/08 20:10, Leo wrote:
+&gt;<i> I've had a quick look at it on Windows with hg installed as binary.
+</I>&gt;<i> If I call getVersion with less meaningful values such as '3.0' or 
+</I>&gt;<i> '0.9',, the argument is returned unchanged. I'm not sure that this is 
+</I>&gt;<i> what you want. But I must admit that I haven't fully understood what 
+</I>&gt;<i> the whole thing does, as I haven't had a close enough look at hg and 
+</I>&gt;<i> setuptools. Well, I imagine that it should append the changeset number 
+</I>&gt;<i> to the version string if and only if the present repository 
+</I>&gt;<i> represents the version number passed to getVersion.
+</I>&gt;<i> I tried with the value from setup.py (2.0b2.dev), and then the 
+</I>&gt;<i> revision and hash code is returned, appended to 2.0b2. This is 
+</I>&gt;<i> probably what you want.
+</I>&gt;<i> But this would mean that the whole lengthy version number will appear 
+</I>&gt;<i> on the pypi once you upload it... Well, you don't need to upload it at 
+</I>&gt;<i> all, just provide the download url, repository address or whatever is 
+</I>&gt;<i> appropriate.
+</I>&gt;<i> Probably you will be aware of all this, but I thought I'd mention it 
+</I>&gt;<i> just in case.
+</I>&gt;<i> ------------------------------------------------------------------------
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Yabt-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;<i>    
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/yabt-devel/attachments/20081203/12364eb0/attachment.html">https://lists.berlios.de/pipermail/yabt-devel/attachments/20081203/12364eb0/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000027.html">[Yabt-devel] Quick comments on version.py
+</A></li>
+	<LI>Next message: <A HREF="000029.html">[Yabt-devel] push for YABT-2.0b2
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#28">[ date ]</a>
+              <a href="thread.html#28">[ thread ]</a>
+              <a href="subject.html#28">[ subject ]</a>
+              <a href="author.html#28">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

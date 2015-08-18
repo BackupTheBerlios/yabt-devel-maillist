@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] Multiple loaders and other translation algorithms
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2009-March/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Multiple%20loaders%20and%20other%20translation%20algorithms&In-Reply-To=%3C49C754C3.5010800%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000059.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] Multiple loaders and other translation algorithms</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20Multiple%20loaders%20and%20other%20translation%20algorithms&In-Reply-To=%3C49C754C3.5010800%40aim.com%3E"
+       TITLE="[Yabt-devel] Multiple loaders and other translation algorithms">mwhapples at aim.com
+       </A><BR>
+    <I>Mon Mar 23 10:22:11 CET 2009</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000059.html">[Yabt-devel] Multiple loaders and other translation algorithms
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#58">[ date ]</a>
+              <a href="thread.html#58">[ thread ]</a>
+              <a href="subject.html#58">[ subject ]</a>
+              <a href="author.html#58">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+I have finally got back to writing some more of YABT. I have now made a 
+simple word substitution dictionary system for the translator (currently 
+only in mercurial). To use this feature look at the -d (--dictionary) 
+option in the yabt-trans command.
+
+In short when using the -d option when YABT performs the translation it 
+first checks to see if a simple word substitution is possible, if there 
+is one then it just makes the substitution and moves on to the next 
+chunk of text, but if it doesn't have a substitution then it will check 
+through the rules as usual.
+
+The word substitution dictionary files are plain text files containing 
+three columns separated by whitespace. First column should be an integer 
+and should be the state in which the substitution can be made. The 
+second column is the original word (Please remember define in capitals 
+if working with the britishtobrl.xml rules as everything is converted to 
+capitals because of britishtobrl.xml's character maps, this may not 
+apply for other tables). The third column is the substitution. Any 
+line(s) not conforming to this in a dictionary file will be ignored.
+
+This word substitution system may not be optimised, it may not be as 
+flexible as it should, etc, I don't even know how much practical use it 
+will be. After saying all that, which really doesn't sell this, it is 
+done primarily as a proof of concept to demonstrate how multiple loaders 
+could be used to create a hybrid translation system.
+
+Is there any thoughts on this? Where might YABT go with this? If this 
+word substitution dictionary system isn't of great practical use what 
+might be?
+
+Also I am wanting to do more work on the main rule system (the one 
+britishtobrl.xml is a table for). This covers things like the table 
+format, should certain things be moved from that table format (eg. the 
+character maps), etc?
+
+Michael Whapples
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000059.html">[Yabt-devel] Multiple loaders and other translation algorithms
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#58">[ date ]</a>
+              <a href="thread.html#58">[ thread ]</a>
+              <a href="subject.html#58">[ subject ]</a>
+              <a href="author.html#58">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

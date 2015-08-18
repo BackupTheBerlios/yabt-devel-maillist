@@ -1,0 +1,470 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] draft specification
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-December/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20draft%20specification&In-Reply-To=%3CDKECKJNNEDEJAJDEPCMBGEEKCIAA.fhaxbox66%40googlemail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000049.html">
+   <LINK REL="Next"  HREF="000057.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] draft specification</H1>
+    <B>Leo</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20draft%20specification&In-Reply-To=%3CDKECKJNNEDEJAJDEPCMBGEEKCIAA.fhaxbox66%40googlemail.com%3E"
+       TITLE="[Yabt-devel] draft specification">fhaxbox66 at googlemail.com
+       </A><BR>
+    <I>Fri Dec 19 08:20:11 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000049.html">[Yabt-devel] YABT reading from STDIN
+</A></li>
+        <LI>Next message: <A HREF="000057.html">[Yabt-devel] draft specification
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#56">[ date ]</a>
+              <a href="thread.html#56">[ thread ]</a>
+              <a href="subject.html#56">[ subject ]</a>
+              <a href="author.html#56">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>You wrote:
+
+The only difference is that I feel a translator should be fully self
+contained, IE. there should be no need for sending input through more than
+one, and if there is it might be a special case and might be best left to
+that particular application developer to do that in their own code. This
+self contained thinking is why translators in my design do character
+mappings (or may be if generalised preparation). These two stages
+(preparation and translation should be enough for most cases.
+
+
+Agreed. But the appearance of one self-contained translator could be
+achieved at translator level or at translator manager level. I guess you
+mean the former; I for one am still open to both. In any event, the design
+has to allow the following cases:
+
+- char substitution throughout the text, no matter how long, how many
+paragraphs, formfeed etc.
+
+- word substitution using, say, a two column table loaded from a csv file.
+This should be tried for individual words. And if substitution succeeds, the
+xml rules are not applied to that word because the explicit translation
+table is presumed to be more accurate or just faster than the rules.
+
+In my idea of an engine I tried to reflect the distinction through a
+split_into_chunks method. This implies that some rules may apply to the
+whole text whereas others apply only to individual words such that the text
+(sequence) needs to have been split up before. But all this would have to be
+refined.
+
+You wrote:
+I question this on the meaning of context. I am using context to mean what
+comes before the focus in the sequence to translate and what comes after the
+focus in the sequence to translate. At some point restrictions do need to be
+laid down, and I personally feel YABT at the most flexible is to translate
+sequences into other sequences (strings being a sequence of characters). I
+would argue that the example you gave is not context but rather what is
+being translated or state. Let me explain further:
+* If humidity, temperature and air pressure was only needed for the current
+then it might be a state. This could be complicated as these are continual
+variables, I would opt for next suggestion.
+* Humidity, temperature and air pressure may be part of the sequence being
+translated (eg. we may be translating a sequence of atmospheres, Atmosphere
+objects with temperature, humidity and pressure propertie, it may have
+others as wells). Ideally the sequences used should be sliceable (supporting
+the s[x:y] notation). Now focus and both contexts can use all three
+properties. If say the translator in this case (I don't quite know what use
+it really might have) was tracking current values, obviously after context
+cannot be known, so all rules used for that should simply use the always
+match context for after context. I feel this is very flexible and powerful
+once understood.
+
+
+  My example refers to an object describing an air-conditioning system with
+properties such as propeller speed, heating or cooling activity, permissible
+temperature interval or whatever. The purpose of a translator could be to
+transform the current properties into new ones taking into account the
+actual air properties (i.e. humidity, temperature, pressure etc.) according
+to certain rules. Context could be a sequence of atmosphere objects
+representing the change of air properties over time. Rules could implement a
+function defined on two variables (context and air-conditioning system)
+whereby each consists of several attributes. The translator (= function)
+returns an air condition system object. So I would describe a translator to
+be a function defined on (input type, context type), returning an object of
+the same type as input. Context and input can be arbitrary objects. OK, now
+I see that splitting is too specific for that, as air conditioning system
+objects cannot be split into chunks whereas sequences can. Well, splitting
+an air-conditioning system (ACS) could mean: extracting its temperature
+corridor (= a pair of two real numbers), and pass it on to a more specific
+subrule. But this would be at implementation level. Base_translator would
+not be concerned with specific input or context types. Of course, context
+and input can be objects of the same class (as you imply to be a reasonable
+restriction). I, in turn, tend to believe this is just a special case. In
+general, context and input can be of very different types. This reflects
+most real life situations. Only when translating such uniform things such as
+text, you have the privilege to consider left and right characters / words
+etc. which happen to be of the same type of what's to be translated.
+  As regards your understanding of context, I have the impression that your
+design mixes up the static context data (i.e. what's written right or left
+of the focus), and the translator function (i.e. how the output is
+calculated). A context that always matches means a function that does not
+depend on the context, i.e. it is invariant with regard to the value of
+context. I would assume this to be a property of certain subrules, whereas
+you consider it to be a property of certain context objhects. I find it
+difficult to follow this approach as I believe a rule should decide how to
+change the focus given the focus and the context, where as the context
+should be just a description of something outside the focus. A rule that
+happens to be context-invariant would consider just the focus and apply some
+function on it, leaving the context aside. So in my mind there is no such
+thing as a matching or unmatching context. There is only a function which,
+given an input type object and a context object, may return a new input type
+object or None. In the former case one may say: the rule matches, in the
+latter that it does not match.
+
+    You wrote:
+  So could we be hitting problems because YABT is now &quot;a context sensitive
+string manipulation tool&quot; and so the specific task (originally Braille
+translation) is not focusing what is really wanted? Whether this is right or
+wrong at the moment I am unsure, but working to actual usage examples
+probably would help focus things.
+
+  I suggest to work top-down, i.e. from the component class, through the
+translation manager (if you agree on that it is useful), via the
+base_translator down to implementations of base_translator, rules, file
+formats etc. Now I guess I am on the base translator level. And I must admit
+I have a bias for as much generality as possible (see above). Willie's
+advice would, I think, apply to the implementations: one for
+air-condition-systems, another for Braille text etc. But my bias toward
+generality merely derives from a market intellectual ambition rather than
+from my discontentment with existing air-conditioning systems.
+
+   You wrote:
+  Loaders: I am unsure whether this is done for users purposes or mine. It
+means that there may be a whole library of rule types and someone could
+develop a table which could make use of a combination of those rules never
+used together before. Whether anyone is going to do that I don't know, but
+it would be nice to be able to say to someone who asks for a particular
+translation system, yes it can be made easily by just creating a new loader
+and then just making that loader for them.
+
+  I now concur with the idea of different loader classes. That said, I still
+don't understand why new rule types would require new loaders... Loading an
+xml table with ElementTree is a one-liner for any rule tree. Clearly, the
+translator must provide a handler function for each rule type. But I fully
+see the necessity to have different loaders for sqlite, plain text, xml from
+file, xml from the internet etc. As regards my assertion on ElementTree, I
+may be underestimating what your xml loaders do. I assume they are that
+complicated because you are using xpat rather than ElementTree or even lxml.
+Further, I do not understand what loaders do with regard to states (see
+below).
+
+  You wrote:
+  The thought of getListStates is that a controlling app can find out what
+states exist and so allow the user to select the one they wish to use.
+Integers are meaningless in this case as why should the user know what those
+integers mean. I feel uncomfortable with totally unrestricted states, states
+need to follow some sort of standard (even if it is a State object API). The
+other reason for getting the known states is to alert the user they have
+requested an invalid state, why should YABT try and process something which
+simply cannot be translated (IE. no state exists for it)? States are causing
+me a certain difficulty, rules are what actually use state, but how can a
+translator find all states from rules? Currently states are registered in
+the translator by the loader, this means that the rules may not actually
+know anything about states but the loader can tell the translator to accept
+any of the states it lists. I suppose this separates states into two
+categories, those for rules, and those permitted as starting states.
+
+
+  For some reason I do not have any difficulty with states as I do not see
+why a translator - whatever that is - should know all states. Being told
+them by the loader is, from my perspective, unnecessary. A state - being
+implemented as a dictionary or, if you feel a need for hierarchical
+structures, a suitable recursive, simple class structure - is to my mind a
+means to store variables accessed by rules. Each xml file should contain a
+node called init_state or so, being a child of root. It should be processed
+at load time. The corresponding handler function should att the dictionary
+to the translator so any rule handler can access it. After initializing the
+state from the attributes of the init_state node, the init_state handler
+should override it with a corresponding config section from the translator's
+config file, finally with optional arguments passed to the constructor. Then
+the translator is in a well-defined state. Certain rule types will change
+some values within state. A state member could be used, eg., to marshall
+statistics on the input stream, store info on whether or not to use
+capitalization in the Braille output, define formats for date, time, grade 1
+or 2. It would have to be discussed if, alongside with state, there should
+be some sort of settings influencing the behavior of rules but which the
+rules cannot modify. Much of this is, I understand, already implemented in
+yabt, except for the config file. That said, I really do not see why the
+loader should build up the state, rather than a node handler for init_state
+called by some method that initializes the translator, maybe indeed the
+loader, but not through proprietary code within the loader. The
+init_state_handler would be reusable for all xml tables no matter what rule
+types they use. I wouldn't even see a problem in allowing rules to add new
+variables to state, if needed. But in most cases this won't be necessary.
+With suitable rule types you could specify a full-featured programming
+language.
+
+  To distinguish state from context, I would say that each state can be
+changed by certain rule types whereas context must be taken as it is.
+Further, the apply method which executes the translator on a particular
+input, must be given a new context, whereas the state is not necessarily
+modified upon each call of the translator.
+
+
+  On configuration
+
+  Maybe the component class from docutils is a good starting point. But
+ideally there would be a general config framework available both in Python
+and Java. I don't know if such exists. You could look at pyspring if you
+wish, or cfgparser that claims to be more convenient and powerful than
+configparser from the standard library.
+
+  I'll be travelling for the coming two weeks; internet access will be
+sparse, if at all. So just in case: merry Xmas and best wishes for the new
+year.
+
+  Leo
+
+  -----Original Message-----
+  From: Michael Whapples [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">mwhapples at aim.com</A>]
+  Sent: Tuesday, December 16, 2008 12:59 PM
+  To: <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">fhaxbox66 at googlemail.com</A>; <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">yabt-devel at lists.berlios.de</A>
+  Subject: Re: [Yabt-devel] draft specification
+
+
+  Find comments below.Find my comments below.
+
+  On 15/12/08 21:52, Leo wrote:
+    This time I've changed the reply address manually, so it goes to the
+list.
+
+    I guess your very general rule concept any my engine concept refer
+indeed to very similar tasks. I'd love to have an afternoon or so to look
+more deeply into the sources. But now that I have a couple of minutes to
+write this down, please forgive my superficiality.
+
+    I don't insist on the name 'engine', even if I find your rule concept
+stretches a bit the natural meaning of 'rule'. But let's work on this basis.
+  May be rule is poorly named, but I felt it fitted as it determines whether
+a translation can occur and how it should occur. Different instances of
+these objects may determine if a translation can occur in different ways
+(even yielding different answers) and may say that the translation should be
+applied in a different way. To me a single component, of which there may be
+many, which decides on if and how to do something is a rule. Reflecting on
+this may be my rule is at a slightly different level in the process. I think
+this difference in assigning what is where is better shown else where, read
+on.
+
+
+    1. On the loader concept
+
+    I see your point to the extent that you want a given translator to be
+abel to use different loaders and vice versa. My only response to the first
+point would be a dispatcher mechanism either through an (optional) argument
+to __init__ , or according to the file name extension (eg. xml, csv etc.).
+The second type of reuse (one loader for different translators) would seem
+to me an academic exercise but I may be wrong. But even if there are
+practical needs to reuse a given loader for various translators, I would
+assume that (multiple) inheritance is the most obvious way to reuse an
+existing loader. I cannot currently think of a practical need to allow the
+user to write a new loader complying with a particular translator's loader
+API. But I have no strong views on this. My only concern is that the loader
+concept seems somewhat awkward as it requires two steps to load a rule
+table: create a loader object and then pass it to the translator of your
+choice. These two steps may be required as you suspect for the future. But
+today most users would probably wonder what this is all good for. Can you
+think of a more convenient way, say, through a wrapper, default values for
+arguments etc.? - I guess the __init__ methods of subclasses would be a good
+place. I want to instantiate most translators just by giviny passing a
+filename of my favorite rule table, or even less than that (look at PyHyphen
+where I can write: h_uk = hyphenator('en_UK'), and the filename is
+constracted through a simple join. Clearly, this would require a filename
+convention which I don't think is appropriate here because we won't have a
+subclass for braille translation, but for, say, translation trees featuring
+a certain range of rule types.
+  This raises a few questions:
+  * The problem that we have no specific translator for Braille, I remember
+Willie Walker in an Orca presentation saying that one piece of advice he was
+given that he feels was good is to not generalise unless you have enough
+cases to require you to generalise. So could we be hitting problems because
+YABT is now &quot;a context sensitive string manipulation tool&quot; and so the
+specific task (originally Braille translation) is not focusing what is
+really wanted? Whether this is right or wrong at the moment I am unsure, but
+working to actual usage examples probably would help focus things.
+  * Loaders: I am unsure whether this is done for users purposes or mine. It
+means that there may be a whole library of rule types and someone could
+develop a table which could make use of a combination of those rules never
+used together before. Whether anyone is going to do that I don't know, but
+it would be nice to be able to say to someone who asks for a particular
+translation system, yes it can be made easily by just creating a new loader
+and then just making that loader for them. The other reason I want the
+loader system is my own purpose. If at some point I wish to change the table
+format (as I feel the existing XML format needs to be) then I can leave the
+existing loader in place develop the new loader, test it out my self, then
+add a way users can opt to use it and then in one simple change of code make
+the new loader the default (and all I need to do is sit back and wait for
+all the emails describing all the problems caused by the sudden change).
+  * Creating a translator in one quick simple single liner, yes YABT doesn't
+do it currently, but does YABT need to change its design or does YABT just
+need another layer, eg. what I have referred to as a config module, but may
+be it would be better called a translator manager module, or may be just
+something else. I haven't really given this layer much thought, it may do
+more of what you call the dispatcher,  or may be it would just be a factory
+module (eg. createTranslator(translatorType, tableSource, tableType) (or
+something like that) which would return a translator class pre-loaded with
+rules from a loader registered for processing tableType).
+
+
+    On rules
+
+    It seems now we are closer than I'd thought yesterday.
+    This being said:
+    - I feel uncomfortable with that AddCharMapping staff in the base_class
+as char substitution is too specific. Further, as I wrote, char substitution
+should be an ordinary rule to be registered with the base class. So may I
+suggest you use a simple substitution rule fed either by a plain text file
+(as I suggested yesterday), or by a hard-coded dictionary or list of pairs.
+  May be AddCharMapping could be changed, it might be addPrepRule(Rule)
+which means that any rule can be added for the preparation stage but these
+should be simple although YABT won't restrict this.
+
+    - What do you mean by GetListOfStates? I believe you cannot always list
+all possible states as these may be unknown or indefinite. I know: a finite
+state michine works on a finite number of states... But I'm not comfortable
+with this restriction as I feel a state should be defined not by an integer,
+but by an object containing multiple settings. Also, the name 'state'
+suggests that it may only refer to some property of the translator itself.
+However, I think we agree that state can describe any property of anything
+in the universe. So I would suggest to replace it by 'settings'.But the
+structure of settings objects would have to be defined. I guess a settings
+object would be a simple empty container that could store all kinds of data
+including settings objects for different translators or even specific
+subrules.
+  The thought of getListStates is that a controlling app can find out what
+states exist and so allow the user to select the one they wish to use.
+Integers are meaningless in this case as why should the user know what those
+integers mean. I feel uncomfortable with totally unrestricted states, states
+need to follow some sort of standard (even if it is a State object API). The
+other reason for getting the known states is to alert the user they have
+requested an invalid state, why should YABT try and process something which
+simply cannot be translated (IE. no state exists for it)? States are causing
+me a certain difficulty, rules are what actually use state, but how can a
+translator find all states from rules? Currently states are registered in
+the translator by the loader, this means that the rules may not actually
+know anything about states but the loader can tell the translator to accept
+any of the states it lists. I suppose this separates states into two
+categories, those for rules, and those permitted as starting states.
+
+    - bf and afcontext: This seems to be too specific as well. So why not
+work with a context object which may then well be a pair of two strings each
+representing bf- and afcontext? Or it may be a triple of humidity,
+temperature and air pressure in Beijing if our translator works on
+air-conditioning systems rather than strings. That's the beauty of dynamic
+typing! Just learn to love this freedom, even if it may first seem
+frightening to a Java programmer!
+  I question this on the meaning of context. I am using context to mean what
+comes before the focus in the sequence to translate and what comes after the
+focus in the sequence to translate. At some point restrictions do need to be
+laid down, and I personally feel YABT at the most flexible is to translate
+sequences into other sequences (strings being a sequence of characters). I
+would argue that the example you gave is not context but rather what is
+being translated or state. Let me explain further:
+  * If humidity, temperature and air pressure was only needed for the
+current then it might be a state. This could be complicated as these are
+continual variables, I would opt for next suggestion.
+  * Humidity, temperature and air pressure may be part of the sequence being
+translated (eg. we may be translating a sequence of atmospheres, Atmosphere
+objects with temperature, humidity and pressure propertie, it may have
+others as wells). Ideally the sequences used should be sliceable (supporting
+the s[x:y] notation). Now focus and both contexts can use all three
+properties. If say the translator in this case (I don't quite know what use
+it really might have) was tracking current values, obviously after context
+cannot be known, so all rules used for that should simply use the always
+match context for after context. I feel this is very flexible and powerful
+once understood.
+
+    - translator.py, line 141: what is input class? What does this if...
+statement do here?
+  Discussed in other email, no longer exists.
+
+     - line 151: logging should go into the base class controlled by some
+settings. I think we do need a configuration system. You should look at
+docutils... and become addicted to aspect-oriented programming.
+  Again dealt earlier, look at logging configuration.
+
+    - - line 164: don't understand why you need the rule set class alongside
+with rule class.
+  RuleSet is unused, but is basically to provide a simple RuleSet
+implementation that other RuleSet like classes might build on. Can remove if
+really unneeded and unwanted.
+
+    - line 192: I have the feeling that you need the AddChar stuff because
+your rule concept is too narrow to use it for efficient char substitution.
+In this respect, my engine idea could be more straightforward as it
+encapsulates everything, even translators with hard-coded one-line
+algorithms rather than loadable rule tables. I guess the constructor of an
+engine would take only a settings argument. It has an apply method taking
+the input object and a context object. I would have to think more thoroughly
+about focus, befor and after context. My only point here is that engines
+would be suitable both for simple char substitution, control of
+air-condition systems of Beijing-based hotels and xml-based rule trees. But
+I must admit that your code arguably does a good job.
+  I don't know if it exactly fits with what you mean, but I actually now
+start to wonder whether my translator is what you mean by translation
+engine. The only difference is that I feel a translator should be fully self
+contained, IE. there should be no need for sending input through more than
+one, and if there is it might be a special case and might be best left to
+that particular application developer to do that in their own code. This
+self contained thinking is why translators in my design do character
+mappings (or may be if generalised preparation). These two stages
+(preparation and translation should be enough for most cases.
+
+
+    I must stop here. I'm not sure if I've convinced you to conceptualize
+the interaction between base_class and the rules a bit differntly. And I'm
+not even sure if it's worth trying, even I would have written this thing in
+a different way, because my thinking is influenced by docutils.
+  Yes background is different and I suppose whilst I am writing it in python
+I am still keeping in mind, could I make a java implementation. Also might
+it be best to split API into multiple levels/layers? IE. high level which
+may be done through manager/config module and a low level API which may be
+very much what YABT is now. The high level API may be language specific to
+try and make the most of the language, but low level API may be very
+language independent (partly so I don't get confused between the two and if
+people use the low level API then they know YABT for any language
+implementation.
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/yabt-devel/attachments/20081219/8300af1f/attachment.html">https://lists.berlios.de/pipermail/yabt-devel/attachments/20081219/8300af1f/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000049.html">[Yabt-devel] YABT reading from STDIN
+</A></li>
+	<LI>Next message: <A HREF="000057.html">[Yabt-devel] draft specification
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#56">[ date ]</a>
+              <a href="thread.html#56">[ thread ]</a>
+              <a href="subject.html#56">[ subject ]</a>
+              <a href="author.html#56">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

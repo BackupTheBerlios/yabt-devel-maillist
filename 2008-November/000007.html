@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] YABT versioning and distribution
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2008-November/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20YABT%20versioning%20and%20distribution&In-Reply-To=%3C90326f110811270816o2b04faacga01d32b4b985461f%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000006.html">
+   <LINK REL="Next"  HREF="000011.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] YABT versioning and distribution</H1>
+    <B>Leo</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20YABT%20versioning%20and%20distribution&In-Reply-To=%3C90326f110811270816o2b04faacga01d32b4b985461f%40mail.gmail.com%3E"
+       TITLE="[Yabt-devel] YABT versioning and distribution">fhaxbox66 at googlemail.com
+       </A><BR>
+    <I>Thu Nov 27 17:16:17 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000006.html">[Yabt-devel] YABT versioning and distribution
+</A></li>
+        <LI>Next message: <A HREF="000011.html">[Yabt-devel] YABT versioning and distribution
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#7">[ date ]</a>
+              <a href="thread.html#7">[ thread ]</a>
+              <a href="subject.html#7">[ subject ]</a>
+              <a href="author.html#7">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I don't have any views nor knowledge on this. Except that I find
+braille too specific a name for the implementation package. I don't
+see anything braille-specific in it let alone the xml-table. So I
+suggest as a subpackage name something like 'parsers' with further
+subpackages such as 'xmltable', 'jsontable' etc. Or you rename Braille
+to 'xmltable'. Otherwise, no one will believe that yabt can be used
+for other purposes.
+
+Those who don't rely on psyco will have very few dependencies that
+setuptools could facilitate to handle. Sorry, but I have very little
+experience with setuptools. You may wish to post your question in the
+setuptools users list. From my vantage point yabt could live without
+setuptools for quite some time. But with setuptools it will be much
+mor elegant, I know.
+
+
+
+On 26/11/2008, Michael Whapples &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">mwhapples at aim.com</A>&gt; wrote:
+&gt;<i> Hello,
+</I>&gt;<i> Firstly notes about version numbers. I said earlier I fall on the side
+</I>&gt;<i> of the date for development builds, that I am now reconsidering. Problem
+</I>&gt;<i> being the date given is for when the build is done, not when the commit
+</I>&gt;<i> into the repository is done (IE. if I build immediately after committing
+</I>&gt;<i> revision 66 on 2008-11-26 but you were to build revision 65 on the
+</I>&gt;<i> following day (2008-11-27) then according to version numbers you have
+</I>&gt;<i> the newer version where as I in fact have the later committed version).
+</I>&gt;<i> May be I will just have to go with customising hgversion.
+</I>&gt;<i>
+</I>&gt;<i> Another problem I am hitting is that hg.setuptools and probably
+</I>&gt;<i> hgversion only work when at the top level directory in mercurial. It
+</I>&gt;<i> seems like one distribution per repository (I can see the sense).
+</I>&gt;<i> Question goes, is there a way to split up one distribution in setup.py,
+</I>&gt;<i> so it produces two eggs (one for YABT.core and one for YABT.braille).
+</I>&gt;<i> May be I will just have to resort to using the manifest files. The
+</I>&gt;<i> alternative is if there is a way to cluster more than one repository
+</I>&gt;<i> inside a repository. I can't remember exactly what the forest extension
+</I>&gt;<i> does for mercurial but it does something to do with clustering
+</I>&gt;<i> repositories (either making multiple repos appear as one or hopefully
+</I>&gt;<i> one contain multiple repos). I will try and hunt it out. SVN didn't have
+</I>&gt;<i> this problem, but I feel it did have other problems that DVCs solve.
+</I>&gt;<i>
+</I>&gt;<i> Michael Whapples
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Yabt-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">Yabt-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/yabt-devel">https://lists.berlios.de/mailman/listinfo/yabt-devel</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000006.html">[Yabt-devel] YABT versioning and distribution
+</A></li>
+	<LI>Next message: <A HREF="000011.html">[Yabt-devel] YABT versioning and distribution
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#7">[ date ]</a>
+              <a href="thread.html#7">[ thread ]</a>
+              <a href="subject.html#7">[ subject ]</a>
+              <a href="author.html#7">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>

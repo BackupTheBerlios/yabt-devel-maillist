@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Yabt-devel] YABT 2.1 development started
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/yabt-devel/2009-August/index.html" >
+   <LINK REL="made" HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20YABT%202.1%20development%20started&In-Reply-To=%3C4A7AB96F.2010508%40aim.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000077.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Yabt-devel] YABT 2.1 development started</H1>
+    <B>Michael Whapples</B> 
+    <A HREF="mailto:yabt-devel%40lists.berlios.de?Subject=Re%3A%20%5BYabt-devel%5D%20YABT%202.1%20development%20started&In-Reply-To=%3C4A7AB96F.2010508%40aim.com%3E"
+       TITLE="[Yabt-devel] YABT 2.1 development started">mwhapples at aim.com
+       </A><BR>
+    <I>Thu Aug  6 13:07:27 CEST 2009</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000077.html">[Yabt-devel] YABT 2.1 development started
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#76">[ date ]</a>
+              <a href="thread.html#76">[ thread ]</a>
+              <a href="subject.html#76">[ subject ]</a>
+              <a href="author.html#76">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+I have decided to back away from some of the things being discussed for 
+YABT 3.0 and decided to add some features which have been requested 
+which could go in YABT 2.1.
+
+The main feature I have done at the moment is made it possible for users 
+to use a setter for the state rather than have to specify it on the call 
+to translate, although should you wish to still call translate with the 
+state option you can, its now a keyword option.
+
+The aim of YABT 2.1 is to add features, but it should still allow 
+applications designed for YABT 2.0 to work without any change (ideally) 
+or very minimal change. However as features are being added, those 
+making use of new features in YABT 2.1 will not be able to use YABT 
+2.0.x, unless they specifically try and support it in another way.
+
+Another feature I would like to add is named states. Now I am referring 
+to them as named states specifically as for performance reasons I don't 
+want to lift the internal restriction of states being integers, instead 
+an object will be accepted and then assigned an integer (or some other 
+type should I feel it might be better with that) as an ID. Therefore the 
+user of YABT will have the appearance of states being of any type they 
+like, but internally YABT will be using state IDs. This won't break 
+backwards compatibility as integers will still be accepted (may be used 
+as the ID or may be assigned its own ID).
+
+Adding cursor positioning and position information would be nice, but I 
+am not quite so sure how it might be done without breaking backwards 
+compatibility.
+
+Any other thoughts of features which could be added?
+
+Michael Whapples
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000077.html">[Yabt-devel] YABT 2.1 development started
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#76">[ date ]</a>
+              <a href="thread.html#76">[ thread ]</a>
+              <a href="subject.html#76">[ subject ]</a>
+              <a href="author.html#76">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/yabt-devel">More information about the Yabt-devel
+mailing list</a><br>
+</body></html>
